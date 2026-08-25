@@ -65,6 +65,9 @@ const DICTIONNAIRE = {
   'atelier.apercu': { fr: 'Aperçu', en: 'Preview' },
   'atelier.objectif': { fr: 'Objectif', en: 'Goal' },
   'atelier.tonResultat': { fr: 'Ton résultat', en: 'Your result' },
+  'atelier.plierObjectif': { fr: 'Replier l’objectif', en: 'Collapse the goal' },
+  'atelier.bureau': { fr: 'Largeur ordinateur', en: 'Desktop width' },
+  'atelier.mobile': { fr: 'Largeur téléphone', en: 'Phone width' },
   'atelier.defi': { fr: 'Défi', en: 'Challenge' },
   'atelier.suivant': { fr: 'Leçon suivante', en: 'Next lesson' },
   'atelier.chargementPython': {

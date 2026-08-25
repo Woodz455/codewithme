@@ -41,10 +41,12 @@ export const ICONES = {
   verifier: 'check',
   console: 'terminal',
   apercu: 'monitor',
+  telephone: 'smartphone',
   dessin: 'turtle',
   defi: 'target',
   retour: 'arrow-left',
   suivant: 'arrow-right',
+  chevronHaut: 'chevron-up',
 
   // Progression et recompenses
   flamme: 'flame',

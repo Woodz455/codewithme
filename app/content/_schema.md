@@ -53,20 +53,49 @@ Elles sont **vérifiées automatiquement** par `npm run check:content` :
 | `codeContient` | le code contient ce motif (imposer une boucle `for`…) |
 | `codeNeContientPas` | le code évite ce motif (interdire une réponse écrite en dur) |
 | `dom` | la page contient tel élément, en tel nombre, avec tel texte |
+| `style` | telle propriété CSS vaut réellement telle valeur (style **calculé**) |
+| `canvasDessine` | quelque chose a réellement été tracé sur le `<canvas>` |
+| `tortueTraits` | la tortue a tracé entre N et M traits |
+| `tortueFermee` | la figure revient à son point de départ |
+| `tortueCouleurs` | au moins N couleurs différentes |
 
 Pour `dom` avec `quoi: 'nombre'`, deux formes selon ce que dit la consigne :
 `attendu: 3` exige **exactement** trois éléments, `min: 3` en exige **au moins** trois.
 Une consigne qui dit « au moins » et une vérification qui exige un compte exact rendent
 l'exercice infaisable dès que l'élève en fait un peu plus — piège déjà rencontré deux fois.
 
-| `style` | telle propriété CSS vaut réellement telle valeur |
-| `tortueTraits` | la tortue a tracé entre N et M traits |
-| `tortueFermee` | la figure revient à son point de départ |
-| `tortueCouleurs` | au moins N couleurs différentes |
-
 Chaque règle accepte un `message: { fr, en }` qui remplace le message par défaut. À n'utiliser
 que si le message automatique est vraiment moins clair : les messages par défaut citent les
 valeurs réelles (« tu affiches X, on attendait Y »), ce qu'un message figé ne peut pas faire.
+
+## Deux pièges de largeur et de temps
+
+**La largeur de l'aperçu n'est pas la même partout.** Le panneau de l'application mesure 492 px,
+`check:content` rend la page dans une iframe de 800 px, et l'élève peut basculer l'aperçu en
+largeur « Mobile » (380 px). Une vérification qui dépend de la largeur passerait donc ici et
+échouerait là. Une leçon `@media` se vérifie par `codeContient` sur `@media`, **plus** un `style`
+vrai à toutes les largeurs — jamais par une valeur qui ne s'applique qu'en dessous du point de
+rupture.
+
+**Le correcteur photographie la page ~350 ms après l'exécution** (400 ms dans `check:content`).
+Une leçon d'animation ou de jeu doit donc dessiner **au moins une image tout de suite**, et pas
+uniquement dans le `setInterval` ou le `requestAnimationFrame`.
+
+## Mode « Objectif / Ton résultat »
+
+Une leçon web peut fournir un rendu de référence :
+
+```js
+defi: {
+  objectif: { html: '…', css: '…' },   // au moins l'une des deux clés, non vide
+  …
+}
+```
+
+L'aperçu se partage alors en deux : la référence en haut (repliable), le résultat de l'élève en
+dessous. C'est fait pour les défis « reproduis ce visuel » : viser une image motive bien plus que
+lire une consigne. La référence n'est jamais interrogée par le correcteur — seul le résultat de
+l'élève est jugé.
 
 ## Ce qui fonctionne réellement en C++
 

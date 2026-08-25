@@ -6,7 +6,7 @@
  * detenteurs respectifs et servent ici a identifier le langage enseigne.
  */
 
-export const NOMS_ICONES = ["accueil","projets","bacASable","badges","tuteur","reglages","executer","arreter","reinitialiser","indice","solution","verifier","console","apercu","dessin","defi","retour","suivant","flamme","trophee","etincelles","reussi","reflechir","temps","calendrier","statistiques","premiersPas","calcul","decision","tortue","boite","page","image","liste","formulaire","palette","regle","aimant","souris","boucle","manette","fusee","clavier","livre","pinceau","globe","eclair","engrenage","bug","terre","couronne","dossier","ouvrirDehors","supprimer","enregistrer","telecharger","importer","cadenas","info","attention","fermer","code"];
+export const NOMS_ICONES = ["accueil","projets","bacASable","badges","tuteur","reglages","executer","arreter","reinitialiser","indice","solution","verifier","console","apercu","telephone","dessin","defi","retour","suivant","chevronHaut","flamme","trophee","etincelles","reussi","reflechir","temps","calendrier","statistiques","premiersPas","calcul","decision","tortue","boite","page","image","liste","formulaire","palette","regle","aimant","souris","boucle","manette","fusee","clavier","livre","pinceau","globe","eclair","engrenage","bug","terre","couronne","dossier","ouvrirDehors","supprimer","enregistrer","telecharger","importer","cadenas","info","attention","fermer","code"];
 
 export const NOMS_LOGOS = ["python","html","css","javascript","cpp"];
 
@@ -24,10 +24,12 @@ export const SPRITE = `<symbol id="i-accueil" viewBox="0 0 24 24"><path d="M15 2
 <symbol id="i-verifier" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></symbol>
 <symbol id="i-console" viewBox="0 0 24 24"><path d="M12 19h8" /> <path d="m4 17 6-6-6-6" /></symbol>
 <symbol id="i-apercu" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="3" rx="2" /> <line x1="8" x2="16" y1="21" y2="21" /> <line x1="12" x2="12" y1="17" y2="21" /></symbol>
+<symbol id="i-telephone" viewBox="0 0 24 24"><rect width="14" height="20" x="5" y="2" rx="2" ry="2" /> <path d="M12 18h.01" /></symbol>
 <symbol id="i-dessin" viewBox="0 0 24 24"><path d="m12 10 2 4v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-3a8 8 0 1 0-16 0v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-3l2-4h4Z" /> <path d="M4.82 7.9 8 10" /> <path d="M15.18 7.9 12 10" /> <path d="M16.93 10H20a2 2 0 0 1 0 4H2" /></symbol>
 <symbol id="i-defi" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <circle cx="12" cy="12" r="6" /> <circle cx="12" cy="12" r="2" /></symbol>
 <symbol id="i-retour" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7" /> <path d="M19 12H5" /></symbol>
 <symbol id="i-suivant" viewBox="0 0 24 24"><path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /></symbol>
+<symbol id="i-chevronHaut" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6" /></symbol>
 <symbol id="i-flamme" viewBox="0 0 24 24"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4" /></symbol>
 <symbol id="i-trophee" viewBox="0 0 24 24"><path d="M10 14.66V17a1 1 0 0 1-1 1 2 2 0 0 0-2 2v2" /> <path d="M14 14.66V17a1 1 0 0 0 1 1 2 2 0 0 1 2 2v2" /> <path d="M17.916 10H19.5A2.5 2.5 0 0 0 22 7.5V5a1 1 0 0 0-1-1h-3" /> <path d="M4 22h16" /> <path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z" /> <path d="M6.084 10H4.5A2.5 2.5 0 0 1 2 7.5V5a1 1 0 0 1 1-1h3" /></symbol>
 <symbol id="i-etincelles" viewBox="0 0 24 24"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z" /> <path d="M20 2v4" /> <path d="M22 4h-4" /> <circle cx="4" cy="20" r="2" /></symbol>

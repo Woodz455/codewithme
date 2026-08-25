@@ -69,6 +69,7 @@ function construireAtelier(situation, lecon) {
   const etat = {
     editeurs: new Map(),
     moteurWeb: null,
+    moteurObjectif: null,
     toile: null,
     sortie: '',
     dessin: [],
@@ -137,6 +138,12 @@ function construireAtelier(situation, lecon) {
   const canevas = h('canvas.toile-tortue');
   const cadreApercu = h('iframe.apercu');
 
+  // Rendu de reference des defis « reproduis ce visuel » : une seconde iframe,
+  // affichee au-dessus de celle de l'eleve. Elle n'existe que si la lecon en
+  // fournit un.
+  const objectif = lecon.defi?.objectif ?? null;
+  const cadreObjectif = objectif ? h('iframe.apercu.apercu--objectif') : null;
+
   const ongletsResultat = [];
   const panneaux = {};
 
@@ -149,6 +156,45 @@ function construireAtelier(situation, lecon) {
     }
     if (nom === 'dessin') etat.toile?.redimensionner();
     if (nom === 'apercu') etat.moteurWeb?.attendrePret();
+  }
+
+  /**
+   * Bascule Bureau / Mobile.
+   *
+   * Le panneau d'apercu fait environ 490 px de large, c'est-a-dire sous tous
+   * les points de rupture usuels : sans cette bascule, une page adaptee au
+   * telephone s'afficherait toujours en version mobile et l'eleve ne verrait
+   * jamais son `@media` agir. Le bouton change ce qu'il **voit** ; il ne change
+   * jamais ce que le correcteur **juge**.
+   */
+  function construireLargeurs() {
+    const boutons = [
+      ['bureau', t('atelier.bureau'), 'apercu'],
+      ['mobile', t('atelier.mobile'), 'telephone'],
+    ].map(([cle, libelle, nomIcone]) =>
+      h(
+        'button.largeur',
+        {
+          dataset: { largeur: cle },
+          title: libelle,
+          'aria-label': libelle,
+          onclick: () => definirLargeur(cle),
+        },
+        icone(nomIcone)
+      )
+    );
+
+    function definirLargeur(cle) {
+      panneaux.apercu.dataset.largeur = cle;
+      for (const bouton of boutons) {
+        const actif = bouton.dataset.largeur === cle;
+        bouton.classList.toggle('largeur--active', actif);
+        bouton.setAttribute('aria-pressed', String(actif));
+      }
+    }
+
+    const barre = h('div.largeurs', { role: 'group' }, boutons);
+    return { barre, definirLargeur };
   }
 
   function construireOnglets() {
@@ -165,25 +211,68 @@ function construireAtelier(situation, lecon) {
         : [['console', t('atelier.console'), 'console']];
 
     ongletsResultat.length = 0;
-    const barre = h(
-      'div.onglets',
-      definitions.map(([cle, libelle, nomIcone]) => {
-        const bouton = h(
-          'button.onglet',
-          { dataset: { onglet: cle }, onclick: () => definirOnglet(cle) },
-          icone(nomIcone),
-          libelle
-        );
-        ongletsResultat.push(bouton);
-        return bouton;
-      })
-    );
+    const boutonsOnglets = definitions.map(([cle, libelle, nomIcone]) => {
+      const bouton = h(
+        'button.onglet',
+        { dataset: { onglet: cle }, onclick: () => definirOnglet(cle) },
+        icone(nomIcone),
+        libelle
+      );
+      ongletsResultat.push(bouton);
+      return bouton;
+    });
 
     panneaux.console = h('div.panneau', console_);
-    if (estWeb) panneaux.apercu = h('div.panneau.panneau--apercu', cadreApercu);
+
+    if (estWeb) {
+      panneaux.apercu = h(
+        'div.panneau.panneau--apercu',
+        { dataset: { largeur: 'bureau' } },
+        objectif ? construireComparaison() : cadreApercu
+      );
+    }
     if (lecon.langage === 'python') panneaux.dessin = h('div.panneau.panneau--dessin', canevas);
 
-    return { barre, corps: h('div.panneau-hote', Object.values(panneaux)) };
+    const largeurs = estWeb ? construireLargeurs() : null;
+    const barre = h('div.onglets', boutonsOnglets, largeurs?.barre ?? null);
+
+    return { barre, corps: h('div.panneau-hote', Object.values(panneaux)), largeurs };
+  }
+
+  /**
+   * Deux rendus superposes : la cible a atteindre, puis le resultat de l'eleve.
+   * La moitie haute se replie, parce que 490 px de large partages en deux, ca
+   * laisse peu de place a chacun quand on veut regarder son propre travail.
+   */
+  function construireComparaison() {
+    const zoneObjectif = h('div.compare__moitie.compare__moitie--objectif', cadreObjectif);
+
+    const boutonPlier = h(
+      'button.compare__plier',
+      {
+        'aria-expanded': 'true',
+        'aria-label': t('atelier.plierObjectif'),
+        title: t('atelier.plierObjectif'),
+        onclick: () => {
+          const plie = grille.dataset.plie !== 'oui';
+          grille.dataset.plie = plie ? 'oui' : 'non';
+          zoneObjectif.hidden = plie;
+          boutonPlier.setAttribute('aria-expanded', String(!plie));
+        },
+      },
+      icone('chevronHaut')
+    );
+
+    const grille = h(
+      'div.compare',
+      { dataset: { plie: 'non' } },
+      h('div.compare__titre', icone('defi'), t('atelier.objectif'), boutonPlier),
+      zoneObjectif,
+      h('div.compare__titre', icone('apercu'), t('atelier.tonResultat')),
+      h('div.compare__moitie', cadreApercu)
+    );
+
+    return grille;
   }
 
   /* --------------------------------------------------- panneau de reponse -- */
@@ -713,7 +802,8 @@ function construireAtelier(situation, lecon) {
   );
 
   const hoteEditeurs = h('div.atelier__editeurs');
-  const { barre: barreOnglets, corps: corpsResultat } = construireOnglets();
+  const { barre: barreOnglets, corps: corpsResultat, largeurs } = construireOnglets();
+  largeurs?.definirLargeur('bureau');
 
   const racine = h(
     'div.atelier',
@@ -838,6 +928,20 @@ function construireAtelier(situation, lecon) {
     etat.moteurWeb.charger().then(() => rendreApercuDirect());
   }
 
+  if (objectif && cadreObjectif) {
+    // Le rendu de reference est affiche une fois et ne bouge plus. Il ne recoit
+    // volontairement aucun ecouteur console ni erreur : ce n'est pas la sortie
+    // de l'eleve, et le correcteur ne l'interroge jamais.
+    etat.moteurObjectif = new MoteurWeb(cadreObjectif);
+    etat.moteurObjectif.charger().then(() =>
+      etat.moteurObjectif.rendre({
+        html: objectif.html ?? '',
+        css: objectif.css ?? '',
+        js: '',
+      })
+    );
+  }
+
   const surRedimension = () => etat.toile?.redimensionner();
   window.addEventListener('resize', surRedimension);
 
@@ -861,6 +965,7 @@ function construireAtelier(situation, lecon) {
     for (const detacher of etat.detacherPython) detacher();
     if (etat.enExecution && lecon.langage === 'python') moteurPython().arreter();
     etat.moteurWeb?.detruire();
+    etat.moteurObjectif?.detruire();
     for (const editeur of etat.editeurs.values()) editeur.detruire();
     store.ajouterTemps(Date.now() - etat.debut);
   };

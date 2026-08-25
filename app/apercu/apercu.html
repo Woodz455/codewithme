@@ -199,6 +199,25 @@
                 }
                 case 'balises':
                   return elements.map(function (e) { return e.tagName.toLowerCase(); });
+                case 'canvasDessine': {
+                  // Un canevas vierge est entierement transparent. Il suffit donc
+                  // de chercher un seul pixel dont le canal alpha n'est pas nul
+                  // pour savoir que l'eleve a reellement dessine quelque chose.
+                  return elements.some(function (toile) {
+                    if (!toile.getContext) return false;
+                    try {
+                      var pixels = toile
+                        .getContext('2d')
+                        .getImageData(0, 0, toile.width, toile.height).data;
+                      for (var i = 3; i < pixels.length; i += 4) {
+                        if (pixels[i] !== 0) return true;
+                      }
+                      return false;
+                    } catch (erreur) {
+                      return false;
+                    }
+                  });
+                }
                 default:
                   return null;
               }

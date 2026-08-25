@@ -90,6 +90,14 @@ for (const parcours of PARCOURS) {
       signaler(fiche.id, `depart (${formeDepart}) et solution (${formeSolution}) n'ont pas la meme forme`);
     }
 
+    // Un objectif vide afficherait a l'eleve une moitie d'ecran blanche
+    // presentee comme « le resultat a atteindre » : pire que pas d'objectif.
+    const objectif = lecon.defi?.objectif;
+    if (objectif !== undefined) {
+      const utile = ['html', 'css'].some((cle) => String(objectif?.[cle] ?? '').trim());
+      if (!utile) signaler(fiche.id, 'defi.objectif ne contient ni html ni css : le rendu de reference serait vide');
+    }
+
     if (lecon.exemple) verifierBilingue(fiche.id, 'exemple.note', lecon.exemple.note ?? { fr: 'x', en: 'x' });
     if (lecon.projet) verifierBilingue(fiche.id, 'projet.titre', lecon.projet.titre);
 

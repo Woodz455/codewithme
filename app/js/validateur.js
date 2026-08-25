@@ -160,6 +160,18 @@ async function verifierUneRegle(regle, contexte) {
       return echec('Vérification impossible.');
     }
 
+    case 'canvasDessine': {
+      // Compter des balises ne dit pas si l'eleve a reellement dessine.
+      // Cette regle lit les pixels du canevas : c'est la seule facon de
+      // distinguer « il y a un canvas » de « il y a un dessin dessus ».
+      if (!contexte.moteurWeb) return echec('L’aperçu n’est pas disponible.');
+      const [dessine] = await contexte.moteurWeb.interroger([
+        { selecteur: regle.selecteur || 'canvas', quoi: 'canvasDessine' },
+      ]);
+      if (dessine === true) return { ok: true };
+      return echec('Ton canvas est encore vide : rien n’y a été dessiné pour l’instant.');
+    }
+
     case 'style': {
       if (!contexte.moteurWeb) return echec('L’aperçu n’est pas disponible.');
       const [valeurs] = await contexte.moteurWeb.interroger([
