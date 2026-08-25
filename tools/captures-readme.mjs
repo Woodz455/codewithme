@@ -9,11 +9,12 @@
  *
  * Lancer : npm run captures:readme
  */
-import { _electron as electron, chromium } from 'playwright';
+import { _electron as electron } from 'playwright';
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import os from 'node:os';
+import { ouvrirNavigateur } from './navigateur.mjs';
 
 const RACINE = dirname(dirname(fileURLToPath(import.meta.url)));
 const SORTIE = join(RACINE, 'docs/images');
@@ -169,10 +170,7 @@ rmSync(dossierProfil, { recursive: true, force: true });
 const fichierCertificat = join(os.tmpdir(), `cwm-certificat-${Date.now()}.html`);
 writeFileSync(fichierCertificat, certificat, 'utf8');
 
-const navigateur = await chromium.launch({
-  args: ['--no-sandbox'],
-  executablePath: process.env.CWM_CHROMIUM || undefined,
-});
+const navigateur = await ouvrirNavigateur();
 const vueCertificat = await navigateur.newPage({ viewport: { width: 1123, height: 794 } });
 await vueCertificat.goto(`file://${fichierCertificat}`);
 await vueCertificat.waitForTimeout(500);

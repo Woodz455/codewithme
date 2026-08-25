@@ -7,11 +7,12 @@
  * C'est toute la promesse faite a l'eleve — « tu peux l'envoyer a quelqu'un,
  * il s'ouvrira chez lui » — et elle ne vaut que si elle est verifiee dehors.
  */
-import { _electron as electron, chromium } from 'playwright';
+import { _electron as electron } from 'playwright';
 import { readdirSync, readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import os from 'node:os';
 import { join } from 'node:path';
+import { ouvrirNavigateur } from '../tools/navigateur.mjs';
 
 const cas = [];
 const echecs = [];
@@ -98,10 +99,7 @@ verifier('il embarque son JavaScript', contenu.includes('classList.toggle'), 'cl
 
 // Un navigateur ordinaire, sans rien de l'application : c'est le seul moyen
 // de prouver que le fichier vit tout seul.
-const navigateur = await chromium.launch({
-  args: ['--no-sandbox'],
-  executablePath: process.env.CWM_CHROMIUM || '/opt/pw-browsers/chromium',
-});
+const navigateur = await ouvrirNavigateur();
 const dehors = await navigateur.newPage();
 const erreurs = [];
 dehors.on('pageerror', (erreur) => erreurs.push(String(erreur)));
