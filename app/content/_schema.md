@@ -109,14 +109,29 @@ l'élève est jugé.
 
 L'interpréteur embarqué ne couvre pas tout le langage. **Mesuré, pas supposé** :
 
-**Utilisable** — `int` `double` `bool` `char` `const` · `cout` `cin` (accents compris) ·
-`if`/`else` `switch` · `for` `while` `do…while` · tableaux, tableaux 2D, tableaux en paramètre ·
-fonctions à paramètres par valeur · `<cmath>` `<cstring>` `<iomanip>` `rand`/`srand` ·
-`char nom[20];` avec `cin >> nom`.
+**Utilisable** — `int` `double` `bool` `char` `const` · `cout` **y compris avec des accents** ·
+`cin` de nombres · `if`/`else` `switch` · `for` `while` `do…while` · tableaux, tableaux 2D,
+tableaux en paramètre · fonctions à paramètres par valeur · `<cmath>` `<cstring>` `<iomanip>` ·
+`rand`/`srand` · `char nom[20];` avec `cin >> nom` **si la saisie est sans accent**.
 
 **À ne jamais employer dans une leçon** — `std::string` et `<string>` · `getline` · `struct` ·
 `vector` · paramètres par référence (`int &n`).
 
-Le texte s'enseigne donc avec `char nom[20]`, qui fonctionne. C'est du C++ authentique, à
-présenter comme la forme historique, en signalant que `std::string` est la forme moderne qu'il
-rencontrera plus tard.
+### Le piège de l'accent saisi — mesuré, et corrigé après coup
+
+`cout << "Félicitations !"` fonctionne parfaitement. Mais `cin >> nom` dans un `char nom[20]`
+**plante** dès que la saisie contient un accent :
+
+```
+6:5 overflow of 'é'(char)
+```
+
+Une première mesure avait conclu « accents compris » : elle avait été faite sur un prénom sans
+accent. La conséquence était grave — une leçon « tape ton prénom » aurait planté avec un message
+incompréhensible pour Théo, Léa ou Chloé, c'est-à-dire précisément pour l'élève visé.
+
+Aucune leçon ne demande donc de saisir un texte accentué. Le `char nom[20]` s'enseigne sur un
+pseudo, et la leçon **dit explicitement** que ce type stocke un octet par caractère et ne sait
+pas encaisser les accents. C'est du C++ authentique : la vraie limite du `char` historique, à
+présenter honnêtement, en signalant que `std::string` est la forme moderne qu'il rencontrera
+plus tard.
