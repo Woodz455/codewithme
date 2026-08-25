@@ -12,13 +12,14 @@
     "dev": "electron . --dev",
     "check:content": "node tools/check-content.mjs",
     "check:contrast": "node tools/check-contrast.mjs",
-    "test": "npm run check:icones && npm run test:python && npm run test:moteurs && npm run test:atelier",
+    "test": "npm run check:icones && npm run test:python && npm run test:moteurs && npm run test:atelier && npm run test:espaces",
     "test:python": "xvfb-run -a node tests/verifier-python.mjs",
     "test:moteurs": "xvfb-run -a node tests/verifier-moteurs-web-cpp.mjs",
     "test:atelier": "xvfb-run -a node tests/verifier-atelier.mjs",
     "captures": "xvfb-run -a node tests/capture.mjs && xvfb-run -a node tests/capture-atelier.mjs",
     "build:win": "electron-builder --win --publish never",
-    "check:icones": "node tools/check-icones.mjs"
+    "check:icones": "node tools/check-icones.mjs",
+    "test:espaces": "xvfb-run -a node tests/verifier-espaces.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1",

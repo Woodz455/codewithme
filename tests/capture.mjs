@@ -76,7 +76,11 @@ function profilAvance() {
 const ECRANS = [
   ['accueil', '#/accueil', 1300],
   ['parcours-python', '#/parcours/python', 1700],
-  ['parcours-css', '#/parcours/css', 1700],
+  ['badges', '#/badges', 900],
+  ['galerie', '#/galerie', 1200],
+  ['bac-a-sable', '#/bac-a-sable/html', 2000],
+  ['tuteur', '#/tuteur', 1200],
+  ['reglages', '#/reglages', 900],
 ];
 
 async function serie({ nom, profil, langue, viewport }) {

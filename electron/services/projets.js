@@ -17,7 +17,16 @@ const EXTENSIONS = {
   javascript: '.js',
 };
 
+/**
+ * Emplacement des projets.
+ *
+ * Par defaut Documents\CodeWithMe\Mes projets — l'endroit ou un collegien
+ * ira naturellement les chercher. La variable d'environnement permet de le
+ * deplacer, et surtout evite que les tests automatises n'ecrivent dans les
+ * vrais documents de l'utilisateur.
+ */
 function dossierProjets() {
+  if (process.env.CWM_DOSSIER_PROJETS) return process.env.CWM_DOSSIER_PROJETS;
   return path.join(app.getPath('documents'), 'CodeWithMe', 'Mes projets');
 }
 function cheminIndex() {

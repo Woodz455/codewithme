@@ -12,6 +12,11 @@ import { PARCOURS } from '../content/parcours.js';
 import { ecranAccueil } from './ecrans/accueil.js';
 import { ecranParcours } from './ecrans/parcours.js';
 import { ecranAtelier } from './ecrans/atelier.js';
+import { ecranGalerie } from './ecrans/galerie.js';
+import { ecranBadges } from './ecrans/badges.js';
+import { ecranBacASable } from './ecrans/bac-a-sable.js';
+import { ecranReglages } from './ecrans/reglages.js';
+import { ecranTuteur } from './ecrans/tuteur.js';
 
 /* ------------------------------------------------------------------- rail -- */
 
@@ -206,20 +211,13 @@ function enregistrerRoutes() {
   route('/accueil', () => ecranAccueil());
   route('/parcours/:parcours', ({ parcours }) => ecranParcours(parcours));
 
-  // Ecrans encore a construire : on affiche un jalon clair plutot qu'une page
-  // blanche, pour que la navigation reste coherente pendant le developpement.
-  const enChantier = (titre, note) => () =>
-    h(
-      'div',
-      h('header.scene__entete', h('h1.scene__titre', titre), h('p.scene__sous', note))
-    );
-
   route('/lecon/:parcours/:lecon', ({ parcours, lecon }) => ecranAtelier(parcours, lecon));
-  route('/galerie', enChantier(t('galerie.titre'), texte({ fr: 'Bientôt.', en: 'Coming soon.' })));
-  route('/bac-a-sable', enChantier(t('bac.titre'), texte(({ fr: 'Bientôt.', en: 'Coming soon.' }))));
-  route('/badges', enChantier(t('badges.titre'), texte({ fr: 'Bientôt.', en: 'Coming soon.' })));
-  route('/tuteur', enChantier(t('tuteur.titre'), t('tuteur.confidentialite')));
-  route('/reglages', enChantier(t('reglages.titre'), texte({ fr: 'Bientôt.', en: 'Coming soon.' })));
+  route('/galerie', () => ecranGalerie());
+  route('/badges', () => ecranBadges());
+  route('/bac-a-sable', () => ecranBacASable('python'));
+  route('/bac-a-sable/:langage', ({ langage }) => ecranBacASable(langage));
+  route('/tuteur', () => ecranTuteur());
+  route('/reglages', () => ecranReglages());
 }
 
 /* --------------------------------------------------------------- demarrage -- */
