@@ -59,6 +59,12 @@ Elles sont **vérifiées automatiquement** par `npm run check:content` :
 | `tortueFermee` | la figure revient à son point de départ |
 | `tortueCouleurs` | au moins N couleurs différentes |
 
+`dom` et `style` acceptent deux actions préalables, qui agissent sur la page **avant** de
+l'interroger : `clic: '#bouton'` clique, `touche: 'ArrowRight'` (ou un tableau de touches)
+appuie au clavier. C'est ce qui permet de corriger « que se passe-t-il quand on clique »
+autrement qu'en cherchant `addEventListener` dans le texte du code — un contrôle qui
+laisserait passer un gestionnaire vide.
+
 Pour `dom` avec `quoi: 'nombre'`, deux formes selon ce que dit la consigne :
 `attendu: 3` exige **exactement** trois éléments, `min: 3` en exige **au moins** trois.
 Une consigne qui dit « au moins » et une vérification qui exige un compte exact rendent
@@ -77,9 +83,11 @@ largeur « Mobile » (380 px). Une vérification qui dépend de la largeur passe
 vrai à toutes les largeurs — jamais par une valeur qui ne s'applique qu'en dessous du point de
 rupture.
 
-**Le correcteur photographie la page ~350 ms après l'exécution** (400 ms dans `check:content`).
-Une leçon d'animation ou de jeu doit donc dessiner **au moins une image tout de suite**, et pas
-uniquement dans le `setInterval` ou le `requestAnimationFrame`.
+**Le correcteur photographie la page 700 ms après l'exécution**, dans l'atelier comme dans
+`check:content` — les deux délais sont volontairement identiques, pour qu'une leçon ne puisse
+pas passer ici et échouer sous les yeux de l'élève. Une animation ou un compte à rebours a donc
+le temps de démarrer, mais pas de finir : une leçon de jeu doit dessiner **au moins une image
+tout de suite**, et ce qui est vérifié doit être atteint bien avant 700 ms.
 
 ## Mode « Objectif / Ton résultat »
 

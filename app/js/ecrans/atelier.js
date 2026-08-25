@@ -517,7 +517,10 @@ function construireAtelier(situation, lecon) {
 
     // On execute d'abord : la correction juge le resultat, pas le texte du code.
     if (!etat.enExecution) await executer();
-    await new Promise((resoudre) => setTimeout(resoudre, estWeb ? 350 : 120));
+    // On laisse le temps a la page de vivre : une animation ou un compte a
+    // rebours ne doit pas etre juge avant d'avoir demarre. 700 ms sont
+    // imperceptibles apres un clic, et suppriment toute correction au hasard.
+    await new Promise((resoudre) => setTimeout(resoudre, estWeb ? 700 : 120));
 
     const resultat = await corriger(lecon.defi?.verifications, {
       code: codeConcatene(),

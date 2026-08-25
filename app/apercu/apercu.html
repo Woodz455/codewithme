@@ -171,6 +171,23 @@
         function repondreQuestions(identifiant, questions) {
           var resultats = questions.map(function (question) {
             try {
+              // Une touche ne vise aucun element : elle part sur le document,
+              // comme quand l'eleve tape vraiment au clavier. Traitee avant la
+              // recherche d'elements, qui n'aurait pas de selecteur a chercher.
+              if (question.quoi === 'touche') {
+                ['keydown', 'keyup'].forEach(function (type) {
+                  document.dispatchEvent(
+                    new KeyboardEvent(type, {
+                      key: question.nom,
+                      code: question.nom,
+                      bubbles: true,
+                      cancelable: true,
+                    })
+                  );
+                });
+                return question.nom;
+              }
+
               // On interroge UNIQUEMENT le code de l'eleve. Sans cela, une
               // question comme « combien de div ? » compterait aussi les deux
               // div internes de l'inspecteur, et la lecon serait infaisable.
@@ -199,6 +216,17 @@
                 }
                 case 'balises':
                   return elements.map(function (e) { return e.tagName.toLowerCase(); });
+                case 'clic': {
+                  // Les questions sont traitees dans l'ordre : un clic pose ici
+                  // a donc deja produit son effet quand la question suivante lit
+                  // la page. C'est ce qui permet de corriger « que se passe-t-il
+                  // quand on clique » autrement qu'en cherchant des mots dans
+                  // le code de l'eleve.
+                  elements.forEach(function (element) {
+                    try { element.click(); } catch (erreur) {}
+                  });
+                  return elements.length;
+                }
                 case 'canvasDessine': {
                   // Un canevas vierge est entierement transparent. Il suffit donc
                   // de chercher un seul pixel dont le canal alpha n'est pas nul

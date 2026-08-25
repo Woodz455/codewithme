@@ -54,6 +54,30 @@ function expressionDe(regle) {
   }
 }
 
+/**
+ * Interroge la page, apres avoir agi dessus si la regle le demande :
+ * `clic: '#bouton'` clique, `touche: 'ArrowRight'` appuie sur une touche.
+ *
+ * « Que se passe-t-il quand on clique » est la question centrale du parcours
+ * JavaScript. Sans cela, on ne pourrait que chercher `addEventListener` dans
+ * le texte du code — un controle faible, qui laisserait passer un
+ * gestionnaire qui ne fait rien.
+ *
+ * Les questions sont traitees dans l'ordre par la page d'apercu : l'action a
+ * donc deja produit son effet quand la question suivante lit le resultat.
+ */
+async function interrogerApres(contexte, regle, question) {
+  const questions = [];
+  if (regle.clic) questions.push({ selecteur: regle.clic, quoi: 'clic' });
+  for (const nom of [].concat(regle.touche ?? [])) {
+    questions.push({ quoi: 'touche', nom });
+  }
+  questions.push(question);
+
+  const reponses = await contexte.moteurWeb.interroger(questions);
+  return reponses[reponses.length - 1];
+}
+
 async function verifierUneRegle(regle, contexte) {
   const messagePersonnalise = regle.message ? texte(regle.message) : null;
   const echec = (parDefaut) => ({ ok: false, message: messagePersonnalise || parDefaut });
@@ -118,9 +142,11 @@ async function verifierUneRegle(regle, contexte) {
 
     case 'dom': {
       if (!contexte.moteurWeb) return echec('L’aperçu n’est pas disponible.');
-      const [resultat] = await contexte.moteurWeb.interroger([
-        { selecteur: regle.selecteur, quoi: regle.quoi || 'nombre', nom: regle.nom },
-      ]);
+      const resultat = await interrogerApres(contexte, regle, {
+        selecteur: regle.selecteur,
+        quoi: regle.quoi || 'nombre',
+        nom: regle.nom,
+      });
 
       if (regle.quoi === 'existe' || !regle.quoi) {
         const nombre = typeof resultat === 'number' ? resultat : resultat ? 1 : 0;
@@ -174,9 +200,11 @@ async function verifierUneRegle(regle, contexte) {
 
     case 'style': {
       if (!contexte.moteurWeb) return echec('L’aperçu n’est pas disponible.');
-      const [valeurs] = await contexte.moteurWeb.interroger([
-        { selecteur: regle.selecteur, quoi: 'style', nom: regle.propriete },
-      ]);
+      const valeurs = await interrogerApres(contexte, regle, {
+        selecteur: regle.selecteur,
+        quoi: 'style',
+        nom: regle.propriete,
+      });
 
       const liste = Array.isArray(valeurs) ? valeurs : [];
       if (!liste.length) return echec(`On ne trouve pas « ${regle.selecteur} » dans ta page.`);

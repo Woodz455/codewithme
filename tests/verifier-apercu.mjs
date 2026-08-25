@@ -126,6 +126,80 @@ verifier(
 );
 verifier('le correcteur accepte un canevas dessine', verdicts.plein.reussi === true, JSON.stringify(verdicts.plein));
 
+/* ================================== 1 bis. clic et clavier simules ======== */
+
+process.stdout.write('\nCorrection d une page qui reagit\n\n');
+
+const reactions = await page.evaluate(async () => {
+  const { corriger } = await import('app://app/js/validateur.js');
+  const moteurWeb = window.__apercu.moteur;
+
+  await moteurWeb.rendre({
+    html: '<button id="b">Go</button><p id="sortie">rien</p>',
+    css: '',
+    js: `
+      document.getElementById("b").addEventListener("click", function () {
+        document.getElementById("sortie").textContent = "clique";
+      });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowRight") {
+          document.getElementById("sortie").textContent = "droite";
+        }
+      });
+    `,
+  });
+  await new Promise((r) => setTimeout(r, 500));
+
+  const contexte = { code: '', sortie: '', dessin: [], moteurWeb };
+  const avant = await corriger(
+    [{ type: 'dom', selecteur: '#sortie', quoi: 'texte', attendu: 'rien', exact: true }],
+    contexte
+  );
+  const apresClic = await corriger(
+    [{ type: 'dom', clic: '#b', selecteur: '#sortie', quoi: 'texte', attendu: 'clique', exact: true }],
+    contexte
+  );
+  const apresTouche = await corriger(
+    [
+      {
+        type: 'dom',
+        touche: 'ArrowRight',
+        selecteur: '#sortie',
+        quoi: 'texte',
+        attendu: 'droite',
+        exact: true,
+      },
+    ],
+    contexte
+  );
+  // Une touche que le code ignore ne doit rien changer : sans quoi la regle
+  // « les autres touches ne font rien » serait invalidable.
+  const toucheIgnoree = await corriger(
+    [
+      {
+        type: 'dom',
+        touche: 'ArrowUp',
+        selecteur: '#sortie',
+        quoi: 'texte',
+        attendu: 'droite',
+        exact: true,
+      },
+    ],
+    contexte
+  );
+
+  return { avant, apresClic, apresTouche, toucheIgnoree };
+});
+
+verifier('la page est lue telle quelle avant toute action', reactions.avant.reussi, JSON.stringify(reactions.avant));
+verifier('un clic simule declenche le gestionnaire', reactions.apresClic.reussi, JSON.stringify(reactions.apresClic));
+verifier('une touche simulee declenche le gestionnaire', reactions.apresTouche.reussi, JSON.stringify(reactions.apresTouche));
+verifier(
+  'une touche ignoree par le code ne change rien',
+  reactions.toucheIgnoree.reussi,
+  JSON.stringify(reactions.toucheIgnoree)
+);
+
 /* =============================================== 2. bascule de largeur ==== */
 
 process.stdout.write('\nBascule Bureau / Mobile\n\n');

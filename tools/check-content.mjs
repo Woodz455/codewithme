@@ -214,7 +214,9 @@ await page.evaluate(async () => {
     moteurWeb.sur('erreur', surErreur);
 
     await moteurWeb.rendre(zones);
-    await new Promise((r) => setTimeout(r, 400));
+    // Meme delai que l'atelier : une lecon animee doit etre jugee ici
+    // exactement comme elle le sera sous les yeux de l'eleve.
+    await new Promise((r) => setTimeout(r, 700));
 
     for (const nom of ['console', 'erreur']) {
       const liste = moteurWeb.ecouteurs[nom] || [];
