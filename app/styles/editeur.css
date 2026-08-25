@@ -461,6 +461,26 @@
   white-space: pre;
 }
 
+/* Une lecon web montre souvent la structure et le style separement : chaque
+   morceau porte son etiquette, sinon on ne sait pas quel onglet le recoit. */
+.exemple__zone {
+  position: relative;
+}
+
+.exemple__langue {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  padding: 1px 6px;
+  border-radius: var(--r-rond);
+  background: rgb(255 255 255 / 8%);
+  color: var(--texte-faible);
+  font-family: var(--titre);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
 .exemple__note {
   font-size: 0.83rem;
   color: var(--texte-faible);

@@ -579,6 +579,28 @@ function construireAtelier(situation, lecon) {
     }
   }
 
+  /**
+   * Affiche l'exemple de la lecon.
+   * Une lecon web en donne souvent deux morceaux — la structure et le style —
+   * qu'il faut montrer separement, sinon l'eleve ne sait pas quelle partie va
+   * dans quel onglet.
+   */
+  function exempleAffiche(code) {
+    if (typeof code === 'string') return h('pre.exemple__code', h('code', code));
+
+    const zones = Object.entries(code ?? {}).filter(([, valeur]) => String(valeur ?? '').trim());
+    return h(
+      'div.exemple__zones',
+      zones.map(([cle, valeur]) =>
+        h(
+          'div.exemple__zone',
+          h('span.exemple__langue', cle.toUpperCase()),
+          h('pre.exemple__code', h('code', valeur))
+        )
+      )
+    );
+  }
+
   /* -------------------------------------------------------------- indices -- */
 
   const zoneIndices = h('div.indices');
@@ -774,7 +796,7 @@ function construireAtelier(situation, lecon) {
       ? h(
           'section.exemple',
           h('div.exemple__entete', h('span.surtitre', texte({ fr: 'Exemple', en: 'Example' }))),
-          h('pre.exemple__code', h('code', typeof lecon.exemple.code === 'string' ? lecon.exemple.code : '')),
+          exempleAffiche(lecon.exemple.code),
           lecon.exemple.note ? h('p.exemple__note', texte(lecon.exemple.note)) : null,
           h(
             'button.bouton.bouton--petit.bouton--fantome',
@@ -867,9 +889,15 @@ function construireAtelier(situation, lecon) {
 
   // Un ou plusieurs editeurs selon la lecon : le web en demande souvent deux
   // (structure et style), les autres langages un seul.
+  // L'onglet ouvert au chargement est celui du langage enseigne : sur une lecon
+  // de CSS, l'eleve doit tomber dans le CSS, pas dans le HTML qu'on lui donne.
+  const zonePrincipale = { javascript: 'js', css: 'css', html: 'html', web: 'html' }[lecon.langage];
+
   const zones = typeof (lecon.defi?.depart ?? '') === 'string'
     ? [['principal', lecon.langage === 'web' ? 'html' : lecon.langage]]
-    : Object.keys(lecon.defi.depart).map((cle) => [cle, cle]);
+    : Object.keys(lecon.defi.depart)
+        .sort((a, b) => (a === zonePrincipale ? -1 : 0) - (b === zonePrincipale ? -1 : 0))
+        .map((cle) => [cle, cle]);
 
   if (zones.length === 1) {
     const { hote } = creerEditeur(zones[0][0], zones[0][1], depart[zones[0][0]] ?? '');

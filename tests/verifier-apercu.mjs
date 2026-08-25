@@ -182,6 +182,83 @@ verifier(
   JSON.stringify(pointDeRupture)
 );
 
+/* ======================================= 3. Objectif / Ton resultat ======= */
+
+process.stdout.write('\nMode Objectif / Ton resultat\n\n');
+
+// css-2-4 fournit un `defi.objectif` : la lecon « ombres et degrades ».
+await page.evaluate(() => {
+  window.location.hash = '#/lecon/css/css-2-4';
+});
+await page.waitForSelector('.compare', { timeout: 15000 });
+await page.waitForTimeout(1500);
+
+const structure = await page.evaluate(() => {
+  const titres = [...document.querySelectorAll('.compare__titre')].map((e) => e.textContent.trim());
+  return { cadres: document.querySelectorAll('.compare iframe.apercu').length, titres };
+});
+verifier('deux cadres sont affiches', structure.cadres === 2, JSON.stringify(structure));
+verifier(
+  'chaque moitie est etiquetee',
+  structure.titres.length === 2 && /objectif/i.test(structure.titres[0]),
+  JSON.stringify(structure.titres)
+);
+
+// Le point qui compte : la reference montre le resultat FINI, alors que
+// l'eleve part d'une page sans degrade. Les deux rendus doivent differer.
+const rendus = await page.evaluate(async () => {
+  const lire = (cadre) =>
+    new Promise((resoudre) => {
+      const identifiant = `sonde-${Math.random()}`;
+      const surReponse = (evenement) => {
+        if (evenement.data?.source === 'cwm-apercu' && evenement.data?.id === identifiant) {
+          window.removeEventListener('message', surReponse);
+          resoudre(evenement.data.resultats?.[0]?.[0] ?? null);
+        }
+      };
+      window.addEventListener('message', surReponse);
+      cadre.contentWindow.postMessage(
+        {
+          source: 'cwm-atelier',
+          type: 'interroger',
+          id: identifiant,
+          questions: [{ selecteur: '.tuile', quoi: 'style', nom: 'background-image' }],
+        },
+        '*'
+      );
+      setTimeout(() => resoudre(null), 2500);
+    });
+
+  const cadres = [...document.querySelectorAll('.compare iframe.apercu')];
+  return { reference: await lire(cadres[0]), eleve: await lire(cadres[1]) };
+});
+
+verifier(
+  'la reference affiche bien le resultat a atteindre',
+  /linear-gradient/.test(rendus.reference ?? ''),
+  JSON.stringify(rendus.reference)
+);
+verifier(
+  'le resultat de l eleve en part different',
+  !/linear-gradient/.test(rendus.eleve ?? ''),
+  JSON.stringify(rendus.eleve)
+);
+
+await page.click('.compare__plier');
+await page.waitForTimeout(300);
+const replie = await page.evaluate(() => {
+  const grille = document.querySelector('.compare');
+  return {
+    etat: grille.dataset.plie,
+    objectifVisible: !grille.querySelector('.compare__moitie--objectif').hidden,
+  };
+});
+verifier(
+  'la reference se replie pour laisser la place',
+  replie.etat === 'oui' && replie.objectifVisible === false,
+  JSON.stringify(replie)
+);
+
 await application.close();
 
 process.stdout.write(`\n  ${cas.length - echecs.length}/${cas.length} verifications passees\n\n`);
