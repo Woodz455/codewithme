@@ -10,7 +10,7 @@
     "vendor": "node tools/vendor.mjs",
     "start": "electron .",
     "dev": "electron . --dev",
-    "check:content": "node tools/check-content.mjs",
+    "check:content": "xvfb-run -a node tools/check-content.mjs",
     "check:contrast": "node tools/check-contrast.mjs",
     "test": "npm run check:icones && npm run test:python && npm run test:moteurs && npm run test:atelier && npm run test:espaces",
     "test:python": "xvfb-run -a node tests/verifier-python.mjs",
