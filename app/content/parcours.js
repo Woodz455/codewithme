@@ -15,7 +15,7 @@ export const PARCOURS = [
     nom: 'Python',
     couleur: 'var(--python)',
     couleurBrute: '#00E5FF',
-    icone: '🐍',
+    logo: 'python',
     ordre: 1,
     resume: {
       fr: 'Le langage le plus simple pour commencer. Tu donnes des ordres, l’ordinateur obéit.',
@@ -29,7 +29,7 @@ export const PARCOURS = [
       {
         id: 'py-1',
         titre: { fr: 'Premiers pas', en: 'First steps' },
-        icone: '👋',
+        icone: 'premiersPas',
         lecons: [
           L('py-1-1', 'Ton tout premier programme', 'Your very first program'),
           L('py-1-2', 'Afficher plusieurs lignes', 'Printing several lines'),
@@ -40,7 +40,7 @@ export const PARCOURS = [
       {
         id: 'py-2',
         titre: { fr: 'Variables et calculs', en: 'Variables and maths' },
-        icone: '🔢',
+        icone: 'calcul',
         lecons: [
           L('py-2-1', 'Ranger une valeur dans une variable', 'Storing a value in a variable'),
           L('py-2-2', 'Les nombres et les calculs', 'Numbers and calculations'),
@@ -52,7 +52,7 @@ export const PARCOURS = [
       {
         id: 'py-3',
         titre: { fr: 'Décisions et boucles', en: 'Decisions and loops' },
-        icone: '🔀',
+        icone: 'decision',
         lecons: [
           L('py-3-1', 'Si… alors : la condition', 'If… then: conditions'),
           L('py-3-2', 'Sinon, et sinon si', 'Else, and else if'),
@@ -64,7 +64,7 @@ export const PARCOURS = [
       {
         id: 'py-4',
         titre: { fr: 'Dessiner avec la tortue', en: 'Drawing with the turtle' },
-        icone: '🐢',
+        icone: 'tortue',
         lecons: [
           L('py-4-1', 'La tortue avance et tourne', 'The turtle moves and turns'),
           L('py-4-2', 'Dessiner un carré, puis un polygone', 'Drawing a square, then a polygon'),
@@ -75,7 +75,7 @@ export const PARCOURS = [
       {
         id: 'py-5',
         titre: { fr: 'Listes et fonctions', en: 'Lists and functions' },
-        icone: '📦',
+        icone: 'boite',
         lecons: [
           L('py-5-1', 'Ranger plusieurs valeurs : la liste', 'Storing several values: the list'),
           L('py-5-2', 'Parcourir une liste', 'Going through a list'),
@@ -92,7 +92,7 @@ export const PARCOURS = [
     nom: 'HTML',
     couleur: 'var(--html)',
     couleurBrute: '#FF8A4C',
-    icone: '🧱',
+    logo: 'html',
     ordre: 2,
     resume: {
       fr: 'Le squelette de toutes les pages web. C’est ici que ton site prend forme.',
@@ -106,7 +106,7 @@ export const PARCOURS = [
       {
         id: 'html-1',
         titre: { fr: 'La structure d’une page', en: 'Page structure' },
-        icone: '📄',
+        icone: 'page',
         lecons: [
           L('html-1-1', 'Une balise, c’est quoi ?', 'What is a tag?'),
           L('html-1-2', 'Les titres et les paragraphes', 'Headings and paragraphs'),
@@ -117,7 +117,7 @@ export const PARCOURS = [
       {
         id: 'html-2',
         titre: { fr: 'Textes, images et liens', en: 'Text, images and links' },
-        icone: '🖼️',
+        icone: 'image',
         lecons: [
           L('html-2-1', 'Mettre en valeur du texte', 'Emphasising text'),
           L('html-2-2', 'Insérer une image', 'Adding an image'),
@@ -128,7 +128,7 @@ export const PARCOURS = [
       {
         id: 'html-3',
         titre: { fr: 'Listes et tableaux', en: 'Lists and tables' },
-        icone: '📋',
+        icone: 'liste',
         lecons: [
           L('html-3-1', 'Les listes à puces et numérotées', 'Bulleted and numbered lists'),
           L('html-3-2', 'Construire un tableau', 'Building a table'),
@@ -138,7 +138,7 @@ export const PARCOURS = [
       {
         id: 'html-4',
         titre: { fr: 'Formulaires', en: 'Forms' },
-        icone: '✍️',
+        icone: 'formulaire',
         lecons: [
           L('html-4-1', 'Champs de saisie et boutons', 'Input fields and buttons'),
           L('html-4-2', 'Cases, choix et menus', 'Checkboxes, choices and menus'),
@@ -154,7 +154,7 @@ export const PARCOURS = [
     nom: 'CSS',
     couleur: 'var(--css)',
     couleurBrute: '#5AA9FF',
-    icone: '🎨',
+    logo: 'css',
     ordre: 3,
     resume: {
       fr: 'L’habillage. Couleurs, polices, animations : c’est ce qui rend un site beau.',
@@ -168,7 +168,7 @@ export const PARCOURS = [
       {
         id: 'css-1',
         titre: { fr: 'Couleurs et polices', en: 'Colours and fonts' },
-        icone: '🌈',
+        icone: 'palette',
         lecons: [
           L('css-1-1', 'Brancher du CSS sur ta page', 'Plugging CSS into your page'),
           L('css-1-2', 'Choisir des couleurs', 'Choosing colours'),
@@ -179,7 +179,7 @@ export const PARCOURS = [
       {
         id: 'css-2',
         titre: { fr: 'Boîtes et espacements', en: 'Boxes and spacing' },
-        icone: '📐',
+        icone: 'regle',
         lecons: [
           L('css-2-1', 'Tout est une boîte', 'Everything is a box'),
           L('css-2-2', 'Marges intérieures et extérieures', 'Padding and margin'),
@@ -190,7 +190,7 @@ export const PARCOURS = [
       {
         id: 'css-3',
         titre: { fr: 'Placer avec Flexbox', en: 'Layout with Flexbox' },
-        icone: '🧲',
+        icone: 'aimant',
         lecons: [
           L('css-3-1', 'Aligner en ligne ou en colonne', 'Aligning in a row or column'),
           L('css-3-2', 'Centrer, enfin !', 'Centring, at last!'),
@@ -201,7 +201,7 @@ export const PARCOURS = [
       {
         id: 'css-4',
         titre: { fr: 'Animations et mobile', en: 'Animations and mobile' },
-        icone: '✨',
+        icone: 'etincelles',
         lecons: [
           L('css-4-1', 'Réagir au survol', 'Reacting to hover'),
           L('css-4-2', 'Transitions douces', 'Smooth transitions'),
@@ -218,7 +218,7 @@ export const PARCOURS = [
     nom: 'JavaScript',
     couleur: 'var(--javascript)',
     couleurBrute: '#FFD93D',
-    icone: '⚡',
+    logo: 'javascript',
     ordre: 4,
     resume: {
       fr: 'Ce qui rend une page vivante : boutons qui répondent, jeux, animations.',
@@ -232,7 +232,7 @@ export const PARCOURS = [
       {
         id: 'js-1',
         titre: { fr: 'Agir sur la page', en: 'Acting on the page' },
-        icone: '🖱️',
+        icone: 'souris',
         lecons: [
           L('js-1-1', 'Écrire dans la console', 'Writing to the console'),
           L('js-1-2', 'Attraper un élément de la page', 'Grabbing an element'),
@@ -243,7 +243,7 @@ export const PARCOURS = [
       {
         id: 'js-2',
         titre: { fr: 'Variables et conditions', en: 'Variables and conditions' },
-        icone: '🧠',
+        icone: 'reflechir',
         lecons: [
           L('js-2-1', 'let, const et les types', 'let, const and types'),
           L('js-2-2', 'Comparer et décider', 'Comparing and deciding'),
@@ -254,7 +254,7 @@ export const PARCOURS = [
       {
         id: 'js-3',
         titre: { fr: 'Boucles et fonctions', en: 'Loops and functions' },
-        icone: '🔁',
+        icone: 'boucle',
         lecons: [
           L('js-3-1', 'Répéter avec for', 'Repeating with for'),
           L('js-3-2', 'Les tableaux', 'Arrays'),
@@ -265,7 +265,7 @@ export const PARCOURS = [
       {
         id: 'js-4',
         titre: { fr: 'Événements et animation', en: 'Events and animation' },
-        icone: '🎮',
+        icone: 'manette',
         lecons: [
           L('js-4-1', 'Le clavier et la souris', 'Keyboard and mouse'),
           L('js-4-2', 'Le temps qui passe : setInterval', 'Time passing: setInterval'),
@@ -284,7 +284,7 @@ export const PARCOURS = [
     nom: 'C++',
     couleur: 'var(--cpp)',
     couleurBrute: '#B14BFF',
-    icone: '⚙️',
+    logo: 'cpp',
     ordre: 5,
     resume: {
       fr: 'Le langage des jeux vidéo et des programmes rapides. Plus exigeant, plus puissant.',
@@ -298,7 +298,7 @@ export const PARCOURS = [
       {
         id: 'cpp-1',
         titre: { fr: 'Premier programme', en: 'First program' },
-        icone: '🚀',
+        icone: 'fusee',
         lecons: [
           L('cpp-1-1', 'La structure d’un programme C++', 'The structure of a C++ program'),
           L('cpp-1-2', 'Afficher avec cout', 'Printing with cout'),
@@ -309,7 +309,7 @@ export const PARCOURS = [
       {
         id: 'cpp-2',
         titre: { fr: 'Variables, saisie, conditions', en: 'Variables, input, conditions' },
-        icone: '⌨️',
+        icone: 'clavier',
         lecons: [
           L('cpp-2-1', 'Déclarer une variable typée', 'Declaring a typed variable'),
           L('cpp-2-2', 'Calculs et priorités', 'Maths and precedence'),
@@ -321,7 +321,7 @@ export const PARCOURS = [
       {
         id: 'cpp-3',
         titre: { fr: 'Boucles, tableaux, fonctions', en: 'Loops, arrays, functions' },
-        icone: '🧮',
+        icone: 'calcul',
         lecons: [
           L('cpp-3-1', 'La boucle for', 'The for loop'),
           L('cpp-3-2', 'La boucle while', 'The while loop'),

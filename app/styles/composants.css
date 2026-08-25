@@ -384,3 +384,127 @@
   background: linear-gradient(90deg, transparent, var(--trait-fort), transparent);
   margin: var(--e5) 0;
 }
+
+/* ==========================================================================
+   Icones et logos
+   ========================================================================== */
+
+/* Icone au trait : elle prend la couleur de son contexte, donc s'accorde
+   automatiquement au parcours, a l'etat actif ou au message d'erreur. */
+.icone {
+  width: 1.15em;
+  height: 1.15em;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vertical-align: -0.18em;
+}
+
+.icone--grande {
+  width: 1.6em;
+  height: 1.6em;
+  stroke-width: 1.75;
+}
+
+.icone--fine {
+  stroke-width: 1.6;
+}
+
+/* Logo officiel : couleurs d'origine, aucune teinte imposee. */
+.logo {
+  width: 1.5em;
+  height: 1.5em;
+  flex-shrink: 0;
+  display: block;
+}
+
+/* Medaillon : un fond sombre legerement teinte qui detache le logo du decor
+   neon, sans en alterer les couleurs. */
+.medaillon {
+  --taille-medaillon: 44px;
+  display: grid;
+  place-items: center;
+  width: var(--taille-medaillon);
+  height: var(--taille-medaillon);
+  border-radius: 30%;
+  background: linear-gradient(150deg, rgb(255 255 255 / 9%), rgb(255 255 255 / 3%));
+  border: 1px solid color-mix(in srgb, var(--teinte, var(--cyan)) 26%, transparent);
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--teinte, var(--cyan)) 18%, transparent);
+  flex-shrink: 0;
+}
+
+.medaillon .logo {
+  width: 62%;
+  height: 62%;
+}
+
+.medaillon--petit {
+  --taille-medaillon: 30px;
+  border-radius: 28%;
+}
+
+.medaillon--grand {
+  --taille-medaillon: 64px;
+}
+
+/* Le rail replie en mode atelier n'affiche que les medaillons. */
+.rail__icone .medaillon {
+  --taille-medaillon: 26px;
+}
+
+/* --- Selecteur de langue -------------------------------------------------
+   Surtout pas d'emoji drapeau : Windows ne les dessine pas et affiche les
+   deux lettres du code pays a la place. Un selecteur typographique est plus
+   sur, et plus net. */
+
+.langue {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  border-radius: var(--r-rond);
+  background: rgb(255 255 255 / 6%);
+  border: 1px solid var(--trait);
+  font-family: var(--titre);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.langue__choix {
+  padding: 4px 10px;
+  border: 0;
+  border-radius: var(--r-rond);
+  background: none;
+  color: var(--texte-faible);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background var(--temps-court) var(--courbe),
+    color var(--temps-court) var(--courbe);
+}
+
+.langue__choix:hover {
+  color: var(--texte-doux);
+}
+
+.langue__choix[aria-pressed='true'] {
+  background: linear-gradient(135deg, var(--cyan), var(--violet));
+  color: #06121c;
+  box-shadow: 0 2px 10px rgb(0 229 255 / 30%);
+}
+
+/* --- Badges : icone au trait dans un medaillon en degrade ---------------- */
+
+.badge .icone {
+  width: 46%;
+  height: 46%;
+  stroke-width: 1.9;
+  color: var(--teinte, var(--ambre));
+}
+
+.badge--verrouille .icone {
+  color: var(--texte-faible);
+}

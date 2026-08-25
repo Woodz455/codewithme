@@ -8,6 +8,7 @@ import { h, remplir, compter } from './core/ui.js';
 import { t, texte } from './core/i18n.js';
 import * as store from './core/store.js';
 import * as bit from './mascotte.js';
+import { icone } from './icones.js';
 import { PARCOURS, leconsDuParcours, nombreLeconsTotal } from '../content/parcours.js';
 
 /* --------------------------------------------------------------- badges -- */
@@ -15,7 +16,7 @@ import { PARCOURS, leconsDuParcours, nombreLeconsTotal } from '../content/parcou
 export const BADGES = [
   {
     id: 'premier-programme',
-    icone: '🚀',
+    icone: 'fusee',
     couleur: 'var(--cyan)',
     nom: { fr: 'Premier programme', en: 'First program' },
     note: { fr: 'Tu as réussi ta toute première leçon.', en: 'You completed your very first lesson.' },
@@ -23,7 +24,7 @@ export const BADGES = [
   },
   {
     id: 'dix-lecons',
-    icone: '📚',
+    icone: 'livre',
     couleur: 'var(--violet)',
     nom: { fr: 'Dix leçons', en: 'Ten lessons' },
     note: { fr: 'Dix leçons terminées. Ça devient une habitude.', en: 'Ten lessons done. It is becoming a habit.' },
@@ -31,7 +32,7 @@ export const BADGES = [
   },
   {
     id: 'serie-7',
-    icone: '🔥',
+    icone: 'flamme',
     couleur: 'var(--ambre)',
     nom: { fr: 'Sept jours d’affilée', en: 'Seven days in a row' },
     note: { fr: 'Une semaine complète sans t’arrêter.', en: 'A full week without stopping.' },
@@ -39,7 +40,7 @@ export const BADGES = [
   },
   {
     id: 'premier-dessin',
-    icone: '🐢',
+    icone: 'tortue',
     couleur: 'var(--vert)',
     nom: { fr: 'Artiste', en: 'Artist' },
     note: { fr: 'Tu as fait dessiner la tortue.', en: 'You made the turtle draw.' },
@@ -47,7 +48,7 @@ export const BADGES = [
   },
   {
     id: 'premier-site',
-    icone: '🌐',
+    icone: 'globe',
     couleur: 'var(--html)',
     nom: { fr: 'Ta première page', en: 'Your first page' },
     note: { fr: 'Tu as construit une page web complète.', en: 'You built a complete web page.' },
@@ -55,7 +56,7 @@ export const BADGES = [
   },
   {
     id: 'styliste',
-    icone: '🎨',
+    icone: 'palette',
     couleur: 'var(--css)',
     nom: { fr: 'Styliste', en: 'Stylist' },
     note: { fr: 'Tu sais habiller une page en CSS.', en: 'You can style a page with CSS.' },
@@ -63,7 +64,7 @@ export const BADGES = [
   },
   {
     id: 'interactif',
-    icone: '⚡',
+    icone: 'eclair',
     couleur: 'var(--javascript)',
     nom: { fr: 'Ça bouge !', en: 'It moves!' },
     note: { fr: 'Tu as rendu une page interactive.', en: 'You made a page interactive.' },
@@ -71,7 +72,7 @@ export const BADGES = [
   },
   {
     id: 'compilateur',
-    icone: '⚙️',
+    icone: 'engrenage',
     couleur: 'var(--cpp)',
     nom: { fr: 'Machiniste', en: 'Machinist' },
     note: { fr: 'Tu programmes en C++.', en: 'You are programming in C++.' },
@@ -79,7 +80,7 @@ export const BADGES = [
   },
   {
     id: 'chasseur-de-bugs',
-    icone: '🐛',
+    icone: 'bug',
     couleur: 'var(--rose)',
     nom: { fr: 'Chasseur de bugs', en: 'Bug hunter' },
     note: {
@@ -91,7 +92,7 @@ export const BADGES = [
   },
   {
     id: 'autonome',
-    icone: '🧠',
+    icone: 'reflechir',
     couleur: 'var(--vert)',
     nom: { fr: 'En autonomie', en: 'On your own' },
     note: {
@@ -105,7 +106,7 @@ export const BADGES = [
   },
   {
     id: 'polyglotte',
-    icone: '🌍',
+    icone: 'terre',
     couleur: 'var(--violet)',
     nom: { fr: 'Polyglotte', en: 'Polyglot' },
     note: { fr: 'Tu as touché aux cinq langages.', en: 'You tried all five languages.' },
@@ -113,7 +114,7 @@ export const BADGES = [
   },
   {
     id: 'tout-termine',
-    icone: '👑',
+    icone: 'couronne',
     couleur: 'var(--ambre)',
     nom: { fr: 'Tout terminé', en: 'All done' },
     note: { fr: 'Les 85 leçons. Chapeau.', en: 'All 85 lessons. Hats off.' },
@@ -247,7 +248,11 @@ export function celebrer({ xpGagne = 0, nouveauNiveau = null, lecon = null } = {
             nouveauxBadges.map((badge) =>
               h(
                 'div.victoire__badge',
-                h('div.badge.badge--obtenu.badge--nouveau', { style: { '--teinte': badge.couleur } }, badge.icone),
+                h(
+                  'div.badge.badge--obtenu.badge--nouveau',
+                  { style: { '--teinte': badge.couleur } },
+                  icone(badge.icone)
+                ),
                 h('div.victoire__badgeNom', texte(badge.nom))
               )
             )

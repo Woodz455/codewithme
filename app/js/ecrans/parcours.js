@@ -6,6 +6,7 @@
  * tracer le chemin SVG exactement entre les centres des noeuds.
  */
 import { h, svg, anneau } from '../core/ui.js';
+import { icone, medaillonLogo } from '../icones.js';
 import { t, texte } from '../core/i18n.js';
 import * as store from '../core/store.js';
 import { naviguer } from '../core/routeur.js';
@@ -97,7 +98,10 @@ function noeudLecon({ fiche, x, y, cote }, parcours, estProchaine) {
       onclick: () => naviguer(`/lecon/${parcours.id}/${fiche.id}`),
       'aria-label': texte(fiche.titre),
     },
-    h('span.noeud__pastille', terminee ? '✓' : estProchaine ? '▶' : String(fiche.id.split('-').pop())),
+    h(
+      'span.noeud__pastille',
+      terminee ? icone('verifier') : estProchaine ? icone('executer') : String(fiche.id.split('-').pop())
+    ),
     h('span.noeud__titre', texte(fiche.titre))
   );
 }
@@ -167,7 +171,7 @@ export function ecranParcours(identifiant) {
       h(
         'div.carte-module',
         { style: { top: `${y}px` } },
-        h('span.carte-module__icone', module.icone),
+        h('span.carte-module__icone', icone(module.icone)),
         h('span.carte-module__titre', texte(module.titre))
       )
     ),
@@ -179,7 +183,7 @@ export function ecranParcours(identifiant) {
     h(
       'header.parcours-entete.carte',
       { style: { '--teinte': parcours.couleur } },
-      h('div.parcours-entete__icone', parcours.icone),
+      medaillonLogo(parcours.logo, { classe: 'medaillon--grand', titre: parcours.nom }),
       h(
         'div.parcours-entete__texte',
         h('h1', parcours.nom),

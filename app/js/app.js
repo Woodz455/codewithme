@@ -7,6 +7,7 @@ import { t, texte, langue, definirLangue, basculerLangue, surChangementLangue } 
 import * as store from './core/store.js';
 import { route, demarrer, naviguer, cheminActuel, rafraichir } from './core/routeur.js';
 import * as bit from './mascotte.js';
+import { icone, medaillonLogo, installerSprite } from './icones.js';
 import { PARCOURS } from '../content/parcours.js';
 import { ecranAccueil } from './ecrans/accueil.js';
 import { ecranParcours } from './ecrans/parcours.js';
@@ -15,18 +16,18 @@ import { ecranAtelier } from './ecrans/atelier.js';
 /* ------------------------------------------------------------------- rail -- */
 
 const ENTREES_RAIL = [
-  { route: '/accueil', cle: 'nav.accueil', icone: '🏠' },
-  { route: '/galerie', cle: 'nav.galerie', icone: '🖼️' },
-  { route: '/bac-a-sable', cle: 'nav.bacASable', icone: '🧪' },
-  { route: '/badges', cle: 'nav.badges', icone: '🏅' },
+  { route: '/accueil', cle: 'nav.accueil', icone: 'accueil' },
+  { route: '/galerie', cle: 'nav.galerie', icone: 'projets' },
+  { route: '/bac-a-sable', cle: 'nav.bacASable', icone: 'bacASable' },
+  { route: '/badges', cle: 'nav.badges', icone: 'badges' },
 ];
 
 const ENTREES_RAIL_BAS = [
-  { route: '/tuteur', cle: 'nav.tuteur', icone: '👨‍🏫' },
-  { route: '/reglages', cle: 'nav.reglages', icone: '⚙️' },
+  { route: '/tuteur', cle: 'nav.tuteur', icone: 'tuteur' },
+  { route: '/reglages', cle: 'nav.reglages', icone: 'reglages' },
 ];
 
-function lienRail({ route: cible, cle, icone, teinte, pastille }) {
+function lienRail({ route: cible, cle, icone: nomIcone, teinte, pastille }) {
   const actif = cheminActuel().startsWith(cible);
   return h(
     'a.rail__lien',
@@ -36,7 +37,7 @@ function lienRail({ route: cible, cle, icone, teinte, pastille }) {
       style: teinte ? { '--teinte': teinte } : null,
       onclick: () => bit.signalerActivite(),
     },
-    h('span.rail__icone', icone),
+    h('span.rail__icone', icone(nomIcone)),
     h('span', t(cle)),
     pastille ? h('span.rail__pastille', pastille) : null
   );
@@ -53,7 +54,7 @@ function lienParcours(parcours) {
       style: { '--teinte': parcours.couleur },
       onclick: () => bit.signalerActivite(),
     },
-    h('span.rail__icone', parcours.icone),
+    h('span.rail__icone', medaillonLogo(parcours.logo, { classe: 'medaillon--petit', titre: parcours.nom })),
     h('span', parcours.nom)
   );
 }
@@ -136,19 +137,11 @@ function construireBandeau({ anime = false } = {}) {
         ? h(
             'div.serie.infobulle',
             { 'data-infobulle': t('bandeau.serieTitre', { n: jours }) },
-            h('span.serie__flamme', '🔥'),
+            h('span.serie__flamme', icone('flamme')),
             h('span', t('bandeau.serie', { n: jours }))
           )
         : null,
-      h(
-        'button.bouton.bouton--fantome.bouton--petit.infobulle',
-        {
-          'data-infobulle': t('bandeau.langueTitre'),
-          onclick: () => changerLangue(),
-          id: 'boutonLangue',
-        },
-        langue() === 'fr' ? '🇬🇧 EN' : '🇫🇷 FR'
-      )
+      selecteurLangue()
     )
   );
 
@@ -159,6 +152,37 @@ function construireBandeau({ anime = false } = {}) {
 }
 
 /* ----------------------------------------------------------------- langue -- */
+
+/**
+ * Selecteur FR / EN.
+ *
+ * Surtout pas d'emoji drapeau : Windows ne les dessine pas et affiche a la
+ * place les deux lettres du code pays, ce qui donnerait un bouton bancal sur
+ * l'ordinateur ou l'application sera reellement utilisee.
+ */
+function selecteurLangue() {
+  const courante = langue();
+  const choix = (code, libelle) =>
+    h(
+      'button.langue__choix',
+      {
+        type: 'button',
+        'aria-pressed': String(courante === code),
+        id: code === 'fr' ? 'boutonLangueFr' : 'boutonLangue',
+        onclick: () => {
+          if (langue() !== code) changerLangue();
+        },
+      },
+      libelle
+    );
+
+  return h(
+    'div.langue',
+    { role: 'group', 'aria-label': t('bandeau.langueTitre') },
+    choix('fr', 'FR'),
+    choix('en', 'EN')
+  );
+}
 
 function changerLangue() {
   const nouvelle = basculerLangue();
@@ -203,6 +227,7 @@ function enregistrerRoutes() {
 async function demarrerApplication() {
   await store.charger();
 
+  installerSprite();
   definirLangue(store.etat().langue || 'fr');
   appliquerReglages();
 

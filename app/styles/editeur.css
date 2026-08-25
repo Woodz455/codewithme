@@ -962,3 +962,72 @@
     display: none;
   }
 }
+
+/* --- Icones dans la carte de parcours et l'atelier ------------------------ */
+
+.carte-module__icone {
+  display: inline-flex;
+  align-items: center;
+  color: var(--teinte, var(--texte-faible));
+}
+
+.carte-module__icone .icone {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+/* Sur un noeud, l'icone remplace le numero : elle doit occuper la meme place. */
+.noeud__pastille .icone {
+  width: 1.5rem;
+  height: 1.5rem;
+  stroke-width: 2.6;
+}
+
+.verdict__icone {
+  display: flex;
+  align-items: center;
+  line-height: 0;
+}
+
+.verdict[data-etat='reussi'] .verdict__icone {
+  color: var(--vert);
+}
+.verdict[data-etat='echec'] .verdict__icone {
+  color: var(--ambre);
+}
+.verdict[data-etat='deja'] .verdict__icone {
+  color: var(--texte-doux);
+}
+
+.indice__entete,
+.console__fin__ligne {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.console__fin__ligne {
+  display: inline-flex;
+}
+
+.entree-cpp__titre {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.lien-retour {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.lien-retour .icone {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.onglet .icone {
+  width: 1rem;
+  height: 1rem;
+}

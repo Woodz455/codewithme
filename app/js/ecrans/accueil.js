@@ -5,6 +5,7 @@
  * aujourd'hui, et ou j'en suis globalement.
  */
 import { h, anneau } from '../core/ui.js';
+import { icone, medaillonLogo } from '../icones.js';
 import { t, texte } from '../core/i18n.js';
 import * as store from '../core/store.js';
 import { naviguer } from '../core/routeur.js';
@@ -55,7 +56,7 @@ function carteReprise() {
     return h(
       'section.carte.reprise',
       { style: { '--teinte': 'var(--vert)' } },
-      h('div.reprise__haut', h('span.reprise__icone', '🏆'), h('span.etiquette', 'Bravo')),
+      h('div.reprise__haut', h('span.reprise__icone', icone('trophee', { taille: '2rem' })), h('span.etiquette', 'Bravo')),
       h('h2.reprise__titre', texte({ fr: 'Tu as tout terminé !', en: 'You finished everything!' })),
       h('p.reprise__lecon', texte({
         fr: 'Retourne dans le bac à sable pour créer ce que tu veux.',
@@ -80,7 +81,7 @@ function carteReprise() {
     { style: { '--teinte': parcours.couleur } },
     h(
       'div.reprise__haut',
-      h('span.reprise__icone', parcours.icone),
+      medaillonLogo(parcours.logo, { titre: parcours.nom }),
       h('span.etiquette', { style: { '--teinte': parcours.couleur } }, parcours.nom),
       cible.parcours === ORDRE_RECOMMANDE[0] && !dejaCommence
         ? h('span.etiquette.etiquette--neutre', t('accueil.recommande'))
@@ -93,7 +94,7 @@ function carteReprise() {
       h(
         'button.bouton.bouton--principal.bouton--grand',
         { onclick: () => naviguer(`/lecon/${cible.parcours}/${cible.fiche.id}`) },
-        '▶ ',
+        icone('executer'),
         dejaCommence ? t('accueil.continuer') : t('accueil.demarrer')
       ),
       anneau({
@@ -128,7 +129,7 @@ function carteSerie() {
   const { jours, record } = store.serie();
   return h(
     'section.carte.carte-serie',
-    h('div.carte-serie__flamme', jours > 0 ? '🔥' : '💤'),
+    h('div.carte-serie__flamme', icone(jours > 0 ? 'flamme' : 'temps', { taille: '2rem' })),
     h('div.carte-serie__nombre', String(jours)),
     h(
       'div.carte-serie__label',
@@ -194,21 +195,20 @@ function carteLangage(parcours) {
         }
       },
     },
+    // Logo et anneau sur la meme ligne, nom en dessous : sur une carte etroite,
+    // les tenir tous les trois cote a cote faisait deborder l'anneau.
     h(
       'div.langage__haut',
-      h(
-        'div',
-        h('div.langage__icone', parcours.icone),
-        h('div.langage__nom', parcours.nom)
-      ),
+      medaillonLogo(parcours.logo, { titre: parcours.nom }),
       anneau({
         valeur: avancement,
-        taille: 54,
-        epaisseur: 5,
+        taille: 46,
+        epaisseur: 4,
         couleur: parcours.couleurBrute,
-        centre: h('span', { style: { fontSize: '0.7rem' } }, `${Math.round(avancement * 100)}%`),
+        centre: h('span', { style: { fontSize: '0.66rem' } }, `${Math.round(avancement * 100)}%`),
       })
     ),
+    h('div.langage__nom', parcours.nom),
     h('p.langage__resume', texte(parcours.resume)),
     h(
       'div.langage__pied',
@@ -216,7 +216,7 @@ function carteLangage(parcours) {
       // A zero, le nombre de lecons dit deja tout : un « pas encore commencé »
       // passerait a la ligne et alourdirait la carte pour rien.
       avancement === 1
-        ? h('span', { style: { color: 'var(--teinte)' } }, `✓ ${t('parcours.termine')}`)
+        ? h('span', { style: { color: 'var(--teinte)' } }, t('parcours.termine'))
         : avancement > 0
           ? h('span', { style: { color: 'var(--teinte)' } }, `${faites}/${total}`)
           : null
@@ -236,8 +236,7 @@ export function ecranAccueil() {
       h(
         'h1.cockpit__salut',
         `${salutation()} `,
-        h('em', prenom || (document.documentElement.lang === 'en' ? 'coder' : 'codeur')),
-        ' 👋'
+        h('em', prenom || (document.documentElement.lang === 'en' ? 'coder' : 'codeur'))
       ),
       h(
         'p.cockpit__sousTitre',

@@ -929,3 +929,73 @@
   pointer-events: none;
   z-index: 1;
 }
+
+/* ==========================================================================
+   Ajustements lies au passage aux icones dessinees
+   ========================================================================== */
+
+/* Le medaillon du logo et le nom du langage, cote a cote. */
+.langage__haut {
+  align-items: center;
+}
+
+.langage__nom {
+  margin: 0;
+}
+
+/* Le resume garde une hauteur minimale pour que toutes les cartes de la
+   rangee s'alignent, quel que soit le nombre de lignes du texte. */
+.langage__resume {
+  min-height: 4.6em;
+}
+
+.reprise__icone .icone,
+.carte-serie__flamme .icone {
+  display: block;
+}
+
+.carte-serie__flamme {
+  color: var(--ambre);
+  font-size: inherit;
+  line-height: 0;
+}
+
+/* La flamme de la serie reprend le degrade chaud du bandeau. */
+.serie__flamme {
+  display: inline-flex;
+  color: #ffb85c;
+  font-size: inherit;
+}
+
+.serie__flamme .icone {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Les icones dans les boutons ne doivent jamais retrecir. */
+.bouton .icone {
+  width: 1.05em;
+  height: 1.05em;
+  margin-right: -1px;
+}
+
+.bouton--grand .icone {
+  width: 1.1em;
+  height: 1.1em;
+}
+
+.etiquette .icone {
+  width: 0.95em;
+  height: 0.95em;
+}
+
+.rail__icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rail__icone .icone {
+  width: 1.25rem;
+  height: 1.25rem;
+}

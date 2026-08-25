@@ -9,6 +9,7 @@ import { existsSync, mkdirSync, readdirSync, copyFileSync, writeFileSync, rmSync
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
+import { genererIcones } from './icones.mjs';
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const MODULES = join(ROOT, 'node_modules');
@@ -165,6 +166,9 @@ async function main() {
   await vendorJscpp();
   vendorCodemirror();
   vendorFonts();
+
+  const icones = genererIcones(MODULES, join(ROOT, 'app/js/icones-generees.js'));
+  log(`icones       ${icones.icones} icones + ${icones.logos} logos, ${humanSize(icones.octets)}`);
 
   let files = 0;
   let bytes = 0;

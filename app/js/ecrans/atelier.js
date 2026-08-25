@@ -18,6 +18,7 @@ import { MoteurWeb, pageAutonome } from '../runners/web.js';
 import { executerCpp, attendUneSaisie, detecterCompilateur, compilerAvecSysteme } from '../runners/cpp.js';
 import { corriger } from '../validateur.js';
 import * as bit from '../mascotte.js';
+import { icone } from '../icones.js';
 import { celebrer } from '../gamification.js';
 
 /** Parcours dont le resultat est une page web plutot qu'une console. */
@@ -45,7 +46,8 @@ export function ecranAtelier(identifiantParcours, identifiantLecon) {
           h(
             'button.bouton.bouton--fantome',
             { onclick: () => naviguer(`/parcours/${identifiantParcours}`) },
-            `← ${t('parcours.retour')}`
+            icone('retour'),
+            t('parcours.retour')
           )
         )
       )
@@ -152,24 +154,24 @@ function construireAtelier(situation, lecon) {
   function construireOnglets() {
     const definitions = estWeb
       ? [
-          ['apercu', t('atelier.apercu'), '🖥️'],
-          ['console', t('atelier.console'), '📟'],
+          ['apercu', t('atelier.apercu'), 'apercu'],
+          ['console', t('atelier.console'), 'console'],
         ]
       : lecon.langage === 'python'
         ? [
-            ['console', t('atelier.console'), '📟'],
-            ['dessin', t('atelier.dessin'), '🐢'],
+            ['console', t('atelier.console'), 'console'],
+            ['dessin', t('atelier.dessin'), 'dessin'],
           ]
-        : [['console', t('atelier.console'), '📟']];
+        : [['console', t('atelier.console'), 'console']];
 
     ongletsResultat.length = 0;
     const barre = h(
       'div.onglets',
-      definitions.map(([cle, libelle, icone]) => {
+      definitions.map(([cle, libelle, nomIcone]) => {
         const bouton = h(
           'button.onglet',
           { dataset: { onglet: cle }, onclick: () => definirOnglet(cle) },
-          h('span', icone),
+          icone(nomIcone),
           libelle
         );
         ongletsResultat.push(bouton);
@@ -194,7 +196,7 @@ function construireAtelier(situation, lecon) {
 
     remplir(
       zoneVerdict,
-      h('div.verdict__icone', reussi ? '✅' : '🤔'),
+      h('div.verdict__icone', icone(reussi ? 'reussi' : 'reflechir', { taille: '1.5rem' })),
       h(
         'div.verdict__texte',
         h('strong', reussi ? t('verif.reussi') : t('verif.presqueLa')),
@@ -209,7 +211,7 @@ function construireAtelier(situation, lecon) {
         : h(
             'div.verdict__actions',
             etat.indicesVus < (lecon.defi?.indices?.length || 0)
-              ? h('button.bouton.bouton--petit', { onclick: montrerIndice }, `💡 ${t('atelier.indice')}`)
+              ? h('button.bouton.bouton--petit', { onclick: montrerIndice }, icone('indice'), t('atelier.indice'))
               : null
           )
     );
@@ -221,13 +223,15 @@ function construireAtelier(situation, lecon) {
       return h(
         'button.bouton.bouton--succes',
         { onclick: () => naviguer(`/parcours/${parcours.id}`) },
-        `${t('parcours.retour')} →`
+        t('parcours.retour'),
+        icone('suivant')
       );
     }
     return h(
       'button.bouton.bouton--succes',
       { onclick: () => naviguer(`/lecon/${parcours.id}/${suivante.id}`) },
-      `${t('atelier.suivant')} →`
+      t('atelier.suivant'),
+      icone('suivant')
     );
   }
 
@@ -248,7 +252,10 @@ function construireAtelier(situation, lecon) {
     boutonExecuter.hidden = false;
     boutonArreter.hidden = true;
     etat.toile?.terminer();
-    messageConsole(arrete ? `⏹ ${t('atelier.arrete')}` : `✓ ${t('atelier.termine')}`, 'console__fin');
+    messageConsole(
+      h('span.console__fin__ligne', icone(arrete ? 'arreter' : 'reussi'), arrete ? t('atelier.arrete') : t('atelier.termine')),
+      'console__fin'
+    );
   }
 
   async function executer() {
@@ -355,7 +362,7 @@ function construireAtelier(situation, lecon) {
 
     const envoyer = () => {
       const valeur = champ.value;
-      ligne.replaceWith(h('div.console__saisie', `▸ ${valeur}`));
+      ligne.replaceWith(h('div.console__saisie', `> ${valeur}`));
       repondre(valeur);
     };
 
@@ -392,7 +399,9 @@ function construireAtelier(situation, lecon) {
 
     if (!resultat.ok) {
       ecrireConsole(`\n${resultat.erreur}\n`, 'erreur');
-      if (resultat.explication) messageConsole(`💡 ${resultat.explication}`, 'console__explication');
+      if (resultat.explication) {
+        messageConsole(h('span.console__fin__ligne', icone('indice'), resultat.explication), 'console__explication');
+      }
       bit.reagirErreur();
     }
     finExecution();
@@ -499,7 +508,7 @@ function construireAtelier(situation, lecon) {
     zoneIndices.append(
       h(
         'div.indice',
-        h('div.indice__entete', `💡 ${t('verif.indiceDe', { n: numero + 1, total: indices.length })}`),
+        h('div.indice__entete', icone('indice'), t('verif.indiceDe', { n: numero + 1, total: indices.length })),
         h('p', texte(indices[numero]))
       )
     );
@@ -517,7 +526,7 @@ function construireAtelier(situation, lecon) {
     zoneIndices.append(
       h(
         'div.indice.indice--solution',
-        h('div.indice__entete', `🔑 ${t('atelier.solution')}`),
+        h('div.indice__entete', icone('solution'), t('atelier.solution')),
         h('pre.indice__code', h('code', codeSolution)),
         h(
           'button.bouton.bouton--petit.bouton--fantome',
@@ -545,7 +554,11 @@ function construireAtelier(situation, lecon) {
   function majBoutonIndice() {
     const total = lecon.defi?.indices?.length || 0;
     const reste = total - etat.indicesVus;
-    remplir(boutonIndice, reste > 0 ? `💡 ${t('atelier.indice')} (${reste})` : `🔑 ${t('atelier.solution')}`);
+    remplir(
+      boutonIndice,
+      reste > 0 ? icone('indice') : icone('solution'),
+      reste > 0 ? `${t('atelier.indice')} (${reste})` : t('atelier.solution')
+    );
     boutonIndice.hidden = total === 0 && !lecon.defi?.solution;
   }
 
@@ -554,7 +567,8 @@ function construireAtelier(situation, lecon) {
   const boutonExecuter = h(
     'button.bouton.bouton--principal',
     { onclick: executer },
-    `▶ ${t('atelier.executer')}`
+    icone('executer'),
+    t('atelier.executer')
   );
   const boutonArreter = h(
     'button.bouton',
@@ -565,12 +579,14 @@ function construireAtelier(situation, lecon) {
         else finExecution({ arrete: true });
       },
     },
-    `⏹ ${t('atelier.arreter')}`
+    icone('arreter'),
+    t('atelier.arreter')
   );
   const boutonVerifier = h(
     'button.bouton.bouton--succes',
     { onclick: verifier },
-    `✓ ${t('atelier.verifier')}`
+    icone('verifier'),
+    t('atelier.verifier')
   );
   const boutonReinitialiser = h(
     'button.bouton.bouton--fantome.bouton--petit.infobulle',
@@ -583,7 +599,7 @@ function construireAtelier(situation, lecon) {
         enregistrerBrouillon();
       },
     },
-    '↺'
+    icone('reinitialiser')
   );
 
   /* -------------------------- entree standard pour les programmes C++ ----- */
@@ -615,10 +631,11 @@ function construireAtelier(situation, lecon) {
       'div.entree-cpp',
       h(
         'label.entree-cpp__titre',
-        `⌨️ ${texte({
+        icone('clavier'),
+        texte({
           fr: 'Ce que tu taperas au clavier',
           en: 'What you will type on the keyboard',
-        })}`
+        })
       ),
       zoneEntreeCpp
     );
@@ -656,7 +673,8 @@ function construireAtelier(situation, lecon) {
       h(
         'button.lien-retour',
         { onclick: () => naviguer(`/parcours/${parcours.id}`) },
-        `← ${texte(parcours.nom)}`
+        icone('retour'),
+        texte(parcours.nom)
       ),
       h('span.surtitre', texte(situation.module.titre))
     ),
@@ -677,13 +695,18 @@ function construireAtelier(situation, lecon) {
                 executer();
               },
             },
-            texte({ fr: '▶ Essayer cet exemple', en: '▶ Try this example' })
+            icone('executer'),
+            texte({ fr: 'Essayer cet exemple', en: 'Try this example' })
           )
         )
       : null,
     h(
       'section.defi',
-      h('div.defi__entete', h('span.etiquette', `🎯 ${t('atelier.defi')}`), h('span.defi__xp', `+${lecon.xp ?? 20} XP`)),
+      h(
+        'div.defi__entete',
+        h('span.etiquette', icone('defi'), t('atelier.defi')),
+        h('span.defi__xp', `+${lecon.xp ?? 20} XP`)
+      ),
       h('div.lecon-texte', { html: texte(lecon.defi?.consigne) })
     ),
     zoneIndices
@@ -823,7 +846,7 @@ function construireAtelier(situation, lecon) {
     zoneVerdict.dataset.etat = 'deja';
     remplir(
       zoneVerdict,
-      h('div.verdict__icone', '⭐'),
+      h('div.verdict__icone', icone('trophee', { taille: '1.5rem' })),
       h(
         'div.verdict__texte',
         h('strong', texte({ fr: 'Leçon déjà réussie', en: 'Lesson already completed' })),
