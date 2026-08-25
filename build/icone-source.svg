@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="fond" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#141A2E"/>
+      <stop offset="100%" stop-color="#0B0E1A"/>
+    </linearGradient>
+    <linearGradient id="trait" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00E5FF"/>
+      <stop offset="100%" stop-color="#B14BFF"/>
+    </linearGradient>
+    <linearGradient id="bord" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00E5FF" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#B14BFF" stop-opacity="0.75"/>
+    </linearGradient>
+    <filter id="lueur" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="14" result="flou"/>
+      <feMerge><feMergeNode in="flou"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect x="26" y="26" width="460" height="460" rx="108" fill="url(#fond)"/>
+  <rect x="26" y="26" width="460" height="460" rx="108" fill="none" stroke="url(#bord)" stroke-width="8"/>
+
+  <g filter="url(#lueur)" fill="none" stroke="url(#trait)" stroke-width="34"
+     stroke-linecap="round" stroke-linejoin="round">
+    <path d="M186 166 L100 256 L186 346"/>
+    <path d="M326 166 L412 256 L326 346"/>
+    <path d="M290 126 L222 386"/>
+  </g>
+</svg>

@@ -1,0 +1,42 @@
+name: Controles
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  controles:
+    name: Tests, contenu et empaquetage
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Installer les dependances
+        run: npm ci
+
+      - name: Installer Chromium pour Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Installer Xvfb
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+
+      # L'application s'execute reellement pendant ces controles : c'est ce
+      # qui les rend utiles. Une lecon dont la solution ne passe pas, ou une
+      # couleur illisible, sont attrapees ici.
+      - name: Controler le contenu des 86 lecons
+        run: npm run check:content
+
+      - name: Tests de l application
+        run: npm test
+
+      # Le dernier filet : l'application EMPAQUETEE se lance et fonctionne.
+      # C'est ici qu'on decouvre qu'un fichier manque dans le paquet.
+      - name: Verifier l application empaquetee
+        run: npm run test:paquet

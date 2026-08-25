@@ -32,7 +32,9 @@ const DICTIONNAIRE = {
   'accueil.commencer': { fr: 'Commence ton aventure', en: 'Start your adventure' },
   'accueil.continuer': { fr: 'Continuer', en: 'Continue' },
   'accueil.demarrer': { fr: 'Démarrer', en: 'Start' },
-  'accueil.tesLangages': { fr: 'Tes langages', en: 'Your languages' },
+  // Le grand projet final figure dans cette grille : il n'est pas un langage,
+  // l'intitule couvre donc les six parcours sans mentir sur aucun.
+  'accueil.tesLangages': { fr: 'Tes parcours', en: 'Your tracks' },
   'accueil.defiDuJour': { fr: 'Défi du jour', en: 'Daily challenge' },
   'accueil.releverLeDefi': { fr: 'Relever le défi', en: 'Take the challenge' },
   'accueil.progression': { fr: 'Ta progression', en: 'Your progress' },
@@ -66,7 +68,6 @@ const DICTIONNAIRE = {
   'atelier.objectif': { fr: 'Objectif', en: 'Goal' },
   'atelier.tonResultat': { fr: 'Ton résultat', en: 'Your result' },
   'atelier.plierObjectif': { fr: 'Replier l’objectif', en: 'Collapse the goal' },
-  'certificat.obtenir': { fr: 'Mon certificat', en: 'My certificate' },
   'atelier.bureau': { fr: 'Largeur ordinateur', en: 'Desktop width' },
   'atelier.mobile': { fr: 'Largeur téléphone', en: 'Phone width' },
   'atelier.defi': { fr: 'Défi', en: 'Challenge' },
@@ -84,6 +85,9 @@ const DICTIONNAIRE = {
   'atelier.termine': { fr: 'Programme terminé', en: 'Program finished' },
   'atelier.arrete': { fr: 'Programme arrêté', en: 'Program stopped' },
   'atelier.enCours': { fr: 'Exécution…', en: 'Running…' },
+
+  /* --- Certificat ----------------------------------------------------- */
+  'certificat.obtenir': { fr: 'Mon certificat', en: 'My certificate' },
 
   /* --- Verification --------------------------------------------------- */
   'verif.reussi': { fr: 'Bravo, c’est réussi !', en: 'Well done, you did it!' },
@@ -138,7 +142,7 @@ const DICTIONNAIRE = {
   },
   'tuteur.aucunBlocage': { fr: 'Rien à signaler pour l’instant.', en: 'Nothing to report yet.' },
   'tuteur.exporter': { fr: 'Exporter le bilan', en: 'Export the report' },
-  'tuteur.parLangage': { fr: 'Progression par langage', en: 'Progress by language' },
+  'tuteur.parLangage': { fr: 'Progression par parcours', en: 'Progress by track' },
 
   /* --- Reglages ------------------------------------------------------- */
   'reglages.titre': { fr: 'Réglages', en: 'Settings' },

@@ -1,0 +1,105 @@
+name: Construire l'application Windows
+
+# Deux facons de declencher :
+#   - a la main, depuis l'onglet Actions ;
+#   - en poussant une etiquette de version (v1.0.0), ce qui publie en plus
+#     une Release avec les fichiers a telecharger.
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    name: Installateur et version portable
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      # `npm ci` installe aussi les dependances de developpement, dont
+      # electron-builder et les paquets qui servent a fabriquer vendor/.
+      - name: Installer les dependances
+        run: npm ci
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+
+      # vendor/ est commite, mais on le regenere pour garantir qu'il
+      # correspond bien aux sources : un vendor/ perime passerait inapercu.
+      - name: Regenerer les bibliotheques embarquees
+        run: npm run vendor
+
+      - name: Verifier que vendor/ etait a jour
+        shell: bash
+        run: |
+          if [ -n "$(git status --porcelain vendor app/js/icones-generees.js)" ]; then
+            echo "vendor/ ou les icones generees ne correspondent pas aux sources :"
+            git status --porcelain vendor app/js/icones-generees.js
+            echo "Lancer 'npm run vendor' puis commiter le resultat."
+            exit 1
+          fi
+
+      - name: Controler l iconographie et les couleurs
+        run: |
+          npm run check:icones
+          npm run check:contrast
+
+      - name: Construire l installateur et la version portable
+        run: npm run build:win
+
+      # On verifie que les deux fichiers existent VRAIMENT, plutot que de se
+      # fier au code de retour d'electron-builder.
+      - name: Verifier les fichiers produits
+        shell: bash
+        run: |
+          ls -la dist/
+          installateur=$(ls dist/*Setup*.exe dist/*nsis*.exe 2>/dev/null | head -1)
+          portable=$(ls dist/*portable*.exe 2>/dev/null | head -1)
+          if [ -z "$installateur" ]; then echo "Installateur introuvable"; exit 1; fi
+          if [ -z "$portable" ]; then echo "Version portable introuvable"; exit 1; fi
+          echo "Installateur : $installateur ($(stat -c%s "$installateur") octets)"
+          echo "Portable     : $portable ($(stat -c%s "$portable") octets)"
+
+      - name: Deposer les fichiers en artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CodeWithMe-Windows
+          path: |
+            dist/*.exe
+            dist/*.blockmap
+          retention-days: 30
+
+      - name: Publier la Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.exe
+            dist/*.blockmap
+          body: |
+            ## CodeWithMe — apprendre a coder
+
+            Deux facons de l'installer :
+
+            - **CodeWithMe-Setup.exe** — l'installateur. Il cree un raccourci sur
+              le bureau et dans le menu Demarrer. Aucun mot de passe administrateur
+              n'est demande.
+            - **CodeWithMe-portable.exe** — aucune installation. A garder sur une
+              cle USB, ou a utiliser sur un ordinateur ou l'installation est bloquee.
+
+            ### « Windows a protege votre ordinateur »
+
+            Cet ecran bleu apparait parce que l'application n'est pas signee par un
+            certificat commercial. Ce n'est pas un avertissement de virus.
+
+            Cliquer sur **Informations complementaires**, puis sur
+            **Executer quand meme**. Cela ne sera demande qu'une fois.
