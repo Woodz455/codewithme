@@ -59,9 +59,9 @@ Elles sont **vérifiées automatiquement** par `npm run check:content` :
 | `tortueFermee` | la figure revient à son point de départ |
 | `tortueCouleurs` | au moins N couleurs différentes |
 
-`dom` et `style` acceptent deux actions préalables, qui agissent sur la page **avant** de
-l'interroger : `clic: '#bouton'` clique, `touche: 'ArrowRight'` (ou un tableau de touches)
-appuie au clavier. C'est ce qui permet de corriger « que se passe-t-il quand on clique »
+`dom`, `style` et `canvasDessine` acceptent deux actions préalables, qui agissent sur la page
+**avant** de l'interroger : `clic: '#bouton'` clique, `touche: 'ArrowRight'` (ou un tableau de
+touches) appuie au clavier. C'est ce qui permet de corriger « que se passe-t-il quand on clique »
 autrement qu'en cherchant `addEventListener` dans le texte du code — un contrôle qui
 laisserait passer un gestionnaire vide.
 

@@ -1951,6 +1951,17 @@ if (y + rayon > hauteur || y - rayon < 0) {
             en: 'The game is played on the keyboard: you need a <code>keydown</code> listener on <code>document</code>.',
           },
         },
+        // Le jeu doit encore repondre APRES que le joueur a appuye sur une
+        // touche : un gestionnaire qui planterait laisserait un canvas fige.
+        {
+          type: 'canvasDessine',
+          selecteur: '#toile',
+          touche: ['ArrowRight', 'ArrowLeft'],
+          message: {
+            fr: 'Après un appui sur les flèches, le jeu doit continuer à dessiner. Vérifie que ton gestionnaire de touches ne plante pas.',
+            en: 'After pressing the arrow keys, the game must keep drawing. Check that your key handler is not crashing.',
+          },
+        },
         {
           type: 'codeContient',
           motif: 'setInterval',
