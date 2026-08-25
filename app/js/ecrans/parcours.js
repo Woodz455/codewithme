@@ -11,6 +11,7 @@ import { t, texte } from '../core/i18n.js';
 import * as store from '../core/store.js';
 import { naviguer } from '../core/routeur.js';
 import { parcoursParId, leconsDuParcours } from '../../content/parcours.js';
+import { parcoursAcheve, enregistrerCertificat } from '../certificat.js';
 
 /* Geometrie de la carte, en pixels. */
 const LARGEUR = 880;
@@ -19,6 +20,43 @@ const AMPLITUDE = 380;
 const TAILLE_NOEUD = 68;
 const MARGE_HAUT = 54;
 const HAUTEUR_ENTETE_MODULE = 68;
+
+/**
+ * Bouton de certificat, affiche uniquement quand le parcours est acheve.
+ * Il dit ce qui se passe, et ou : un enregistrement silencieux laisserait
+ * l'eleve chercher son fichier.
+ */
+function boutonCertificat(parcours) {
+  const message = h('span.certificat__message', { hidden: true });
+
+  const bouton = h(
+    'button.bouton.bouton--petit.certificat__bouton',
+    {
+      onclick: async () => {
+        bouton.disabled = true;
+        try {
+          const resultat = await enregistrerCertificat(parcours);
+          if (!resultat.annule) {
+            message.hidden = false;
+            message.textContent = texte({
+              fr: `Certificat enregistré : ${resultat.chemin}`,
+              en: `Certificate saved: ${resultat.chemin}`,
+            });
+          }
+        } catch (erreur) {
+          message.hidden = false;
+          message.textContent = String(erreur?.message || erreur);
+        } finally {
+          bouton.disabled = false;
+        }
+      },
+    },
+    icone('trophee'),
+    t('certificat.obtenir')
+  );
+
+  return h('div.certificat', bouton, message);
+}
 
 /** Decalage horizontal d'un noeud : une sinusoide donne un chemin naturel. */
 function decalage(index) {
@@ -208,7 +246,10 @@ export function ecranParcours(identifiant) {
             h('div', { style: { fontSize: '1.1rem' } }, `${faites}`),
             h('div', { style: { fontSize: '0.62rem', color: 'var(--texte-faible)' } }, `/ ${toutes.length}`)
           ),
-        })
+        }),
+        // Le certificat n'apparait qu'une fois le parcours reellement acheve :
+        // un bouton grise en permanence n'est pas une recompense.
+        parcoursAcheve(parcours.id) ? boutonCertificat(parcours) : null
       )
     ),
     h('div.carte-hote', plan)

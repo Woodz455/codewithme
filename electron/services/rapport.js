@@ -11,7 +11,8 @@ const fsp = require('node:fs/promises');
 
 /**
  * @param {BrowserWindow} fenetre
- * @param {{html: string, format?: 'html'|'pdf', nomSuggere?: string}} donnees
+ * @param {{html: string, format?: 'html'|'pdf', nomSuggere?: string,
+ *          paysage?: boolean, titre?: string}} donnees
  */
 async function exporter(fenetre, donnees) {
   const format = donnees?.format === 'pdf' ? 'pdf' : 'html';
@@ -23,7 +24,7 @@ async function exporter(fenetre, donnees) {
   const defaut = donnees.nomSuggere || `codewithme-bilan-${date}.${format}`;
 
   const { canceled, filePath } = await dialog.showSaveDialog(fenetre, {
-    title: 'Exporter le bilan / Export the report',
+    title: donnees.titre || 'Exporter le bilan / Export the report',
     defaultPath: defaut,
     filters:
       format === 'pdf'
@@ -47,7 +48,12 @@ async function exporter(fenetre, donnees) {
     const pdf = await rendu.webContents.printToPDF({
       printBackground: true,
       pageSize: 'A4',
-      margins: { marginType: 'custom', top: 0.4, bottom: 0.4, left: 0.4, right: 0.4 },
+      // Un certificat se lit en paysage, et sans marges : son cadre decoratif
+      // va jusqu'au bord de la feuille.
+      landscape: Boolean(donnees.paysage),
+      margins: donnees.paysage
+        ? { marginType: 'custom', top: 0, bottom: 0, left: 0, right: 0 }
+        : { marginType: 'custom', top: 0.4, bottom: 0.4, left: 0.4, right: 0.4 },
     });
     await fsp.writeFile(filePath, pdf);
     return { annule: false, chemin: filePath };

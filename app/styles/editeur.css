@@ -55,6 +55,38 @@
   flex-shrink: 0;
   position: relative;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--e3);
+}
+
+/* --- Certificat de fin de parcours --------------------------------------- */
+
+.certificat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.certificat__bouton {
+  border-color: var(--teinte, var(--cyan));
+  color: var(--texte);
+  background: color-mix(in srgb, var(--teinte, var(--cyan)) 16%, transparent);
+}
+
+.certificat__bouton:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--teinte, var(--cyan)) 26%, transparent);
+}
+
+.certificat__message {
+  max-width: 220px;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: var(--texte-faible);
+  text-align: center;
+  word-break: break-word;
 }
 
 /* ------------------------------------------------------- Carte du parcours -- */
