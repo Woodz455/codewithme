@@ -1,14 +1,16 @@
 /**
  * Registre des lecons.
  *
- * Rassemble le contenu des cinq parcours. Chaque fichier `lecons-*.js` exporte
- * un objet dont les cles sont les identifiants declares dans `parcours.js`.
+ * Rassemble le contenu des cinq parcours et du grand projet final. Chaque
+ * fichier `lecons-*.js` exporte un objet dont les cles sont les identifiants
+ * declares dans `parcours.js`.
  */
 import { LECONS_PYTHON } from './lecons-python.js';
 import { LECONS_HTML } from './lecons-html.js';
 import { LECONS_CSS } from './lecons-css.js';
 import { LECONS_JAVASCRIPT } from './lecons-javascript.js';
 import { LECONS_CPP } from './lecons-cpp.js';
+import { LECONS_PROJET } from './lecons-projet.js';
 
 export const LECONS = {
   ...LECONS_PYTHON,
@@ -16,6 +18,7 @@ export const LECONS = {
   ...LECONS_CSS,
   ...LECONS_JAVASCRIPT,
   ...LECONS_CPP,
+  ...LECONS_PROJET,
 };
 
 /** @returns {object|null} le contenu d'une lecon, ou null si elle n'est pas encore ecrite. */

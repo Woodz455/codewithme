@@ -82,9 +82,11 @@ if (!existsSync(join(RACINE, 'app/js/icones-generees.js'))) {
 for (const dossier of DOSSIERS) parcourir(join(RACINE, dossier));
 
 // Les logos declares dans les donnees de parcours doivent exister eux aussi.
+// Un parcours peut porter une icone d'interface a la place d'un logo officiel :
+// le grand projet final combine trois langages et n'a donc pas de logo propre.
 const parcours = readFileSync(join(RACINE, 'app/content/parcours.js'), 'utf8');
 for (const correspondance of parcours.matchAll(/logo:\s*'([a-zA-Z+]+)'/g)) {
-  if (!(correspondance[1] in LOGOS)) {
+  if (!(correspondance[1] in LOGOS) && !(correspondance[1] in ICONES)) {
     problemes.push(`app/content/parcours.js — logo inconnu : « ${correspondance[1]} »`);
   }
 }

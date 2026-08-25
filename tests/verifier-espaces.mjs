@@ -109,6 +109,7 @@ verifier(
 
 await aller('#/bac-a-sable/python', '.bac');
 await page.waitForSelector('.CodeMirror', { timeout: 15000 });
+// Le grand projet final n'est pas un langage : il n'a pas de bac a sable.
 verifier('le bac a sable propose les 5 langages', (await page.$$eval('.bac__langage', (e) => e.length)) === 5);
 
 await page.evaluate(() => {
@@ -154,9 +155,10 @@ verifier(
 
 await aller('#/tuteur', '.ecran-tuteur');
 verifier('le tableau de bord tuteur s affiche', (await page.$$eval('.tuteur-vignette', (e) => e.length)) === 4);
+// Six lignes : les cinq langages, plus le grand projet final.
 verifier(
-  'la progression par langage liste les 5 parcours',
-  (await page.$$eval('.barre-ligne', (e) => e.length)) === 5
+  'la progression liste les 5 parcours et le projet final',
+  (await page.$$eval('.barre-ligne', (e) => e.length)) === 6
 );
 verifier('le calendrier de regularite est dessine', (await page.$$eval('.calendrier__case', (e) => e.length)) > 60);
 

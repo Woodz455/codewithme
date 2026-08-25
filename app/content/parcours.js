@@ -333,13 +333,48 @@ export const PARCOURS = [
       },
     ],
   },
+
+  /* ================================================ GRAND PROJET ========== */
+  {
+    id: 'projet',
+    nom: 'Grand projet',
+    couleur: 'var(--vert)',
+    couleurBrute: '#3DFFA8',
+    // Ce parcours ne porte pas de logo de langage : il en combine trois.
+    logo: 'globe',
+    ordre: 6,
+    // Il n'est pas un langage : le bac a sable, qui propose un editeur libre
+    // par langage, ne doit donc pas le proposer.
+    transversal: true,
+    resume: {
+      fr: 'Le final : ton site personnel, où HTML, CSS et JavaScript tiennent ensemble.',
+      en: 'The finale: your personal site, where HTML, CSS and JavaScript come together.',
+    },
+    aboutissement: {
+      fr: 'Un vrai fichier que tu peux envoyer, montrer, ou rendre en classe.',
+      en: 'A real file you can send, show, or hand in at school.',
+    },
+    modules: [
+      {
+        id: 'projet-1',
+        titre: { fr: 'Ton site personnel', en: 'Your personal site' },
+        icone: 'trophee',
+        lecons: [L('projet-1-1', 'Ton site personnel', 'Your personal site')],
+      },
+    ],
+  },
 ];
 
 /** Ordre recommande, mis en avant sans jamais rien verrouiller. */
-export const ORDRE_RECOMMANDE = ['python', 'html', 'css', 'javascript', 'cpp'];
+export const ORDRE_RECOMMANDE = ['python', 'html', 'css', 'javascript', 'cpp', 'projet'];
 
 export function parcoursParId(identifiant) {
   return PARCOURS.find((parcours) => parcours.id === identifiant) || null;
+}
+
+/** Les parcours qui enseignent un langage — le grand projet final n'en est pas un. */
+export function parcoursDeLangage() {
+  return PARCOURS.filter((parcours) => !parcours.transversal);
 }
 
 export function moduleParId(identifiant) {

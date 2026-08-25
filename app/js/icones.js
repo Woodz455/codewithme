@@ -75,6 +75,10 @@ export function icone(nom, options = {}) {
  */
 export function logo(langage, options = {}) {
   if (!NOMS_LOGOS.includes(langage)) {
+    // Le grand projet final n'est pas un langage : il en combine trois, et
+    // n'a donc pas de logo officiel. Une icone d'interface fait alors office
+    // d'embleme, sans que ce soit une anomalie.
+    if (NOMS_ICONES.includes(langage)) return referencer(`i-${langage}`, 'icone', options);
     console.warn(`[icones] logo inconnu : ${langage}`);
     return referencer('i-code', 'icone', options);
   }

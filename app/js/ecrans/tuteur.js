@@ -27,6 +27,7 @@ const COULEURS_BARRES = {
   css: '#3573C4',
   javascript: '#AD8A12',
   cpp: '#8E36D2',
+  projet: '#12A05F',
 };
 
 /** Rampe sequentielle du calendrier : une seule teinte, du sombre au clair. */

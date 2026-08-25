@@ -10,7 +10,7 @@ import { t, texte } from '../core/i18n.js';
 import * as store from '../core/store.js';
 import { naviguer } from '../core/routeur.js';
 import { icone, medaillonLogo } from '../icones.js';
-import { PARCOURS, parcoursParId } from '../../content/parcours.js';
+import { parcoursDeLangage, parcoursParId } from '../../content/parcours.js';
 import { Editeur } from '../editeur.js';
 import { moteurPython } from '../runners/python.js';
 import { ToileTortue } from '../runners/tortue-canvas.js';
@@ -70,7 +70,9 @@ int main() {
 const EST_WEB = new Set(['html', 'css', 'javascript']);
 
 export function ecranBacASable(langageDemande) {
-  const langage = parcoursParId(langageDemande) ? langageDemande : 'python';
+  // Seuls les parcours de langage ont un bac a sable : le grand projet final
+  // n'est pas un langage, une URL qui le viserait retombe sur Python.
+  const langage = DEPART[langageDemande] && parcoursParId(langageDemande) ? langageDemande : 'python';
   const parcours = parcoursParId(langage);
   const estWeb = EST_WEB.has(langage);
 
@@ -340,7 +342,7 @@ export function ecranBacASable(langageDemande) {
       ),
       h(
         'div.bac__langages',
-        PARCOURS.map((element) =>
+        parcoursDeLangage().map((element) =>
           h(
             'button.bac__langage',
             {
