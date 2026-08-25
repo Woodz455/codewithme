@@ -53,6 +53,12 @@ Elles sont **vérifiées automatiquement** par `npm run check:content` :
 | `codeContient` | le code contient ce motif (imposer une boucle `for`…) |
 | `codeNeContientPas` | le code évite ce motif (interdire une réponse écrite en dur) |
 | `dom` | la page contient tel élément, en tel nombre, avec tel texte |
+
+Pour `dom` avec `quoi: 'nombre'`, deux formes selon ce que dit la consigne :
+`attendu: 3` exige **exactement** trois éléments, `min: 3` en exige **au moins** trois.
+Une consigne qui dit « au moins » et une vérification qui exige un compte exact rendent
+l'exercice infaisable dès que l'élève en fait un peu plus — piège déjà rencontré deux fois.
+
 | `style` | telle propriété CSS vaut réellement telle valeur |
 | `tortueTraits` | la tortue a tracé entre N et M traits |
 | `tortueFermee` | la figure revient à son point de départ |

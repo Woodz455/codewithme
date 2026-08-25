@@ -40,6 +40,20 @@ function citer(valeur) {
  * @param {{code:string, sortie:string, dessin:Array, moteurWeb:object|null}} contexte
  * @returns {Promise<{ok:boolean, message?:string}>}
  */
+/**
+ * Compile une expression reguliere de lecon.
+ * Une regex fautive ne doit jamais faire tomber la correction : mieux vaut
+ * signaler la regle en cause que de laisser l'eleve devant un ecran casse.
+ */
+function expressionDe(regle) {
+  try {
+    return new RegExp(regle.motif, regle.options ?? 'm');
+  } catch (erreur) {
+    console.error(`[validateur] motif invalide dans une lecon : ${regle.motif}`, erreur);
+    return null;
+  }
+}
+
 async function verifierUneRegle(regle, contexte) {
   const messagePersonnalise = regle.message ? texte(regle.message) : null;
   const echec = (parDefaut) => ({ ok: false, message: messagePersonnalise || parDefaut });
@@ -70,7 +84,8 @@ async function verifierUneRegle(regle, contexte) {
     }
 
     case 'sortieMotif': {
-      const expression = new RegExp(regle.motif, regle.options || '');
+      const expression = expressionDe({ ...regle, options: regle.options ?? '' });
+      if (!expression) return echec('Cette vérification est mal écrite dans la leçon.');
       if (expression.test(normaliser(contexte.sortie))) return { ok: true };
       return echec('Ce que ton programme affiche ne correspond pas encore à ce qui est demandé.');
     }
@@ -86,13 +101,15 @@ async function verifierUneRegle(regle, contexte) {
     /* --- inspection du code lui-meme ------------------------------------ */
 
     case 'codeContient': {
-      const expression = new RegExp(regle.motif, regle.options ?? 'm');
+      const expression = expressionDe(regle);
+      if (!expression) return echec('Cette vérification est mal écrite dans la leçon.');
       if (expression.test(contexte.code)) return { ok: true };
       return echec('Ton code n’utilise pas encore ce qui est demandé dans la consigne.');
     }
 
     case 'codeNeContientPas': {
-      const expression = new RegExp(regle.motif, regle.options ?? 'm');
+      const expression = expressionDe(regle);
+      if (!expression) return echec('Cette vérification est mal écrite dans la leçon.');
       if (!expression.test(contexte.code)) return { ok: true };
       return echec('Il y a dans ton code quelque chose que la consigne demande d’éviter.');
     }
@@ -116,6 +133,15 @@ async function verifierUneRegle(regle, contexte) {
       }
 
       if (regle.quoi === 'nombre') {
+        // `min` exprime « au moins N », `attendu` exprime « exactement N ».
+        // Les deux existent parce que les consignes disent parfois l'un,
+        // parfois l'autre — et une verification doit coller a sa consigne.
+        if (regle.min !== undefined) {
+          if (resultat >= regle.min) return { ok: true };
+          return echec(
+            `Ta page contient ${resultat} fois « ${regle.selecteur} », il en faut au moins ${regle.min}.`
+          );
+        }
         if (resultat === regle.attendu) return { ok: true };
         return echec(`Ta page contient ${resultat} fois « ${regle.selecteur} », on en attendait ${regle.attendu}.`);
       }

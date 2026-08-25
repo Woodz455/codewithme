@@ -171,8 +171,15 @@
         function repondreQuestions(identifiant, questions) {
           var resultats = questions.map(function (question) {
             try {
+              // On interroge UNIQUEMENT le code de l'eleve. Sans cela, une
+              // question comme « combien de div ? » compterait aussi les deux
+              // div internes de l'inspecteur, et la lecon serait infaisable.
+              // `body` et `html` restent cherches sur le document entier :
+              // certaines lecons portent sur eux.
+              var racine = document.getElementById('cwm-racine');
+              var portee = /^(body|html)\b/i.test(question.selecteur.trim()) || !racine ? document : racine;
               var elements = Array.prototype.slice.call(
-                document.querySelectorAll(question.selecteur)
+                portee.querySelectorAll(question.selecteur)
               );
               switch (question.quoi) {
                 case 'nombre':
