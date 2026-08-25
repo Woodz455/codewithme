@@ -1,0 +1,339 @@
+#!/usr/bin/env node
+/**
+ * Verifie les trois ajouts au panneau d'apercu :
+ *   - la question `canvasDessine`, qui distingue un canevas vierge d'un
+ *     canevas reellement dessine ;
+ *   - la bascule Bureau / Mobile, qui contraint la largeur de l'iframe ;
+ *   - le mode « Objectif / Ton resultat », qui affiche deux rendus distincts.
+ *
+ * Ces trois briques existent pour rendre des lecons verifiables ou visibles.
+ * Un test qui se contenterait de constater la presence d'un bouton ne prouverait
+ * rien : on mesure donc la largeur reelle et on lit les pixels reels.
+ */
+import { _electron as electron } from 'playwright';
+import os from 'node:os';
+import { join } from 'node:path';
+
+const cas = [];
+const echecs = [];
+
+function verifier(nom, condition, detail = '') {
+  cas.push(nom);
+  if (condition) process.stdout.write(`  ok   ${nom}\n`);
+  else {
+    echecs.push(nom);
+    process.stdout.write(`  ECHEC ${nom}${detail ? ` — ${detail}` : ''}\n`);
+  }
+}
+
+const application = await electron.launch({
+  args: [process.cwd(), '--no-sandbox', `--user-data-dir=${join(os.tmpdir(), `cwm-apercu-${Date.now()}`)}`],
+  env: { ...process.env, CWM_DOSSIER_PROJETS: join(os.tmpdir(), `cwm-apercu-projets-${Date.now()}`) },
+});
+const page = await application.firstWindow();
+await page.waitForSelector('#application:not([hidden])', { timeout: 25000 });
+await page.waitForTimeout(1200);
+
+/* ==================================================== 1. canvasDessine ==== */
+
+process.stdout.write('\nVerification du dessin sur canvas\n\n');
+
+await page.evaluate(async () => {
+  const { MoteurWeb } = await import('app://app/js/runners/web.js');
+  const cadre = document.createElement('iframe');
+  cadre.style.cssText = 'position:fixed;left:-9999px;width:600px;height:400px';
+  document.body.appendChild(cadre);
+  const moteur = new MoteurWeb(cadre);
+  await moteur.charger();
+  window.__apercu = { moteur };
+});
+
+const rendreEtDemander = (donnees, questions) =>
+  page.evaluate(
+    async ([d, q]) => {
+      await window.__apercu.moteur.rendre(d);
+      await new Promise((r) => setTimeout(r, 450));
+      return window.__apercu.moteur.interroger(q);
+    },
+    [donnees, questions]
+  );
+
+const [canevasVierge] = await rendreEtDemander(
+  { html: '<canvas id="jeu" width="200" height="150"></canvas>', css: '', js: '' },
+  [{ selecteur: 'canvas', quoi: 'canvasDessine' }]
+);
+verifier('un canevas vierge est reconnu comme vide', canevasVierge === false, String(canevasVierge));
+
+const [canevasDessine] = await rendreEtDemander(
+  {
+    html: '<canvas id="jeu" width="200" height="150"></canvas>',
+    css: '',
+    js: `
+      const c = document.getElementById("jeu").getContext("2d");
+      c.fillStyle = "tomato";
+      c.fillRect(20, 20, 60, 40);
+    `,
+  },
+  [{ selecteur: 'canvas', quoi: 'canvasDessine' }]
+);
+verifier('un canevas dessine est reconnu', canevasDessine === true, String(canevasDessine));
+
+// Un trait clair sur fond transparent doit compter autant qu'un aplat vif :
+// c'est le canal alpha qui fait foi, pas la luminosite.
+const [traitPale] = await rendreEtDemander(
+  {
+    html: '<canvas id="jeu" width="200" height="150"></canvas>',
+    css: '',
+    js: `
+      const c = document.getElementById("jeu").getContext("2d");
+      c.strokeStyle = "#fafafa";
+      c.beginPath();
+      c.moveTo(10, 10);
+      c.lineTo(180, 120);
+      c.stroke();
+    `,
+  },
+  [{ selecteur: 'canvas', quoi: 'canvasDessine' }]
+);
+verifier('un trait tres clair compte comme un dessin', traitPale === true, String(traitPale));
+
+// Et la regle du validateur, pas seulement la question posee a l'iframe.
+const verdicts = await page.evaluate(async () => {
+  const { corriger } = await import('app://app/js/validateur.js');
+  const moteurWeb = window.__apercu.moteur;
+  const regles = [{ type: 'canvasDessine', selecteur: 'canvas' }];
+
+  await moteurWeb.rendre({ html: '<canvas width="120" height="90"></canvas>', css: '', js: '' });
+  await new Promise((r) => setTimeout(r, 400));
+  const vide = await corriger(regles, { code: '', sortie: '', dessin: [], moteurWeb });
+
+  await moteurWeb.rendre({
+    html: '<canvas width="120" height="90"></canvas>',
+    css: '',
+    js: 'const c = document.querySelector("canvas").getContext("2d"); c.fillRect(5, 5, 30, 30);',
+  });
+  await new Promise((r) => setTimeout(r, 400));
+  const plein = await corriger(regles, { code: '', sortie: '', dessin: [], moteurWeb });
+
+  return { vide, plein };
+});
+
+verifier('le correcteur refuse un canevas vide', verdicts.vide.reussi === false, JSON.stringify(verdicts.vide));
+verifier(
+  'le refus explique que rien n a ete dessine',
+  /vide|dessin/i.test(verdicts.vide.message ?? ''),
+  JSON.stringify(verdicts.vide.message)
+);
+verifier('le correcteur accepte un canevas dessine', verdicts.plein.reussi === true, JSON.stringify(verdicts.plein));
+
+/* ================================== 1 bis. clic et clavier simules ======== */
+
+process.stdout.write('\nCorrection d une page qui reagit\n\n');
+
+const reactions = await page.evaluate(async () => {
+  const { corriger } = await import('app://app/js/validateur.js');
+  const moteurWeb = window.__apercu.moteur;
+
+  await moteurWeb.rendre({
+    html: '<button id="b">Go</button><p id="sortie">rien</p>',
+    css: '',
+    js: `
+      document.getElementById("b").addEventListener("click", function () {
+        document.getElementById("sortie").textContent = "clique";
+      });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowRight") {
+          document.getElementById("sortie").textContent = "droite";
+        }
+      });
+    `,
+  });
+  await new Promise((r) => setTimeout(r, 500));
+
+  const contexte = { code: '', sortie: '', dessin: [], moteurWeb };
+  const avant = await corriger(
+    [{ type: 'dom', selecteur: '#sortie', quoi: 'texte', attendu: 'rien', exact: true }],
+    contexte
+  );
+  const apresClic = await corriger(
+    [{ type: 'dom', clic: '#b', selecteur: '#sortie', quoi: 'texte', attendu: 'clique', exact: true }],
+    contexte
+  );
+  const apresTouche = await corriger(
+    [
+      {
+        type: 'dom',
+        touche: 'ArrowRight',
+        selecteur: '#sortie',
+        quoi: 'texte',
+        attendu: 'droite',
+        exact: true,
+      },
+    ],
+    contexte
+  );
+  // Une touche que le code ignore ne doit rien changer : sans quoi la regle
+  // « les autres touches ne font rien » serait invalidable.
+  const toucheIgnoree = await corriger(
+    [
+      {
+        type: 'dom',
+        touche: 'ArrowUp',
+        selecteur: '#sortie',
+        quoi: 'texte',
+        attendu: 'droite',
+        exact: true,
+      },
+    ],
+    contexte
+  );
+
+  return { avant, apresClic, apresTouche, toucheIgnoree };
+});
+
+verifier('la page est lue telle quelle avant toute action', reactions.avant.reussi, JSON.stringify(reactions.avant));
+verifier('un clic simule declenche le gestionnaire', reactions.apresClic.reussi, JSON.stringify(reactions.apresClic));
+verifier('une touche simulee declenche le gestionnaire', reactions.apresTouche.reussi, JSON.stringify(reactions.apresTouche));
+verifier(
+  'une touche ignoree par le code ne change rien',
+  reactions.toucheIgnoree.reussi,
+  JSON.stringify(reactions.toucheIgnoree)
+);
+
+/* =============================================== 2. bascule de largeur ==== */
+
+process.stdout.write('\nBascule Bureau / Mobile\n\n');
+
+await page.evaluate(() => {
+  window.location.hash = '#/lecon/html/html-1-1';
+});
+await page.waitForSelector('.panneau--apercu', { timeout: 15000 });
+await page.waitForTimeout(900);
+
+const largeurBureau = await page.evaluate(() => {
+  const panneau = document.querySelector('.panneau--apercu');
+  return { etat: panneau.dataset.largeur, largeur: panneau.querySelector('.apercu').getBoundingClientRect().width };
+});
+verifier('l apercu demarre en largeur ordinateur', largeurBureau.etat === 'bureau', JSON.stringify(largeurBureau));
+
+await page.click('.largeur[data-largeur="mobile"]');
+await page.waitForTimeout(400);
+
+const largeurMobile = await page.evaluate(() => {
+  const panneau = document.querySelector('.panneau--apercu');
+  return { etat: panneau.dataset.largeur, largeur: panneau.querySelector('.apercu').getBoundingClientRect().width };
+});
+
+verifier('le bouton Mobile change l etat du panneau', largeurMobile.etat === 'mobile', JSON.stringify(largeurMobile));
+verifier(
+  'l iframe est reellement retrecie',
+  largeurMobile.largeur < largeurBureau.largeur - 40 && largeurMobile.largeur <= 380,
+  `bureau ${Math.round(largeurBureau.largeur)}px, mobile ${Math.round(largeurMobile.largeur)}px`
+);
+
+// Le point clef : sous 380 px, un @media mobile s'applique enfin — alors qu'a
+// la largeur du panneau (~490 px) il ne s'appliquerait jamais.
+const pointDeRupture = await page.evaluate(async () => {
+  const moteur = window.__apercu.moteur;
+  const cadre = moteur.iframe;
+  const mesurer = async (largeurPx) => {
+    cadre.style.width = `${largeurPx}px`;
+    await moteur.rendre({
+      html: '<p class="titre">Salut</p>',
+      css: '.titre { font-size: 40px; } @media (max-width: 480px) { .titre { font-size: 14px; } }',
+      js: '',
+    });
+    await new Promise((r) => setTimeout(r, 400));
+    const [valeurs] = await moteur.interroger([{ selecteur: '.titre', quoi: 'style', nom: 'font-size' }]);
+    return valeurs?.[0];
+  };
+  return { large: await mesurer(800), etroit: await mesurer(380) };
+});
+
+verifier(
+  'un @media reagit vraiment a la largeur de l iframe',
+  pointDeRupture.large === '40px' && pointDeRupture.etroit === '14px',
+  JSON.stringify(pointDeRupture)
+);
+
+/* ======================================= 3. Objectif / Ton resultat ======= */
+
+process.stdout.write('\nMode Objectif / Ton resultat\n\n');
+
+// css-2-4 fournit un `defi.objectif` : la lecon « ombres et degrades ».
+await page.evaluate(() => {
+  window.location.hash = '#/lecon/css/css-2-4';
+});
+await page.waitForSelector('.compare', { timeout: 15000 });
+await page.waitForTimeout(1500);
+
+const structure = await page.evaluate(() => {
+  const titres = [...document.querySelectorAll('.compare__titre')].map((e) => e.textContent.trim());
+  return { cadres: document.querySelectorAll('.compare iframe.apercu').length, titres };
+});
+verifier('deux cadres sont affiches', structure.cadres === 2, JSON.stringify(structure));
+verifier(
+  'chaque moitie est etiquetee',
+  structure.titres.length === 2 && /objectif/i.test(structure.titres[0]),
+  JSON.stringify(structure.titres)
+);
+
+// Le point qui compte : la reference montre le resultat FINI, alors que
+// l'eleve part d'une page sans degrade. Les deux rendus doivent differer.
+const rendus = await page.evaluate(async () => {
+  const lire = (cadre) =>
+    new Promise((resoudre) => {
+      const identifiant = `sonde-${Math.random()}`;
+      const surReponse = (evenement) => {
+        if (evenement.data?.source === 'cwm-apercu' && evenement.data?.id === identifiant) {
+          window.removeEventListener('message', surReponse);
+          resoudre(evenement.data.resultats?.[0]?.[0] ?? null);
+        }
+      };
+      window.addEventListener('message', surReponse);
+      cadre.contentWindow.postMessage(
+        {
+          source: 'cwm-atelier',
+          type: 'interroger',
+          id: identifiant,
+          questions: [{ selecteur: '.tuile', quoi: 'style', nom: 'background-image' }],
+        },
+        '*'
+      );
+      setTimeout(() => resoudre(null), 2500);
+    });
+
+  const cadres = [...document.querySelectorAll('.compare iframe.apercu')];
+  return { reference: await lire(cadres[0]), eleve: await lire(cadres[1]) };
+});
+
+verifier(
+  'la reference affiche bien le resultat a atteindre',
+  /linear-gradient/.test(rendus.reference ?? ''),
+  JSON.stringify(rendus.reference)
+);
+verifier(
+  'le resultat de l eleve en part different',
+  !/linear-gradient/.test(rendus.eleve ?? ''),
+  JSON.stringify(rendus.eleve)
+);
+
+await page.click('.compare__plier');
+await page.waitForTimeout(300);
+const replie = await page.evaluate(() => {
+  const grille = document.querySelector('.compare');
+  return {
+    etat: grille.dataset.plie,
+    objectifVisible: !grille.querySelector('.compare__moitie--objectif').hidden,
+  };
+});
+verifier(
+  'la reference se replie pour laisser la place',
+  replie.etat === 'oui' && replie.objectifVisible === false,
+  JSON.stringify(replie)
+);
+
+await application.close();
+
+process.stdout.write(`\n  ${cas.length - echecs.length}/${cas.length} verifications passees\n\n`);
+if (echecs.length) process.exit(1);

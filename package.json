@@ -1,0 +1,95 @@
+{
+  "name": "codewithme",
+  "version": "1.0.0",
+  "description": "CodeWithMe — apprends a coder en Python, HTML, CSS, JavaScript et C++ / Learn to code in Python, HTML, CSS, JavaScript and C++",
+  "author": "CodeWithMe",
+  "license": "MIT",
+  "private": true,
+  "main": "electron/main.js",
+  "scripts": {
+    "vendor": "node tools/vendor.mjs",
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "check:content": "xvfb-run -a node tools/check-content.mjs",
+    "check:contrast": "node tools/check-contrast.mjs",
+    "test": "npm run check:icones && npm run check:contrast && npm run test:python && npm run test:moteurs && npm run test:apercu && npm run test:atelier && npm run test:espaces && npm run test:projet && npm run test:certificat",
+    "test:python": "xvfb-run -a node tests/verifier-python.mjs",
+    "test:moteurs": "xvfb-run -a node tests/verifier-moteurs-web-cpp.mjs",
+    "test:atelier": "xvfb-run -a node tests/verifier-atelier.mjs",
+    "captures": "xvfb-run -a node tests/capture.mjs && xvfb-run -a node tests/capture-atelier.mjs",
+    "build:win": "electron-builder --win --publish never",
+    "check:icones": "node tools/check-icones.mjs",
+    "test:espaces": "xvfb-run -a node tests/verifier-espaces.mjs",
+    "test:apercu": "xvfb-run -a node tests/verifier-apercu.mjs",
+    "test:projet": "xvfb-run -a node tests/verifier-projet-final.mjs",
+    "test:certificat": "xvfb-run -a node tests/verifier-certificat.mjs",
+    "test:paquet": "xvfb-run -a node tests/verifier-paquet.mjs",
+    "captures:readme": "xvfb-run -a node tools/captures-readme.mjs"
+  },
+  "devDependencies": {
+    "@fontsource/inter": "5.3.0",
+    "@fontsource/jetbrains-mono": "5.3.0",
+    "@fontsource/space-grotesk": "5.3.0",
+    "@playwright/test": "1.62.1",
+    "codemirror": "5.65.21",
+    "devicon": "^2.17.0",
+    "electron": "44.0.0",
+    "electron-builder": "26.15.3",
+    "esbuild": "^0.28.2",
+    "JSCPP": "2.0.9",
+    "lucide-static": "^1.34.0",
+    "playwright": "^1.62.1",
+    "pyodide": "314.0.5"
+  },
+  "build": {
+    "appId": "com.codewithme.app",
+    "productName": "CodeWithMe",
+    "copyright": "CodeWithMe",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "electron/**/*",
+      "app/**/*",
+      "python/**/*",
+      "vendor/**/*",
+      "package.json",
+      "!**/*.map"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png",
+      "artifactName": "CodeWithMe-${version}-${arch}-${target}.${ext}"
+    },
+    "nsis": {
+      "perMachine": false,
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "CodeWithMe",
+      "installerLanguages": [
+        "fr_FR",
+        "en_US"
+      ],
+      "language": "1036"
+    },
+    "portable": {
+      "artifactName": "CodeWithMe-${version}-portable.${ext}"
+    }
+  }
+}

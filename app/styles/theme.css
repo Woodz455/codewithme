@@ -1,0 +1,282 @@
+/* ==========================================================================
+   CodeWithMe — Neon Arcade
+   Jetons de design : couleurs, typographie, rythme, lumiere, mouvement.
+   ========================================================================== */
+
+@import url('app://vendor/fonts/fonts.css');
+
+:root {
+  /* --- Fonds, du plus profond au plus eleve --------------------------- */
+  --fond-profond: #0b0e1a;
+  --fond-1: #10152a;
+  --fond-2: #161d38;
+  --fond-3: #1e2748;
+  --fond-4: #273159;
+
+  /* --- Texte ---------------------------------------------------------- */
+  --texte: #eef1ff;
+  --texte-doux: #a9b3d4;
+  --texte-faible: #7d88ad;
+
+  /* --- Accents neon --------------------------------------------------- */
+  --cyan: #00e5ff;
+  --violet: #b14bff;
+  --rose: #ff3d8b;
+  --vert: #3dffa8;
+  --ambre: #ffb020;
+  --rouge: #ff5d6e;
+
+  /* --- Couleur propre a chaque langage -------------------------------- */
+  --python: #00e5ff;
+  --html: #ff8a4c;
+  --css: #5aa9ff;
+  --javascript: #ffd93d;
+  --cpp: #b14bff;
+
+  /* --- Traits et separations ------------------------------------------ */
+  --trait: rgb(255 255 255 / 8%);
+  --trait-fort: rgb(255 255 255 / 14%);
+
+  /* --- Rythme (echelle de 4px) ---------------------------------------- */
+  --e1: 4px;
+  --e2: 8px;
+  --e3: 12px;
+  --e4: 16px;
+  --e5: 24px;
+  --e6: 32px;
+  --e7: 48px;
+  --e8: 64px;
+
+  /* --- Rayons --------------------------------------------------------- */
+  --r-s: 8px;
+  --r-m: 14px;
+  --r-l: 20px;
+  --r-xl: 28px;
+  --r-rond: 999px;
+
+  /* --- Typographie ---------------------------------------------------- */
+  --titre: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
+  --corps: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
+
+  /* --- Lumiere : la profondeur vient des lueurs, pas des ombres noires - */
+  --ombre-douce: 0 2px 8px rgb(0 0 0 / 30%);
+  --ombre-carte: 0 8px 32px rgb(0 0 0 / 40%);
+  --ombre-flottante: 0 20px 60px rgb(0 0 0 / 55%);
+
+  /* --- Mouvement ------------------------------------------------------ */
+  --temps-court: 140ms;
+  --temps-moyen: 240ms;
+  --temps-long: 420ms;
+  --courbe: cubic-bezier(0.32, 0.72, 0.24, 1);
+  --rebond: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* --- Gabarit -------------------------------------------------------- */
+  --rail: 248px;
+  --bandeau: 60px;
+
+  color-scheme: dark;
+}
+
+/* Reglage « animations reduites » de l'application, et respect du reglage
+   equivalent du systeme : les deux coupent tout mouvement non essentiel. */
+:root[data-animations='reduites'],
+:root[data-animations='reduites'] * {
+  animation-duration: 1ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 1ms !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Taille de police ajustable depuis les reglages. */
+:root[data-police='grande'] {
+  font-size: 18px;
+}
+:root[data-police='tres-grande'] {
+  font-size: 20px;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Toute regle `display` d'un composant l'emporterait sur la regle par defaut
+   du navigateur pour [hidden]. Sans cette ligne, masquer un element avec
+   `hidden` n'a aucun effet — piege discret et couteux. */
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--fond-profond);
+  color: var(--texte);
+  font-family: var(--corps);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden; /* les zones defilent individuellement */
+}
+
+/* --- Le decor : aurores lentes + grille d'arcade ------------------------
+   Deux halos colores derivent tres lentement derriere l'interface, et une
+   grille fine s'estompe vers les bords. C'est ce qui donne la profondeur
+   « arcade » sans nuire a la lisibilite du code. */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::before {
+  background:
+    radial-gradient(60rem 40rem at 12% -8%, rgb(0 229 255 / 14%), transparent 60%),
+    radial-gradient(52rem 38rem at 96% 8%, rgb(177 75 255 / 14%), transparent 62%),
+    radial-gradient(48rem 40rem at 60% 108%, rgb(255 61 139 / 9%), transparent 60%);
+  animation: derive 34s ease-in-out infinite alternate;
+}
+
+body::after {
+  background-image:
+    linear-gradient(var(--trait) 1px, transparent 1px),
+    linear-gradient(90deg, var(--trait) 1px, transparent 1px);
+  background-size: 46px 46px;
+  opacity: 0.5;
+  mask-image: radial-gradient(75rem 60rem at 50% 30%, #000 20%, transparent 78%);
+}
+
+@keyframes derive {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(-2.5%, 1.5%, 0) scale(1.06);
+  }
+}
+
+/* ==========================================================================
+   Typographie
+   ========================================================================== */
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--titre);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0;
+  line-height: 1.15;
+}
+
+h1 {
+  font-size: clamp(1.75rem, 2.4vw, 2.35rem);
+}
+h2 {
+  font-size: 1.35rem;
+}
+h3 {
+  font-size: 1.05rem;
+}
+
+p {
+  margin: 0 0 var(--e3);
+}
+
+code,
+kbd,
+pre {
+  font-family: var(--mono);
+  font-feature-settings: 'liga' 1, 'calt' 1;
+}
+
+a {
+  color: var(--cyan);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Surtitre en petites capitales, utilise pour nommer les sections. */
+.surtitre {
+  font-family: var(--titre);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--texte-faible);
+}
+
+/* ==========================================================================
+   Accessibilite
+   ========================================================================== */
+
+:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+  border-radius: var(--r-s);
+}
+
+/* Visible uniquement pour les lecteurs d'ecran. */
+.lecteur-ecran {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   Barres de defilement
+   ========================================================================== */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(255 255 255 / 10%);
+  border: 2px solid transparent;
+  background-clip: content-box;
+  border-radius: var(--r-rond);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(255 255 255 / 20%);
+  background-clip: content-box;
+}
+
+::selection {
+  background: rgb(0 229 255 / 28%);
+  color: #fff;
+}
