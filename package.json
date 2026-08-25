@@ -1,0 +1,33 @@
+{
+  "name": "codewithme",
+  "version": "1.0.0",
+  "description": "CodeWithMe — apprends a coder en Python, HTML, CSS, JavaScript et C++ / Learn to code in Python, HTML, CSS, JavaScript and C++",
+  "author": "CodeWithMe",
+  "license": "MIT",
+  "private": true,
+  "main": "electron/main.js",
+  "scripts": {
+    "vendor": "node tools/vendor.mjs",
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "check:content": "node tools/check-content.mjs",
+    "check:contrast": "node tools/check-contrast.mjs",
+    "test": "playwright test",
+    "build:win": "electron-builder --win --publish never"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.1",
+    "electron": "44.0.0",
+    "electron-builder": "26.15.3",
+    "esbuild": "^0.28.2",
+    "playwright": "^1.62.1"
+  },
+  "dependencies": {
+    "@fontsource/inter": "5.3.0",
+    "@fontsource/jetbrains-mono": "5.3.0",
+    "@fontsource/space-grotesk": "5.3.0",
+    "codemirror": "5.65.21",
+    "JSCPP": "2.0.9",
+    "pyodide": "314.0.5"
+  }
+}

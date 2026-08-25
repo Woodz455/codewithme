@@ -1,0 +1,243 @@
+/* ==========================================================================
+   CodeWithMe — Carte de parcours, atelier et editeur
+   ========================================================================== */
+
+/* ------------------------------------------------------- Entete parcours -- */
+
+.ecran-parcours {
+  max-width: 1120px;
+}
+
+.parcours-entete {
+  display: flex;
+  align-items: center;
+  gap: var(--e5);
+  margin-bottom: var(--e6);
+  position: relative;
+  overflow: hidden;
+}
+
+.parcours-entete::after {
+  content: '';
+  position: absolute;
+  right: -60px;
+  top: -100px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--teinte) 22%, transparent), transparent 68%);
+  pointer-events: none;
+}
+
+.parcours-entete__icone {
+  font-size: 3rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.parcours-entete__texte {
+  flex: 1;
+  min-width: 0;
+}
+
+.parcours-entete__texte h1 {
+  color: var(--teinte);
+  margin-bottom: var(--e2);
+}
+
+.parcours-entete__but {
+  margin: var(--e3) 0 0;
+  font-size: 0.88rem;
+  color: var(--texte-doux);
+}
+
+.parcours-entete__anneau {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* ------------------------------------------------------- Carte du parcours -- */
+
+.carte-hote {
+  display: flex;
+  justify-content: center;
+  padding-bottom: var(--e7);
+}
+
+.carte-plan {
+  position: relative;
+}
+
+.carte-chemin {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.carte-chemin__avancement {
+  stroke-dasharray: 4000;
+  stroke-dashoffset: 4000;
+  animation: tracer-chemin 1.6s var(--courbe) 200ms forwards;
+}
+
+@keyframes tracer-chemin {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* --- Entete de module sur la carte -------------------------------------- */
+
+.carte-module {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e2);
+  pointer-events: none;
+}
+
+.carte-module::before,
+.carte-module::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--trait-fort));
+}
+.carte-module::after {
+  background: linear-gradient(90deg, var(--trait-fort), transparent);
+}
+
+.carte-module__icone {
+  font-size: 1.1rem;
+}
+
+.carte-module__titre {
+  font-family: var(--titre);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--texte-faible);
+  white-space: nowrap;
+}
+
+/* --- Noeud de lecon ------------------------------------------------------ */
+
+.noeud {
+  position: absolute;
+  width: 68px;
+  height: 68px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  z-index: 2;
+}
+
+.noeud__pastille {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-family: var(--titre);
+  font-size: 1.15rem;
+  font-weight: 700;
+  background: var(--fond-2);
+  border: 2px solid var(--trait-fort);
+  color: var(--texte-faible);
+  transition:
+    transform var(--temps-moyen) var(--rebond),
+    box-shadow var(--temps-moyen) var(--courbe),
+    background var(--temps-moyen) var(--courbe);
+}
+
+/* Le titre se pose a cote du noeud, du cote ou il y a de la place : la carte
+   reste lisible d'un coup d'oeil sans survoler chaque etape. */
+.noeud__titre {
+  position: absolute;
+  top: 50%;
+  width: 210px;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+  line-height: 1.3;
+  color: var(--texte-doux);
+  pointer-events: none;
+  transition: color var(--temps-court);
+}
+
+.noeud[data-cote='droite'] .noeud__titre {
+  left: calc(100% + 12px);
+  text-align: left;
+}
+
+.noeud[data-cote='gauche'] .noeud__titre {
+  right: calc(100% + 12px);
+  text-align: right;
+}
+
+.noeud:hover .noeud__pastille,
+.noeud:focus-visible .noeud__pastille {
+  transform: scale(1.12);
+}
+
+.noeud:hover .noeud__titre,
+.noeud:focus-visible .noeud__titre {
+  color: var(--texte);
+}
+
+/* Etat : terminee */
+.noeud[data-etat='terminee'] .noeud__pastille {
+  background: linear-gradient(150deg, color-mix(in srgb, var(--teinte) 85%, #fff), var(--teinte));
+  border-color: transparent;
+  color: #06121c;
+  box-shadow: 0 6px 22px color-mix(in srgb, var(--teinte) 45%, transparent);
+}
+
+/* Etat : prochaine a faire — elle pulse pour appeler au clic. */
+.noeud[data-etat='suivante'] .noeud__pastille {
+  background: var(--fond-3);
+  border-color: var(--teinte);
+  color: var(--teinte);
+  animation: noeud-appelle 2.2s ease-in-out infinite;
+}
+
+@keyframes noeud-appelle {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--teinte) 45%, transparent);
+  }
+  60% {
+    box-shadow: 0 0 0 14px transparent;
+  }
+}
+
+/* Ne pas toucher au `transform` ici : il porte le centrage vertical du titre
+   (translateY(-50%)) et l'ecraser replacerait le texte par-dessus le noeud. */
+.noeud[data-etat='suivante'] .noeud__titre {
+  color: var(--texte);
+  font-weight: 600;
+}
+
+/* Etat : commencee mais pas finie */
+.noeud[data-etat='commencee'] .noeud__pastille {
+  border-color: color-mix(in srgb, var(--teinte) 55%, transparent);
+  color: var(--texte);
+}
+
+/* Etat : pas encore atteinte — visible et cliquable (rien n'est verrouille),
+   simplement plus discrete. */
+.noeud[data-etat='a-faire'] .noeud__pastille {
+  opacity: 0.72;
+}
+
+.noeud[data-etat='a-faire']:hover .noeud__pastille {
+  opacity: 1;
+  border-color: color-mix(in srgb, var(--teinte) 45%, transparent);
+}

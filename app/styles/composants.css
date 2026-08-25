@@ -1,0 +1,386 @@
+/* ==========================================================================
+   CodeWithMe — Composants
+   ========================================================================== */
+
+/* --------------------------------------------------------------- Cartes --
+   Verre depoli + liseré en degrade. Le liseré est dessine par un pseudo-
+   element masque : c'est la seule facon d'avoir une bordure degradee qui
+   suive un rayon arrondi. */
+
+.carte {
+  position: relative;
+  background: linear-gradient(165deg, rgb(255 255 255 / 5%), rgb(255 255 255 / 1.5%));
+  backdrop-filter: blur(14px);
+  border-radius: var(--r-l);
+  box-shadow: var(--ombre-carte);
+  padding: var(--e5);
+  isolation: isolate;
+}
+
+.carte::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(150deg, rgb(255 255 255 / 22%), rgb(255 255 255 / 4%) 42%, transparent 70%);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Carte teintee par la couleur d'un langage : le liseré et la lueur prennent
+   la teinte passee dans --teinte. */
+.carte[style*='--teinte']::before {
+  background: linear-gradient(150deg, color-mix(in srgb, var(--teinte) 55%, transparent), rgb(255 255 255 / 5%) 45%, transparent 72%);
+}
+
+.carte--cliquable {
+  cursor: pointer;
+  transition:
+    transform var(--temps-moyen) var(--courbe),
+    box-shadow var(--temps-moyen) var(--courbe);
+}
+
+.carte--cliquable:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    var(--ombre-flottante),
+    0 0 0 1px color-mix(in srgb, var(--teinte, var(--cyan)) 30%, transparent),
+    0 12px 40px color-mix(in srgb, var(--teinte, var(--cyan)) 22%, transparent);
+}
+
+.carte--cliquable:active {
+  transform: translateY(-1px);
+}
+
+/* -------------------------------------------------------------- Boutons -- */
+
+.bouton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e2);
+  padding: var(--e3) var(--e5);
+  border: 1px solid var(--trait-fort);
+  border-radius: var(--r-rond);
+  background: rgb(255 255 255 / 6%);
+  color: var(--texte);
+  font-family: var(--titre);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    transform var(--temps-court) var(--courbe),
+    background var(--temps-court) var(--courbe),
+    box-shadow var(--temps-court) var(--courbe);
+}
+
+.bouton:hover {
+  background: rgb(255 255 255 / 11%);
+  transform: translateY(-1px);
+}
+.bouton:active {
+  transform: translateY(0) scale(0.985);
+}
+.bouton[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Bouton principal : degrade cyan -> violet, avec lueur portee.
+   Le trait clair en `inset` simule un rebord eclaire par le dessus. */
+.bouton--principal {
+  background: linear-gradient(135deg, var(--cyan), var(--violet));
+  border-color: transparent;
+  color: #06121c;
+  font-weight: 700;
+  box-shadow:
+    0 6px 24px rgb(0 229 255 / 28%),
+    inset 0 1px 0 rgb(255 255 255 / 45%);
+}
+.bouton--principal:hover {
+  background: linear-gradient(135deg, #35ecff, #c169ff);
+  box-shadow:
+    0 10px 34px rgb(0 229 255 / 42%),
+    inset 0 1px 0 rgb(255 255 255 / 55%);
+}
+
+.bouton--succes {
+  background: linear-gradient(135deg, var(--vert), #16c98b);
+  border-color: transparent;
+  color: #04231a;
+  font-weight: 700;
+  box-shadow: 0 6px 24px rgb(61 255 168 / 26%), inset 0 1px 0 rgb(255 255 255 / 40%);
+}
+
+.bouton--fantome {
+  background: transparent;
+  border-color: var(--trait);
+  color: var(--texte-doux);
+}
+.bouton--fantome:hover {
+  color: var(--texte);
+  border-color: var(--trait-fort);
+}
+
+.bouton--grand {
+  padding: var(--e4) var(--e6);
+  font-size: 1rem;
+}
+.bouton--petit {
+  padding: 6px var(--e3);
+  font-size: 0.8rem;
+}
+
+.bouton--icone {
+  padding: var(--e2);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-m);
+}
+
+/* Le bouton « Executer » respire tant que le code n'a pas ete lance : c'est
+   l'appel a l'action central de tout l'atelier. */
+.bouton--pulse {
+  animation: pulse-lueur 2.4s ease-in-out infinite;
+}
+
+@keyframes pulse-lueur {
+  0%,
+  100% {
+    box-shadow: 0 6px 24px rgb(0 229 255 / 28%), inset 0 1px 0 rgb(255 255 255 / 45%);
+  }
+  50% {
+    box-shadow: 0 8px 34px rgb(0 229 255 / 52%), inset 0 1px 0 rgb(255 255 255 / 55%);
+  }
+}
+
+/* ------------------------------------------------------------- Etiquettes -- */
+
+.etiquette {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: var(--r-rond);
+  background: color-mix(in srgb, var(--teinte, var(--cyan)) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--teinte, var(--cyan)) 34%, transparent);
+  color: var(--teinte, var(--cyan));
+  font-family: var(--titre);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.etiquette--neutre {
+  background: rgb(255 255 255 / 7%);
+  border-color: var(--trait);
+  color: var(--texte-doux);
+}
+
+/* ----------------------------------------------------------- Barre d'XP --
+   Une bande de remplissage degradee, parcourue par un reflet qui balaye la
+   partie deja gagnee. */
+
+.barre-xp {
+  position: relative;
+  height: 10px;
+  border-radius: var(--r-rond);
+  background: rgb(255 255 255 / 8%);
+  overflow: hidden;
+}
+
+.barre-xp__remplissage {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--cyan), var(--violet), var(--rose));
+  box-shadow: 0 0 18px rgb(0 229 255 / 50%);
+  transition: width var(--temps-long) var(--courbe);
+  position: relative;
+  overflow: hidden;
+}
+
+.barre-xp__remplissage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 55%), transparent);
+  transform: translateX(-100%);
+  animation: balayage 2.6s ease-in-out infinite;
+}
+
+@keyframes balayage {
+  0% {
+    transform: translateX(-100%);
+  }
+  60%,
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+/* ------------------------------------------------- Anneau de progression --
+   SVG : un cercle de fond, un cercle de progression dont on anime le
+   `stroke-dashoffset`. Le degrade et le flou sont definis dans <defs>. */
+
+.anneau {
+  display: block;
+  transform: rotate(-90deg);
+}
+
+.anneau__fond {
+  fill: none;
+  stroke: rgb(255 255 255 / 9%);
+}
+
+.anneau__valeur {
+  fill: none;
+  stroke-linecap: round;
+  transition: stroke-dashoffset var(--temps-long) var(--courbe);
+}
+
+.anneau-boite {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.anneau-boite__centre {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  font-family: var(--titre);
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ---------------------------------------------------------------- Badges -- */
+
+.badge {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  background: linear-gradient(160deg, rgb(255 255 255 / 10%), rgb(255 255 255 / 3%));
+  border: 1px solid var(--trait);
+  font-size: 1.7rem;
+  transition: transform var(--temps-moyen) var(--rebond);
+}
+
+.badge--obtenu {
+  border-color: color-mix(in srgb, var(--teinte, var(--ambre)) 45%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--teinte, var(--ambre)) 22%, transparent),
+    0 8px 26px color-mix(in srgb, var(--teinte, var(--ambre)) 26%, transparent);
+}
+
+.badge--verrouille {
+  filter: grayscale(1);
+  opacity: 0.32;
+}
+
+.badge:hover {
+  transform: translateY(-4px) scale(1.06);
+}
+
+/* Apparition d'un badge : il surgit en tournant legerement. */
+@keyframes badge-apparait {
+  0% {
+    transform: scale(0.2) rotate(-25deg);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.15) rotate(6deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.badge--nouveau {
+  animation: badge-apparait 620ms var(--rebond) both;
+}
+
+/* ------------------------------------------------------------ Serie (feu) -- */
+
+.serie {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  padding: 6px var(--e3);
+  border-radius: var(--r-rond);
+  background: linear-gradient(135deg, rgb(255 176 32 / 18%), rgb(255 61 139 / 14%));
+  border: 1px solid rgb(255 176 32 / 32%);
+  font-family: var(--titre);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #ffd48a;
+}
+
+.serie__flamme {
+  font-size: 1rem;
+  animation: flamme 1.7s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+@keyframes flamme {
+  0%,
+  100% {
+    transform: scale(1) rotate(-3deg);
+  }
+  50% {
+    transform: scale(1.16) rotate(3deg);
+  }
+}
+
+/* ------------------------------------------------------------- Infobulle -- */
+
+.infobulle {
+  position: relative;
+}
+
+.infobulle::after {
+  content: attr(data-infobulle);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%) translateY(4px);
+  padding: 6px 10px;
+  border-radius: var(--r-s);
+  background: var(--fond-3);
+  border: 1px solid var(--trait-fort);
+  color: var(--texte);
+  font-size: 0.76rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--temps-court), transform var(--temps-court);
+  z-index: 50;
+  box-shadow: var(--ombre-douce);
+}
+
+.infobulle:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ------------------------------------------------------------ Separateur -- */
+
+.separateur {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(90deg, transparent, var(--trait-fort), transparent);
+  margin: var(--e5) 0;
+}

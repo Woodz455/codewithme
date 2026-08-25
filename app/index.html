@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>CodeWithMe</title>
+    <link rel="stylesheet" href="app://vendor/codemirror/lib/codemirror.css" />
+    <link rel="stylesheet" href="./styles/theme.css" />
+    <link rel="stylesheet" href="./styles/composants.css" />
+    <link rel="stylesheet" href="./styles/ecrans.css" />
+    <link rel="stylesheet" href="./styles/editeur.css" />
+  </head>
+  <body>
+    <!-- Ecran de demarrage : le logo se dessine pendant que l'app se prepare. -->
+    <div id="demarrage" class="demarrage">
+      <svg class="demarrage__logo" viewBox="0 0 120 120" aria-hidden="true">
+        <defs>
+          <linearGradient id="degradeDemarrage" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#00E5FF" />
+            <stop offset="55%" stop-color="#B14BFF" />
+            <stop offset="100%" stop-color="#FF3D8B" />
+          </linearGradient>
+        </defs>
+        <!-- Les chevrons < > et la barre / du symbole </> -->
+        <path
+          class="demarrage__trait"
+          d="M44 38 L22 60 L44 82"
+          fill="none"
+          stroke="url(#degradeDemarrage)"
+          stroke-width="8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          class="demarrage__trait"
+          d="M76 38 L98 60 L76 82"
+          fill="none"
+          stroke="url(#degradeDemarrage)"
+          stroke-width="8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          class="demarrage__trait"
+          d="M67 28 L53 92"
+          fill="none"
+          stroke="url(#degradeDemarrage)"
+          stroke-width="8"
+          stroke-linecap="round"
+        />
+      </svg>
+      <div class="demarrage__nom">CodeWithMe</div>
+      <div class="demarrage__sous">Ton atelier de code</div>
+    </div>
+
+    <div id="application" class="application" hidden>
+      <!-- Rail de navigation -->
+      <nav class="rail" id="rail" aria-label="Navigation principale"></nav>
+
+      <div class="colonne">
+        <!-- Bandeau : niveau, XP, serie, langue -->
+        <header class="bandeau" id="bandeau"></header>
+
+        <!-- Zone d'ecran -->
+        <main class="scene" id="scene" tabindex="-1"></main>
+      </div>
+
+      <!-- Mascotte Bit, en surimpression -->
+      <div id="mascotte" class="mascotte-hote"></div>
+
+      <!-- Celebrations (confettis, ecran de victoire) -->
+      <div id="celebration" class="celebration" hidden></div>
+    </div>
+
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>

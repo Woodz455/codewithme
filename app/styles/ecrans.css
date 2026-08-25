@@ -1,0 +1,931 @@
+/* ==========================================================================
+   CodeWithMe — Gabarit general et ecrans
+   ========================================================================== */
+
+/* ------------------------------------------------------------ Demarrage -- */
+
+.demarrage {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--e3);
+  background: var(--fond-profond);
+  transition: opacity 420ms var(--courbe);
+}
+
+.demarrage--sortie {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.demarrage__logo {
+  width: 128px;
+  height: 128px;
+  filter: drop-shadow(0 0 22px rgb(0 229 255 / 45%));
+}
+
+/* Les trois traits du symbole </> se dessinent l'un apres l'autre. */
+.demarrage__trait {
+  stroke-dasharray: 120;
+  stroke-dashoffset: 120;
+  animation: tracer 700ms var(--courbe) forwards;
+}
+.demarrage__trait:nth-child(2) {
+  animation-delay: 130ms;
+}
+.demarrage__trait:nth-child(3) {
+  animation-delay: 260ms;
+}
+
+@keyframes tracer {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.demarrage__nom {
+  font-family: var(--titre);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(100deg, var(--cyan), var(--violet), var(--rose));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: monter 500ms 420ms var(--courbe) both;
+}
+
+.demarrage__sous {
+  color: var(--texte-faible);
+  font-size: 0.9rem;
+  animation: monter 500ms 560ms var(--courbe) both;
+}
+
+@keyframes monter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ------------------------------------------------------------- Structure -- */
+
+.application {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: var(--rail) 1fr;
+  height: 100vh;
+}
+
+/* `min-height: 0` est indispensable : sans lui, un element de grille ne peut
+   pas devenir plus court que son contenu et le rail deborde sous la fenetre. */
+.application > * {
+  min-height: 0;
+}
+
+.colonne {
+  display: grid;
+  grid-template-rows: var(--bandeau) 1fr;
+  min-width: 0;
+  min-height: 0;
+}
+
+.scene {
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  /* Le bas est degage pour que la mascotte ne recouvre jamais le contenu. */
+  padding: var(--e6) var(--e7) 170px;
+  outline: none;
+}
+
+.scene > * {
+  animation: entree-ecran 320ms var(--courbe) both;
+}
+
+@keyframes entree-ecran {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scene__entete {
+  margin-bottom: var(--e6);
+}
+
+.scene__titre {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  margin-bottom: var(--e2);
+}
+
+.scene__sous {
+  color: var(--texte-doux);
+  max-width: 68ch;
+}
+
+/* ------------------------------------------------------------------ Rail -- */
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  padding: var(--e5) var(--e3) var(--e3);
+  background: rgb(11 14 26 / 72%);
+  backdrop-filter: blur(18px);
+  border-right: 1px solid var(--trait);
+  overflow: hidden;
+}
+
+/* Seule la liste centrale defile : la marque et le pied restent visibles. */
+.rail__corps {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rail__marque {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  padding: 0 var(--e3) var(--e4);
+  flex-shrink: 0;
+}
+
+.rail__logo {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 10px rgb(0 229 255 / 50%));
+}
+
+.rail__nom {
+  font-family: var(--titre);
+  font-size: 1.08rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(100deg, var(--cyan), var(--violet));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.rail__section {
+  padding: var(--e5) var(--e3) var(--e2);
+}
+
+.rail__lien {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  padding: 10px var(--e3);
+  border-radius: var(--r-m);
+  color: var(--texte-doux);
+  font-size: 0.92rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition:
+    background var(--temps-court) var(--courbe),
+    color var(--temps-court) var(--courbe);
+}
+
+.rail__lien:hover {
+  background: rgb(255 255 255 / 6%);
+  color: var(--texte);
+  text-decoration: none;
+}
+
+.rail__lien[aria-current='page'] {
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--teinte, var(--cyan)) 20%, transparent),
+    transparent 75%
+  );
+  border-color: color-mix(in srgb, var(--teinte, var(--cyan)) 26%, transparent);
+  color: var(--texte);
+  font-weight: 600;
+}
+
+/* Le curseur lumineux a gauche de l'element actif. */
+.rail__lien[aria-current='page']::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--e3) * -1 + 1px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 22px;
+  border-radius: var(--r-rond);
+  background: var(--teinte, var(--cyan));
+  box-shadow: 0 0 12px var(--teinte, var(--cyan));
+}
+
+.rail__icone {
+  width: 22px;
+  text-align: center;
+  font-size: 1.05rem;
+  flex-shrink: 0;
+}
+
+.rail__pastille {
+  margin-left: auto;
+  font-family: var(--titre);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--texte-faible);
+}
+
+.rail__pied {
+  flex-shrink: 0;
+  padding-top: var(--e3);
+  margin-top: var(--e3);
+  border-top: 1px solid var(--trait);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* ---------------------------------------------------------------- Bandeau -- */
+
+.bandeau {
+  display: flex;
+  align-items: center;
+  gap: var(--e5);
+  padding: 0 var(--e7) 0 var(--e5);
+  border-bottom: 1px solid var(--trait);
+  background: rgb(11 14 26 / 55%);
+  backdrop-filter: blur(18px);
+}
+
+.bandeau__niveau {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  min-width: 0;
+  flex: 1;
+  max-width: 420px;
+}
+
+.bandeau__pastilleNiveau {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r-m);
+  background: linear-gradient(140deg, var(--cyan), var(--violet));
+  color: #06121c;
+  font-family: var(--titre);
+  font-size: 1rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgb(0 229 255 / 32%);
+}
+
+.bandeau__xp {
+  flex: 1;
+  min-width: 0;
+}
+
+.bandeau__xpLigne {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--e3);
+  margin-bottom: 5px;
+}
+
+.bandeau__xpTitre {
+  font-family: var(--titre);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--texte-doux);
+}
+
+.bandeau__xpValeur {
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  color: var(--texte-faible);
+}
+
+.bandeau__droite {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+}
+
+/* ==========================================================================
+   Ecran : Cockpit (accueil)
+   ========================================================================== */
+
+.cockpit {
+  display: grid;
+  gap: var(--e5);
+  max-width: 1180px;
+}
+
+.cockpit__salut {
+  font-family: var(--titre);
+  font-size: clamp(1.7rem, 2.6vw, 2.3rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin-bottom: var(--e1);
+}
+
+.cockpit__salut em {
+  font-style: normal;
+  background: linear-gradient(100deg, var(--cyan), var(--violet), var(--rose));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.cockpit__sousTitre {
+  color: var(--texte-doux);
+  margin-bottom: var(--e5);
+}
+
+/* Grille bento : la reprise occupe deux tiers, les cartes laterales un tiers. */
+.bento {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--e4);
+}
+
+@media (max-width: 1180px) {
+  .bento {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bento__colonne {
+  display: grid;
+  gap: var(--e4);
+  align-content: start;
+}
+
+/* --- Carte de reprise --------------------------------------------------- */
+
+.reprise {
+  position: relative;
+  overflow: hidden;
+  padding: var(--e6);
+  display: grid;
+  gap: var(--e4);
+  min-height: 220px;
+  align-content: center;
+}
+
+/* Halo colore derriere la carte, teinte par le langage en cours. */
+.reprise::after {
+  content: '';
+  position: absolute;
+  right: -80px;
+  top: -80px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--teinte) 26%, transparent), transparent 68%);
+  pointer-events: none;
+}
+
+.reprise__haut {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+}
+
+.reprise__icone {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.reprise__titre {
+  font-family: var(--titre);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.reprise__lecon {
+  color: var(--texte-doux);
+  font-size: 1rem;
+}
+
+.reprise__bas {
+  display: flex;
+  align-items: center;
+  gap: var(--e4);
+  flex-wrap: wrap;
+}
+
+/* --- Carte de serie ----------------------------------------------------- */
+
+.carte-serie {
+  display: grid;
+  gap: var(--e2);
+  justify-items: center;
+  text-align: center;
+  padding: var(--e5);
+}
+
+.carte-serie__nombre {
+  font-family: var(--titre);
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+  background: linear-gradient(140deg, var(--ambre), var(--rose));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.carte-serie__label {
+  color: var(--texte-doux);
+  font-size: 0.88rem;
+}
+
+.carte-serie__flamme {
+  font-size: 2rem;
+  animation: flamme 1.7s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.carte-serie__record {
+  font-size: 0.76rem;
+  color: var(--texte-faible);
+}
+
+/* --- Bande des 7 derniers jours ----------------------------------------- */
+
+.semaine {
+  display: flex;
+  gap: 7px;
+  margin-top: var(--e3);
+}
+
+.semaine__jour {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+}
+
+.semaine__point {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 10%);
+  transition: background var(--temps-moyen) var(--courbe);
+}
+
+.semaine__jour[data-actif='true'] .semaine__point {
+  background: linear-gradient(140deg, var(--ambre), var(--rose));
+  box-shadow: 0 0 10px rgb(255 176 32 / 55%);
+}
+
+.semaine__jour[data-aujourdhui='true'] .semaine__point {
+  outline: 2px solid rgb(255 255 255 / 22%);
+  outline-offset: 2px;
+}
+
+.semaine__lettre {
+  font-size: 0.62rem;
+  color: var(--texte-faible);
+  text-transform: uppercase;
+}
+
+/* --- Statistiques ------------------------------------------------------- */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--e3);
+}
+
+.stat {
+  text-align: center;
+  padding: var(--e4) var(--e2);
+}
+
+.stat__valeur {
+  font-family: var(--titre);
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--texte);
+}
+
+.stat__label {
+  color: var(--texte-faible);
+  font-size: 0.76rem;
+  margin-top: 6px;
+}
+
+/* --- Grille des langages ------------------------------------------------ */
+
+/* Les 5 langages tiennent sur une ligne sur un ecran large, et se replient
+   proprement sur un petit portable. */
+.langages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(186px, 1fr));
+  gap: var(--e3);
+}
+
+.langage {
+  display: grid;
+  gap: var(--e3);
+  padding: var(--e5);
+  position: relative;
+  overflow: hidden;
+}
+
+.langage::after {
+  content: '';
+  position: absolute;
+  inset: auto -30% -60% auto;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--teinte) 20%, transparent), transparent 70%);
+  pointer-events: none;
+}
+
+.langage__haut {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--e3);
+}
+
+.langage__icone {
+  font-size: 1.9rem;
+  line-height: 1;
+}
+
+.langage__nom {
+  font-family: var(--titre);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--texte);
+}
+
+.langage__resume {
+  color: var(--texte-doux);
+  font-size: 0.84rem;
+  line-height: 1.5;
+  min-height: 3.6em;
+}
+
+.langage__pied {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e2);
+  font-size: 0.78rem;
+  color: var(--texte-faible);
+}
+
+/* --- Defi du jour ------------------------------------------------------- */
+
+.defi-jour {
+  display: grid;
+  gap: var(--e3);
+  padding: var(--e5);
+}
+
+.defi-jour__consigne {
+  color: var(--texte-doux);
+  font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   Mascotte Bit
+   ========================================================================== */
+
+.mascotte-hote {
+  position: fixed;
+  right: var(--e6);
+  bottom: var(--e5);
+  z-index: 90;
+  display: flex;
+  align-items: flex-end;
+  gap: var(--e3);
+  pointer-events: none;
+}
+
+.bit {
+  width: 76px;
+  flex-shrink: 0;
+  pointer-events: auto;
+  cursor: pointer;
+  opacity: 0.92;
+  filter: drop-shadow(0 8px 24px rgb(0 0 0 / 45%));
+  transition:
+    transform var(--temps-moyen) var(--rebond),
+    opacity var(--temps-court) var(--courbe);
+}
+
+.bit:hover {
+  transform: translateY(-4px) scale(1.06);
+  opacity: 1;
+}
+
+.bit__corps {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* --- Respiration au repos ------------------------------------------------ */
+
+.bit[data-etat='repos'] .bit__tete {
+  animation: respirer 3.4s ease-in-out infinite;
+  transform-origin: 60px 80px;
+}
+
+@keyframes respirer {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-2.5px) scale(1.012);
+  }
+}
+
+/* Clignement : les yeux s'ecrasent brievement. */
+.bit__oeil {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: cligner 5.5s infinite;
+}
+.bit__oeil--droit {
+  animation-delay: 0.08s;
+}
+
+@keyframes cligner {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.12);
+  }
+}
+
+/* L'ampoule de l'antenne pulse doucement. */
+.bit__ampoule {
+  animation: ampoule 2.6s ease-in-out infinite;
+}
+
+@keyframes ampoule {
+  0%,
+  100% {
+    opacity: 0.55;
+    r: 4.5;
+  }
+  50% {
+    opacity: 1;
+    r: 5.5;
+  }
+}
+
+.bit__etincelles {
+  opacity: 0;
+  transform-origin: 60px 55px;
+}
+
+/* --- Etat : reflechit ---------------------------------------------------- */
+
+.bit[data-etat='reflechit'] .bit__tete {
+  animation: pencher 1.1s ease-in-out infinite alternate;
+  transform-origin: 60px 84px;
+}
+
+@keyframes pencher {
+  from {
+    transform: rotate(-5deg);
+  }
+  to {
+    transform: rotate(5deg);
+  }
+}
+
+.bit[data-etat='reflechit'] .bit__oeil {
+  animation: cligner 1.4s infinite;
+}
+
+/* --- Etat : reussite ----------------------------------------------------- */
+
+.bit[data-etat='reussite'] {
+  animation: sauter 620ms var(--rebond) 2;
+}
+
+@keyframes sauter {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-16px);
+  }
+  60% {
+    transform: translateY(-8px);
+  }
+}
+
+.bit[data-etat='reussite'] .bit__bouche,
+.bit[data-etat='fete'] .bit__bouche {
+  d: path('M48 64 Q60 74 72 64');
+  stroke: #3dffa8;
+}
+
+.bit[data-etat='reussite'] .bit__oeil,
+.bit[data-etat='fete'] .bit__oeil {
+  fill: #3dffa8;
+}
+
+.bit[data-etat='reussite'] .bit__etincelles,
+.bit[data-etat='fete'] .bit__etincelles {
+  opacity: 1;
+  animation: etinceler 900ms ease-out infinite;
+}
+
+@keyframes etinceler {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) rotate(0deg);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.1) rotate(12deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.3) rotate(24deg);
+  }
+}
+
+/* --- Etat : erreur ------------------------------------------------------- */
+
+.bit[data-etat='erreur'] .bit__tete {
+  transform: rotate(9deg);
+  transform-origin: 60px 84px;
+  transition: transform var(--temps-moyen) var(--courbe);
+}
+
+.bit[data-etat='erreur'] .bit__bouche {
+  d: path('M50 69 Q60 63 70 69');
+  stroke: #ffb020;
+}
+
+.bit[data-etat='erreur'] .bit__oeil {
+  fill: #ffb020;
+}
+
+/* --- Etat : fete --------------------------------------------------------- */
+
+.bit[data-etat='fete'] .bit__bras--gauche {
+  transform: rotate(-38deg);
+  transform-origin: 30px 94px;
+}
+.bit[data-etat='fete'] .bit__bras--droit {
+  transform: rotate(38deg);
+  transform-origin: 90px 94px;
+}
+.bit[data-etat='fete'] {
+  animation: sauter 520ms var(--rebond) infinite;
+}
+
+/* --- Bulle de dialogue --------------------------------------------------- */
+
+.bit__bulle {
+  position: relative;
+  max-width: 250px;
+  margin-bottom: 22px;
+  padding: var(--e3) var(--e4);
+  border-radius: var(--r-l);
+  border-bottom-right-radius: var(--e1);
+  background: var(--fond-3);
+  border: 1px solid var(--trait-fort);
+  color: var(--texte);
+  font-size: 0.87rem;
+  line-height: 1.45;
+  box-shadow: var(--ombre-flottante);
+  pointer-events: auto;
+}
+
+.bit__bulle--entree {
+  animation: bulle-entre 260ms var(--rebond) both;
+}
+.bit__bulle--sortie {
+  animation: bulle-sort 200ms var(--courbe) both;
+}
+
+@keyframes bulle-entre {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes bulle-sort {
+  to {
+    opacity: 0;
+    transform: translateY(6px) scale(0.95);
+  }
+}
+
+/* ==========================================================================
+   Celebration (confettis + ecran de victoire)
+   ========================================================================== */
+
+.celebration {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  display: grid;
+  place-items: center;
+  background: rgb(11 14 26 / 82%);
+  backdrop-filter: blur(8px);
+  animation: fondu 240ms var(--courbe) both;
+}
+
+/* `display: grid` ci-dessus l'emporterait sur la regle par defaut du
+   navigateur pour [hidden] : sans cette ligne, la couche de celebration reste
+   affichee en permanence et floute toute l'application. */
+.celebration[hidden],
+.victoire[hidden] {
+  display: none;
+}
+
+@keyframes fondu {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.victoire {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  gap: var(--e4);
+  padding: var(--e8) var(--e7);
+  text-align: center;
+  max-width: 480px;
+}
+
+.victoire__titre {
+  font-family: var(--titre);
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  background: linear-gradient(100deg, var(--vert), var(--cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: monter 420ms var(--rebond) both;
+}
+
+.victoire__xp {
+  font-family: var(--titre);
+  font-size: 3.4rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--vert);
+  text-shadow: 0 0 30px rgb(61 255 168 / 55%);
+}
+
+.victoire__confettis {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
