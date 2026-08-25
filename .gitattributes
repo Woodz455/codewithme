@@ -1,0 +1,11 @@
+# Fins de ligne normalisees a la caisse : sans cela, une caisse Windows
+# convertirait les fichiers en CRLF et le paquet livre ne serait pas
+# exactement celui du depot.
+* text=auto eol=lf
+
+# Fichiers binaires : jamais convertis, jamais affiches en diff.
+*.png binary
+*.ico binary
+*.woff2 binary
+*.wasm binary
+*.pdf binary

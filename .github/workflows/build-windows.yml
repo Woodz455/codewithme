@@ -33,21 +33,10 @@ jobs:
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
 
-      # vendor/ est commite, mais on le regenere pour garantir qu'il
-      # correspond bien aux sources : un vendor/ perime passerait inapercu.
-      - name: Regenerer les bibliotheques embarquees
-        run: npm run vendor
-
-      - name: Verifier que vendor/ etait a jour
-        shell: bash
-        run: |
-          if [ -n "$(git status --porcelain vendor app/js/icones-generees.js)" ]; then
-            echo "vendor/ ou les icones generees ne correspondent pas aux sources :"
-            git status --porcelain vendor app/js/icones-generees.js
-            echo "Lancer 'npm run vendor' puis commiter le resultat."
-            exit 1
-          fi
-
+      # vendor/ est commite et sert tel quel. On ne le regenere PAS ici :
+      # la sortie d'esbuild et les fins de ligne peuvent differer d'un systeme
+      # a l'autre, et un diff parasite bloquerait la publication. C'est le
+      # controle Linux (ci.yml) qui verifie que vendor/ est a jour.
       - name: Controler l iconographie et les couleurs
         run: |
           npm run check:icones

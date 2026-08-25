@@ -27,6 +27,19 @@ jobs:
       - name: Installer Xvfb
         run: sudo apt-get update && sudo apt-get install -y xvfb
 
+      # vendor/ est commite. On le regenere ici — et seulement ici, sur le meme
+      # systeme que celui ou il est produit — pour attraper un vendor/ perime,
+      # qui livrerait a l'eleve une bibliotheque differente de celle du depot.
+      - name: Verifier que vendor/ correspond aux sources
+        run: |
+          npm run vendor
+          if [ -n "$(git status --porcelain vendor app/js/icones-generees.js)" ]; then
+            echo "vendor/ ou les icones generees ne correspondent pas aux sources :"
+            git status --porcelain vendor app/js/icones-generees.js
+            echo "Lancer 'npm run vendor' puis commiter le resultat."
+            exit 1
+          fi
+
       # L'application s'execute reellement pendant ces controles : c'est ce
       # qui les rend utiles. Une lecon dont la solution ne passe pas, ou une
       # couleur illisible, sont attrapees ici.
