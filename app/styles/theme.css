@@ -116,6 +116,13 @@
   box-sizing: border-box;
 }
 
+/* Toute regle `display` d'un composant l'emporterait sur la regle par defaut
+   du navigateur pour [hidden]. Sans cette ligne, masquer un element avec
+   `hidden` n'a aucun effet — piege discret et couteux. */
+[hidden] {
+  display: none !important;
+}
+
 html,
 body {
   height: 100%;

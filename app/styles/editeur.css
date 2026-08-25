@@ -241,3 +241,724 @@
   opacity: 1;
   border-color: color-mix(in srgb, var(--teinte) 45%, transparent);
 }
+
+/* ==========================================================================
+   Editeur de code — theme « cwm-neon »
+   ========================================================================== */
+
+.CodeMirror {
+  height: 100%;
+  background: transparent;
+  color: #e8ecff;
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.65;
+  font-feature-settings: 'liga' 1, 'calt' 1;
+}
+
+.CodeMirror-gutters {
+  background: rgb(255 255 255 / 2%);
+  border-right: 1px solid var(--trait);
+  padding-right: 4px;
+}
+
+.CodeMirror-linenumber {
+  color: #4c5680;
+  font-size: 12px;
+}
+
+.CodeMirror-cursor {
+  border-left: 2px solid var(--cyan);
+}
+
+.CodeMirror-selected {
+  background: rgb(0 229 255 / 18%) !important;
+}
+
+.CodeMirror-activeline-background {
+  background: rgb(255 255 255 / 3.5%);
+}
+
+.CodeMirror-matchingbracket {
+  color: var(--vert) !important;
+  border-bottom: 1px solid var(--vert);
+  font-weight: 700;
+}
+
+.CodeMirror-placeholder {
+  color: var(--texte-faible) !important;
+}
+
+/* Ligne signalee par une erreur d'execution. */
+.cm-ligne-erreur {
+  background: rgb(255 93 110 / 14%);
+  box-shadow: inset 3px 0 0 var(--rouge);
+}
+
+/* --- Coloration syntaxique ---------------------------------------------- */
+
+.cm-s-cwm-neon .cm-keyword       { color: #ff6fae; font-weight: 600; }
+.cm-s-cwm-neon .cm-def           { color: #7fe7ff; }
+.cm-s-cwm-neon .cm-variable      { color: #e8ecff; }
+.cm-s-cwm-neon .cm-variable-2    { color: #a7b6ff; }
+.cm-s-cwm-neon .cm-variable-3,
+.cm-s-cwm-neon .cm-type          { color: #c99bff; }
+.cm-s-cwm-neon .cm-property      { color: #7fe7ff; }
+.cm-s-cwm-neon .cm-operator      { color: #ff9ecb; }
+.cm-s-cwm-neon .cm-string,
+.cm-s-cwm-neon .cm-string-2      { color: #7dffc4; }
+.cm-s-cwm-neon .cm-number        { color: #ffc861; }
+.cm-s-cwm-neon .cm-atom          { color: #ffb020; }
+.cm-s-cwm-neon .cm-comment       { color: #6b769b; font-style: italic; }
+.cm-s-cwm-neon .cm-builtin       { color: #62d9ff; }
+.cm-s-cwm-neon .cm-meta          { color: #9aa5c8; }
+.cm-s-cwm-neon .cm-tag           { color: #ff8a4c; }
+.cm-s-cwm-neon .cm-attribute     { color: #ffd93d; }
+.cm-s-cwm-neon .cm-qualifier     { color: #7dffc4; }
+.cm-s-cwm-neon .cm-error         { color: var(--rouge); background: rgb(255 93 110 / 14%); }
+
+/* ==========================================================================
+   L'atelier
+   ========================================================================== */
+
+/* L'atelier occupe tout l'ecran, sans marge : chaque colonne defile seule,
+   comme dans un vrai environnement de developpement. */
+.scene:has(.atelier) {
+  padding: 0;
+  overflow: hidden;
+}
+
+.atelier {
+  display: grid;
+  grid-template-columns: 356px minmax(0, 1.05fr) minmax(0, 1fr);
+  height: 100%;
+  min-height: 0;
+}
+
+@media (max-width: 1280px) {
+  .atelier {
+    grid-template-columns: 310px minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+/* --- Colonne 1 : la lecon ------------------------------------------------ */
+
+.atelier__lecon {
+  overflow-y: auto;
+  padding: var(--e5) var(--e5) 160px;
+  border-right: 1px solid var(--trait);
+  background: rgb(11 14 26 / 45%);
+}
+
+.atelier__fil {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  margin-bottom: var(--e4);
+  flex-wrap: wrap;
+}
+
+.lien-retour {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--teinte);
+  font-family: var(--titre);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.lien-retour:hover {
+  text-decoration: underline;
+}
+
+.atelier__titre {
+  font-family: var(--titre);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--e3);
+}
+
+.atelier__objectif {
+  color: var(--teinte);
+  font-size: 0.92rem;
+  font-weight: 500;
+  margin-bottom: var(--e4);
+}
+
+/* --- Texte pedagogique --------------------------------------------------- */
+
+.lecon-texte {
+  color: var(--texte-doux);
+  font-size: 0.93rem;
+  line-height: 1.65;
+}
+
+.lecon-texte p {
+  margin: 0 0 var(--e3);
+}
+
+.lecon-texte strong {
+  color: var(--texte);
+}
+
+.lecon-texte ul,
+.lecon-texte ol {
+  margin: 0 0 var(--e3);
+  padding-left: var(--e5);
+}
+
+.lecon-texte li {
+  margin-bottom: 6px;
+}
+
+.lecon-texte code {
+  background: rgb(255 255 255 / 8%);
+  border: 1px solid var(--trait);
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-size: 0.86em;
+  color: #7fe7ff;
+}
+
+.lecon-texte pre {
+  background: rgb(0 0 0 / 30%);
+  border: 1px solid var(--trait);
+  border-radius: var(--r-m);
+  padding: var(--e3) var(--e4);
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.84rem;
+  color: var(--texte);
+  margin: 0 0 var(--e3);
+}
+
+/* --- Exemple ------------------------------------------------------------- */
+
+.exemple {
+  margin: var(--e5) 0;
+  padding: var(--e4);
+  border-radius: var(--r-m);
+  background: rgb(255 255 255 / 4%);
+  border: 1px solid var(--trait);
+}
+
+.exemple__entete {
+  margin-bottom: var(--e2);
+}
+
+.exemple__code {
+  background: rgb(0 0 0 / 34%);
+  border-radius: var(--r-s);
+  padding: var(--e3);
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: #cfe6ff;
+  margin: 0 0 var(--e3);
+  white-space: pre;
+}
+
+.exemple__note {
+  font-size: 0.83rem;
+  color: var(--texte-faible);
+  margin-bottom: var(--e3);
+}
+
+/* --- Defi ---------------------------------------------------------------- */
+
+.defi {
+  margin-top: var(--e5);
+  padding: var(--e4);
+  border-radius: var(--r-m);
+  background: linear-gradient(150deg, color-mix(in srgb, var(--teinte) 12%, transparent), transparent 70%);
+  border: 1px solid color-mix(in srgb, var(--teinte) 28%, transparent);
+}
+
+.defi__entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e3);
+  margin-bottom: var(--e3);
+}
+
+.defi__xp {
+  font-family: var(--titre);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ambre);
+}
+
+/* --- Indices ------------------------------------------------------------- */
+
+.indices {
+  display: grid;
+  gap: var(--e3);
+  margin-top: var(--e4);
+}
+
+.indice {
+  padding: var(--e3) var(--e4);
+  border-radius: var(--r-m);
+  background: rgb(255 176 32 / 9%);
+  border: 1px solid rgb(255 176 32 / 26%);
+  font-size: 0.88rem;
+  color: var(--texte-doux);
+  animation: monter 260ms var(--courbe) both;
+}
+
+.indice__entete {
+  font-family: var(--titre);
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--ambre);
+  margin-bottom: 6px;
+}
+
+.indice p {
+  margin: 0;
+}
+
+.indice code {
+  background: rgb(0 0 0 / 30%);
+  border-radius: 5px;
+  padding: 1px 5px;
+  color: #ffd48a;
+}
+
+.indice--solution {
+  background: rgb(61 255 168 / 8%);
+  border-color: rgb(61 255 168 / 26%);
+}
+
+.indice--solution .indice__entete {
+  color: var(--vert);
+}
+
+.indice__code {
+  background: rgb(0 0 0 / 38%);
+  border-radius: var(--r-s);
+  padding: var(--e3);
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: #cfe6ff;
+  margin: var(--e2) 0 var(--e3);
+  white-space: pre;
+}
+
+/* --- Colonnes 2 et 3 : structure commune --------------------------------- */
+
+.atelier__centre,
+.atelier__resultat {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-height: 0;
+  min-width: 0;
+}
+
+.atelier__resultat {
+  border-left: 1px solid var(--trait);
+}
+
+.atelier__barre {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  padding: var(--e2) var(--e4);
+  min-height: 52px;
+  border-bottom: 1px solid var(--trait);
+  background: rgb(11 14 26 / 55%);
+}
+
+.atelier__actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--e2);
+}
+
+.compilateur {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--texte-faible);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* --- Editeur ------------------------------------------------------------- */
+
+.atelier__editeurs {
+  position: relative;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.editeur {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.editeur .CodeMirror {
+  height: 100%;
+}
+
+/* --- Onglets ------------------------------------------------------------- */
+
+.onglets {
+  display: flex;
+  gap: var(--e1);
+}
+
+.onglet {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px var(--e3);
+  border: 1px solid transparent;
+  border-radius: var(--r-s);
+  background: none;
+  color: var(--texte-faible);
+  font-family: var(--titre);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color var(--temps-court), background var(--temps-court);
+}
+
+.onglet:hover {
+  color: var(--texte-doux);
+  background: rgb(255 255 255 / 5%);
+}
+
+.onglet--actif {
+  color: var(--texte);
+  background: rgb(255 255 255 / 8%);
+  border-color: var(--trait);
+}
+
+/* --- Panneaux de resultat ------------------------------------------------ */
+
+.panneau-hote {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.panneau {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+}
+
+.panneau[hidden] {
+  display: none;
+}
+
+.panneau--apercu,
+.panneau--dessin {
+  overflow: hidden;
+}
+
+.apercu {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #fff;
+}
+
+.toile-tortue {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: #fff;
+}
+
+/* --- Console ------------------------------------------------------------- */
+
+.console {
+  height: 100%;
+  padding: var(--e4);
+  font-family: var(--mono);
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: #d7e2ff;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-y: auto;
+}
+
+.console__erreur {
+  color: #ff9aa6;
+}
+
+.console__note,
+.console__fin {
+  color: var(--texte-faible);
+  font-family: var(--corps);
+  font-size: 0.8rem;
+  margin-top: var(--e2);
+}
+
+.console__explication {
+  margin-top: var(--e3);
+  padding: var(--e3);
+  border-radius: var(--r-s);
+  background: rgb(255 176 32 / 10%);
+  border: 1px solid rgb(255 176 32 / 24%);
+  color: #ffd48a;
+  font-family: var(--corps);
+  font-size: 0.84rem;
+  white-space: normal;
+}
+
+.console__saisie {
+  color: var(--vert);
+}
+
+/* Chargement de Python, a la premiere execution. */
+.console__chargement {
+  padding: var(--e4);
+  text-align: center;
+  color: var(--texte-doux);
+  font-family: var(--corps);
+  white-space: normal;
+}
+
+.chargement__barre {
+  height: 6px;
+  border-radius: var(--r-rond);
+  background: rgb(255 255 255 / 8%);
+  overflow: hidden;
+  margin-bottom: var(--e3);
+}
+
+.chargement__jauge {
+  height: 100%;
+  width: 40%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--cyan), var(--violet));
+  animation: chargement-va-et-vient 1.5s ease-in-out infinite;
+}
+
+@keyframes chargement-va-et-vient {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+.chargement__note {
+  font-size: 0.78rem;
+  color: var(--texte-faible);
+  margin-top: 6px;
+}
+
+/* --- Saisie clavier (input) ---------------------------------------------- */
+
+.saisie {
+  display: flex;
+  gap: var(--e2);
+  margin-top: var(--e2);
+  align-items: center;
+}
+
+.saisie__champ {
+  flex: 1;
+  min-width: 0;
+  padding: 8px var(--e3);
+  border-radius: var(--r-s);
+  border: 1px solid var(--cyan);
+  background: rgb(0 229 255 / 8%);
+  color: var(--texte);
+  font-family: var(--mono);
+  font-size: 0.86rem;
+  outline: none;
+}
+
+.entree-cpp {
+  padding: var(--e3) var(--e4);
+  border-top: 1px solid var(--trait);
+  background: rgb(11 14 26 / 40%);
+}
+
+.entree-cpp__titre {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--texte-faible);
+  margin-bottom: 6px;
+}
+
+.entree-cpp__zone {
+  width: 100%;
+  padding: var(--e2) var(--e3);
+  border-radius: var(--r-s);
+  border: 1px solid var(--trait-fort);
+  background: rgb(0 0 0 / 26%);
+  color: var(--texte);
+  font-family: var(--mono);
+  font-size: 0.84rem;
+  resize: vertical;
+  outline: none;
+}
+
+.entree-cpp__zone:focus {
+  border-color: var(--cyan);
+}
+
+/* --- Verdict de la correction -------------------------------------------- */
+
+.verdict {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--e3);
+  padding: var(--e4);
+  border-top: 1px solid var(--trait);
+  animation: monter 260ms var(--courbe) both;
+}
+
+.verdict[hidden] {
+  display: none;
+}
+
+.verdict[data-etat='reussi'] {
+  background: rgb(61 255 168 / 10%);
+  border-top-color: rgb(61 255 168 / 30%);
+}
+
+.verdict[data-etat='echec'] {
+  background: rgb(255 176 32 / 9%);
+  border-top-color: rgb(255 176 32 / 28%);
+}
+
+.verdict[data-etat='deja'] {
+  background: rgb(255 255 255 / 5%);
+}
+
+.verdict__icone {
+  font-size: 1.5rem;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
+.verdict__texte {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.9rem;
+  color: var(--texte-doux);
+}
+
+.verdict__texte strong {
+  display: block;
+  color: var(--texte);
+  font-family: var(--titre);
+  font-size: 1rem;
+  margin-bottom: 3px;
+}
+
+.verdict__texte p {
+  margin: 0;
+}
+
+.verdict__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  flex-shrink: 0;
+}
+
+.verdict__xp {
+  font-family: var(--titre);
+  font-weight: 700;
+  color: var(--vert);
+}
+
+/* --- Ecran de victoire --------------------------------------------------- */
+
+.victoire__note {
+  color: var(--texte-doux);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.victoire__badges {
+  display: flex;
+  gap: var(--e4);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.victoire__badge {
+  display: grid;
+  justify-items: center;
+  gap: var(--e2);
+}
+
+.victoire__badgeNom {
+  font-size: 0.8rem;
+  color: var(--texte-doux);
+  max-width: 120px;
+  text-align: center;
+}
+
+/* --- Place gagnee dans l'atelier ------------------------------------------
+   Le rail se replie sur ses icones : 170 px de plus pour le code et le
+   resultat, sans perdre la navigation. */
+
+.application:has(.atelier) {
+  grid-template-columns: 76px 1fr;
+}
+
+.application:has(.atelier) .rail__lien span:not(.rail__icone),
+.application:has(.atelier) .rail__nom,
+.application:has(.atelier) .rail__section,
+.application:has(.atelier) .rail__pastille {
+  display: none;
+}
+
+.application:has(.atelier) .rail__lien {
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.application:has(.atelier) .rail__marque {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* La barre d'outils ne doit jamais deborder sur la colonne voisine. */
+.atelier__barre {
+  overflow: hidden;
+}
+
+.atelier__actions {
+  min-width: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.atelier__etiquette {
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Sur une colonne etroite, l'etiquette « Ton code » cede la place aux boutons. */
+@media (max-width: 1500px) {
+  .atelier__etiquette {
+    display: none;
+  }
+}

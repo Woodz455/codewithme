@@ -10,6 +10,7 @@ import * as bit from './mascotte.js';
 import { PARCOURS } from '../content/parcours.js';
 import { ecranAccueil } from './ecrans/accueil.js';
 import { ecranParcours } from './ecrans/parcours.js';
+import { ecranAtelier } from './ecrans/atelier.js';
 
 /* ------------------------------------------------------------------- rail -- */
 
@@ -189,15 +190,7 @@ function enregistrerRoutes() {
       h('header.scene__entete', h('h1.scene__titre', titre), h('p.scene__sous', note))
     );
 
-  route('/lecon/:parcours/:lecon', ({ lecon }) =>
-    enChantier(
-      texte({ fr: 'Atelier', en: 'Workshop' }),
-      texte({
-        fr: `L’atelier de la leçon ${lecon} arrive à l’étape suivante.`,
-        en: `The workshop for lesson ${lecon} is coming in the next step.`,
-      })
-    )()
-  );
+  route('/lecon/:parcours/:lecon', ({ parcours, lecon }) => ecranAtelier(parcours, lecon));
   route('/galerie', enChantier(t('galerie.titre'), texte({ fr: 'Bientôt.', en: 'Coming soon.' })));
   route('/bac-a-sable', enChantier(t('bac.titre'), texte(({ fr: 'Bientôt.', en: 'Coming soon.' }))));
   route('/badges', enChantier(t('badges.titre'), texte({ fr: 'Bientôt.', en: 'Coming soon.' })));

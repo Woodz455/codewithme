@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Aperçu</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: #fff;
+        color: #111;
+        font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      }
+      /* Surlignage de l'inspecteur simplifie. */
+      #cwm-surlignage {
+        position: fixed;
+        pointer-events: none;
+        border: 2px solid #00e5ff;
+        background: rgba(0, 229, 255, 0.12);
+        border-radius: 3px;
+        z-index: 2147483646;
+        display: none;
+        transition: all 60ms linear;
+      }
+      #cwm-etiquette {
+        position: fixed;
+        pointer-events: none;
+        z-index: 2147483647;
+        background: #0b0e1a;
+        color: #00e5ff;
+        font: 600 11px/1.4 ui-monospace, monospace;
+        padding: 2px 6px;
+        border-radius: 4px;
+        display: none;
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="cwm-racine"></div>
+    <div id="cwm-surlignage"></div>
+    <div id="cwm-etiquette"></div>
+
+    <script>
+      /**
+       * Page d'apercu : elle execute le HTML, le CSS et le JavaScript ecrits
+       * par l'eleve.
+       *
+       * Elle vit dans une iframe « bac a sable » sans acces a l'origine de
+       * l'application : le code qui s'execute ici ne peut donc ni lire le
+       * profil, ni toucher au reste du logiciel. Le dialogue avec l'atelier
+       * passe uniquement par postMessage.
+       */
+      (function () {
+        'use strict';
+
+        var parentFenetre = window.parent;
+        var surlignage = document.getElementById('cwm-surlignage');
+        var etiquette = document.getElementById('cwm-etiquette');
+
+        function versParent(message) {
+          parentFenetre.postMessage(message, '*');
+        }
+
+        /* ------------------------------------------------- console -------- */
+
+        function enTexte(valeur, profondeur) {
+          profondeur = profondeur || 0;
+          if (valeur === null) return 'null';
+          if (valeur === undefined) return 'undefined';
+          var type = typeof valeur;
+          if (type === 'string') return profondeur === 0 ? valeur : '"' + valeur + '"';
+          if (type === 'number' || type === 'boolean') return String(valeur);
+          if (type === 'function') return 'ƒ ' + (valeur.name || 'anonyme') + '()';
+          if (valeur instanceof Error) return valeur.name + ': ' + valeur.message;
+          if (valeur instanceof Element) return '<' + valeur.tagName.toLowerCase() + '>';
+          if (profondeur > 2) return Array.isArray(valeur) ? '[…]' : '{…}';
+          try {
+            if (Array.isArray(valeur)) {
+              return '[' + valeur.map(function (v) { return enTexte(v, profondeur + 1); }).join(', ') + ']';
+            }
+            var paires = Object.keys(valeur).map(function (cle) {
+              return cle + ': ' + enTexte(valeur[cle], profondeur + 1);
+            });
+            return '{ ' + paires.join(', ') + ' }';
+          } catch (erreur) {
+            return String(valeur);
+          }
+        }
+
+        ['log', 'info', 'warn', 'error', 'debug'].forEach(function (niveau) {
+          var origine = console[niveau];
+          console[niveau] = function () {
+            var morceaux = Array.prototype.slice.call(arguments).map(function (v) {
+              return enTexte(v, 0);
+            });
+            versParent({
+              source: 'cwm-apercu',
+              type: 'console',
+              niveau: niveau === 'warn' ? 'avertissement' : niveau === 'error' ? 'erreur' : 'info',
+              texte: morceaux.join(' '),
+            });
+            try { origine.apply(console, arguments); } catch (e) {}
+          };
+        });
+
+        window.addEventListener('error', function (evenement) {
+          versParent({
+            source: 'cwm-apercu',
+            type: 'erreur',
+            message: evenement.message,
+            ligne: evenement.lineno,
+          });
+        });
+
+        window.addEventListener('unhandledrejection', function (evenement) {
+          versParent({
+            source: 'cwm-apercu',
+            type: 'erreur',
+            message: 'Promesse rejetée : ' + enTexte(evenement.reason, 0),
+          });
+        });
+
+        /* -------------------------------------------------- rendu --------- */
+
+        var styleEleve = null;
+
+        function rendre(donnees) {
+          // On repart d'une page vierge a chaque execution : sinon les
+          // elements et les minuteurs de l'essai precedent s'accumulent.
+          var minuteurMax = setTimeout(function () {}, 0);
+          for (var i = 0; i <= minuteurMax; i++) {
+            clearTimeout(i);
+            clearInterval(i);
+          }
+
+          document.body.innerHTML = '';
+          document.body.appendChild(surlignage);
+          document.body.appendChild(etiquette);
+
+          var racine = document.createElement('div');
+          racine.id = 'cwm-racine';
+          racine.innerHTML = donnees.html || '';
+          document.body.insertBefore(racine, surlignage);
+
+          if (styleEleve) styleEleve.remove();
+          styleEleve = document.createElement('style');
+          styleEleve.textContent = donnees.css || '';
+          document.head.appendChild(styleEleve);
+
+          if (donnees.js) {
+            var script = document.createElement('script');
+            // Le code est enveloppe : une erreur de syntaxe est signalee
+            // proprement au lieu de casser silencieusement la page.
+            script.textContent =
+              'try {\n' + donnees.js + '\n} catch (erreur) {\n' +
+              '  window.dispatchEvent(new ErrorEvent("error", { message: erreur.message }));\n}';
+            document.body.appendChild(script);
+          }
+
+          versParent({ source: 'cwm-apercu', type: 'rendu-termine' });
+        }
+
+        /* ------------------------------- interrogation pour la correction -- */
+
+        /**
+         * L'atelier ne peut pas lire ce DOM directement (bac a sable sans
+         * meme origine) : il pose ses questions ici, et recoit les reponses.
+         */
+        function repondreQuestions(identifiant, questions) {
+          var resultats = questions.map(function (question) {
+            try {
+              var elements = Array.prototype.slice.call(
+                document.querySelectorAll(question.selecteur)
+              );
+              switch (question.quoi) {
+                case 'nombre':
+                  return elements.length;
+                case 'existe':
+                  return elements.length > 0;
+                case 'texte':
+                  return elements.map(function (e) { return e.textContent.trim(); });
+                case 'html':
+                  return elements.map(function (e) { return e.innerHTML.trim(); });
+                case 'attribut':
+                  return elements.map(function (e) { return e.getAttribute(question.nom); });
+                case 'style': {
+                  return elements.map(function (e) {
+                    return getComputedStyle(e).getPropertyValue(question.nom).trim();
+                  });
+                }
+                case 'balises':
+                  return elements.map(function (e) { return e.tagName.toLowerCase(); });
+                default:
+                  return null;
+              }
+            } catch (erreur) {
+              return { erreur: String(erreur.message) };
+            }
+          });
+
+          versParent({ source: 'cwm-apercu', type: 'reponse', id: identifiant, resultats: resultats });
+        }
+
+        /* ------------------------------------------- inspecteur simplifie -- */
+
+        var inspecteurActif = false;
+
+        document.addEventListener('mouseover', function (evenement) {
+          if (!inspecteurActif) return;
+          var cible = evenement.target;
+          if (!cible || cible === surlignage || cible === etiquette || cible === document.body) return;
+
+          var boite = cible.getBoundingClientRect();
+          surlignage.style.display = 'block';
+          surlignage.style.left = boite.left + 'px';
+          surlignage.style.top = boite.top + 'px';
+          surlignage.style.width = boite.width + 'px';
+          surlignage.style.height = boite.height + 'px';
+
+          var nom = '<' + cible.tagName.toLowerCase() + '>';
+          if (cible.id) nom += ' #' + cible.id;
+          else if (cible.className && typeof cible.className === 'string') {
+            nom += ' .' + cible.className.trim().split(/\s+/).join('.');
+          }
+          etiquette.textContent = nom;
+          etiquette.style.display = 'block';
+          etiquette.style.left = boite.left + 'px';
+          etiquette.style.top = Math.max(0, boite.top - 20) + 'px';
+        });
+
+        document.addEventListener('mouseleave', function () {
+          surlignage.style.display = 'none';
+          etiquette.style.display = 'none';
+        });
+
+        /* ------------------------------------------------- messages ------- */
+
+        window.addEventListener('message', function (evenement) {
+          var message = evenement.data;
+          if (!message || message.source !== 'cwm-atelier') return;
+
+          switch (message.type) {
+            case 'rendre':
+              rendre(message);
+              break;
+            case 'interroger':
+              repondreQuestions(message.id, message.questions || []);
+              break;
+            case 'inspecteur':
+              inspecteurActif = Boolean(message.actif);
+              if (!inspecteurActif) {
+                surlignage.style.display = 'none';
+                etiquette.style.display = 'none';
+              }
+              break;
+            default:
+              break;
+          }
+        });
+
+        versParent({ source: 'cwm-apercu', type: 'pret' });
+      })();
+    </script>
+  </body>
+</html>
