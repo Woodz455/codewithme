@@ -8,6 +8,17 @@
       body {
         margin: 0;
         min-height: 100%;
+      }
+      /*
+       * Le fond n'est pose QUE sur <body>, jamais sur <html>.
+       *
+       * Un navigateur propage le fond du body a toute la page — mais seulement
+       * si <html> n'en a pas lui-meme. Avec un fond sur <html>, le
+       * `body { background: #0b0e1a }` d'un eleve ne peignait que la hauteur de
+       * son contenu, et une bande blanche restait en dessous : sa page avait
+       * l'air cassee alors que son code etait juste.
+       */
+      body {
         background: #fff;
         color: #111;
         font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
