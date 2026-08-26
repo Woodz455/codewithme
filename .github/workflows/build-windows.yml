@@ -37,6 +37,12 @@ jobs:
       # la sortie d'esbuild et les fins de ligne peuvent differer d'un systeme
       # a l'autre, et un diff parasite bloquerait la publication. C'est le
       # controle Linux (ci.yml) qui verifie que vendor/ est a jour.
+      # En premier, et en une seconde : une configuration d'empaquetage
+      # fautive echouait jusqu'ici tout a la fin, apres cinq minutes de
+      # runner et une application deja empaquetee pour rien.
+      - name: Controler la configuration d empaquetage
+        run: npm run check:empaquetage
+
       - name: Controler l iconographie et les couleurs
         run: |
           npm run check:icones

@@ -43,6 +43,12 @@ jobs:
       # L'application s'execute reellement pendant ces controles : c'est ce
       # qui les rend utiles. Une lecon dont la solution ne passe pas, ou une
       # couleur illisible, sont attrapees ici.
+      # La configuration Windows se controle depuis Linux, sans rien
+      # construire : c'est ce qui manquait quand un nom de fichier fautif est
+      # passe jusqu'au runner Windows.
+      - name: Controler la configuration d empaquetage
+        run: npm run check:empaquetage
+
       - name: Controler le contenu des 86 lecons
         run: npm run check:content
 

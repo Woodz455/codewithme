@@ -131,6 +131,7 @@ Rien n'est déclaré fonctionnel sans avoir été exécuté.
 | `npm run test:paquet` | L'application **empaquetée** se lance et fonctionne — c'est là qu'on découvre un fichier manquant |
 | `npm run check:contrast` | Contrastes WCAG AA mesurés, et palette des graphiques contrôlée en simulant le daltonisme |
 | `npm run check:icones` | Aucun emoji dans l'interface — Windows les dessine lui-même, leur rendu changerait d'une machine à l'autre |
+| `npm run check:empaquetage` | La configuration Windows est valide, **sans rien construire** : les noms de fichiers s'étendent réellement et correspondent à ce que le workflow cherche ensuite |
 
 ### Architecture
 
