@@ -12,7 +12,7 @@
     "dev": "electron . --dev",
     "check:content": "xvfb-run -a node tools/check-content.mjs",
     "check:contrast": "node tools/check-contrast.mjs",
-    "test": "npm run check:icones && npm run check:contrast && npm run check:empaquetage && npm run test:python && npm run test:moteurs && npm run test:apercu && npm run test:atelier && npm run test:espaces && npm run test:projet && npm run test:certificat",
+    "test": "npm run check:icones && npm run check:contrast && npm run check:empaquetage && npm run test:script-paquet && npm run test:python && npm run test:moteurs && npm run test:apercu && npm run test:atelier && npm run test:espaces && npm run test:projet && npm run test:certificat",
     "test:python": "xvfb-run -a node tests/verifier-python.mjs",
     "test:moteurs": "xvfb-run -a node tests/verifier-moteurs-web-cpp.mjs",
     "test:atelier": "xvfb-run -a node tests/verifier-atelier.mjs",
@@ -25,7 +25,8 @@
     "test:certificat": "xvfb-run -a node tests/verifier-certificat.mjs",
     "test:paquet": "xvfb-run -a node tests/verifier-paquet.mjs",
     "captures:readme": "xvfb-run -a node tools/captures-readme.mjs",
-    "check:empaquetage": "node tools/check-empaquetage.mjs"
+    "check:empaquetage": "node tools/check-empaquetage.mjs",
+    "test:script-paquet": "node tests/verifier-script-paquet.mjs"
   },
   "devDependencies": {
     "@fontsource/inter": "5.3.0",

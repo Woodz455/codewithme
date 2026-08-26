@@ -127,7 +127,7 @@ Rien n'est déclaré fonctionnel sans avoir été exécuté.
 | Commande | Ce qu'elle vérifie |
 |---|---|
 | `npm run check:content` | Les 86 leçons, dans les vrais moteurs : structure bilingue complète, solution de référence qui passe, code de départ qui **ne** passe pas, exemple qui s'exécute |
-| `npm test` | 117 vérifications : moteurs, atelier, correction, XP, galerie, espace tuteur, projet final, certificat |
+| `npm test` | 128 vérifications : moteurs, atelier, correction, XP, galerie, espace tuteur, projet final, certificat, et le script qui contrôle les `.exe` produits |
 | `npm run test:paquet` | L'application **empaquetée** se lance et fonctionne — c'est là qu'on découvre un fichier manquant |
 | `npm run check:contrast` | Contrastes WCAG AA mesurés, et palette des graphiques contrôlée en simulant le daltonisme |
 | `npm run check:icones` | Aucun emoji dans l'interface — Windows les dessine lui-même, leur rendu changerait d'une machine à l'autre |

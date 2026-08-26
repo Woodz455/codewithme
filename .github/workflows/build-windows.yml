@@ -51,20 +51,21 @@ jobs:
       - name: Construire l installateur et la version portable
         run: npm run build:win
 
-      # On verifie que les deux fichiers existent VRAIMENT, plutot que de se
-      # fier au code de retour d'electron-builder.
+      # On verifie que les deux fichiers existent VRAIMENT et sont de taille
+      # plausible, plutot que de se fier au code de retour d'electron-builder.
+      #
+      # La verification vit dans un script du depot, pas ici : sa version
+      # ecrite en ligne a fait echouer une construction pourtant reussie, et
+      # aucun test ne pouvait l'attraper puisqu'elle n'existait que dans ce
+      # fichier. `npm run test:script-paquet` l'eprouve maintenant sur six cas.
       - name: Verifier les fichiers produits
         shell: bash
-        run: |
-          ls -la dist/
-          installateur=$(ls dist/*Setup*.exe dist/*nsis*.exe 2>/dev/null | head -1)
-          portable=$(ls dist/*portable*.exe 2>/dev/null | head -1)
-          if [ -z "$installateur" ]; then echo "Installateur introuvable"; exit 1; fi
-          if [ -z "$portable" ]; then echo "Version portable introuvable"; exit 1; fi
-          echo "Installateur : $installateur ($(stat -c%s "$installateur") octets)"
-          echo "Portable     : $portable ($(stat -c%s "$portable") octets)"
+        run: bash tools/verifier-paquet-windows.sh dist
 
+      # Meme si la verification echoue : on veut pouvoir regarder ce qui a
+      # ete produit, plutot que de relancer une construction a l'aveugle.
       - name: Deposer les fichiers en artefact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: CodeWithMe-Windows
