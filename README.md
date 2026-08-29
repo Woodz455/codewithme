@@ -210,7 +210,7 @@ npm run build:win     # necessite Windows
 ```
 
 En pratique, la construction est faite par GitHub Actions sur un runner `windows-latest` :
-onglet **Actions → Construire l'application Windows**, ou en poussant une étiquette `v1.0.0`,
+onglet **Actions → Construire l'application Windows**, ou en poussant une étiquette `v1.1.0`,
 ce qui publie en plus une Release téléchargeable.
 
 ### Publier la version web
