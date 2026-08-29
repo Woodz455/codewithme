@@ -196,6 +196,17 @@ export const PARCOURS = [
           L('py-re-3', 'Remplacer et découper', 'Replacing and splitting'),
         ],
       },
+      {
+        id: 'py-fic',
+        titre: { fr: 'Les fichiers', en: 'Files' },
+        icone: 'page',
+        lecons: [
+          L('py-fic-1', 'Écrire et relire un fichier', 'Writing and reading a file'),
+          L('py-fic-2', 'Ligne par ligne, et ajouter', 'Line by line, and appending'),
+          L('py-fic-3', 'Le format JSON', 'The JSON format'),
+          L('py-fic-4', 'Projet : le tableau des scores', 'Project: the scoreboard'),
+        ],
+      },
     ],
   },
 

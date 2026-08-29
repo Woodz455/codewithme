@@ -2991,7 +2991,7 @@ Type après conversion : &lt;class 'int'&gt;</pre>
         },
         {
           type: 'codeContient',
-          motif: 'int\\s*\\(',
+          motif: '\\bint\\s*\\(',
           message: {
             fr: 'Convertis le texte en nombre avec <code>int()</code>.',
             en: 'Convert the text to a number with <code>int()</code>.',
@@ -3111,7 +3111,7 @@ Type après conversion : &lt;class 'int'&gt;</pre>
       verifications: [
         {
           type: 'codeContient',
-          motif: 'int\\s*\\(',
+          motif: '\\bint\\s*\\(',
           message: {
             fr: '<code>input()</code> rend du texte : convertis-le avec <code>int()</code>.',
             en: '<code>input()</code> gives back text: convert it with <code>int()</code>.',
@@ -3792,7 +3792,7 @@ Somme : 17</pre>
         },
         {
           type: 'codeContient',
-          motif: 'int\\s*\\(',
+          motif: '\\bint\\s*\\(',
           message: {
             fr: '<code>findall</code> rend du texte : convertis chaque élément avec <code>int()</code>.',
             en: '<code>findall</code> gives text back: convert each item with <code>int()</code>.',
@@ -4034,5 +4034,515 @@ re.fullmatch(r"\\d{2}-\\d{2}-\\d{4}", "5-12-2026")    # None</pre>
       solution:
         'import re\n\nsaisie = "farine ,  oeufs;lait"\n\nmorceaux = re.split(r"[,;]", saisie)\ningredients = [m.strip() for m in morceaux]\n\nprint(f"{len(ingredients)} ingrédients : {\', \'.join(ingredients)}")',
     },
+  },
+
+  /* ===================================================== Les fichiers ===== */
+
+  'py-fic-1': {
+    langage: 'python',
+    xp: 35,
+    objectif: {
+      fr: 'Écrire dans un fichier, et le relire.',
+      en: 'Write to a file, and read it back.',
+    },
+    explication: {
+      fr: `
+        <p>Jusqu’ici, tout disparaissait à la fin du programme. Un fichier, lui,
+        <strong>reste</strong>. C’est ce qui sépare un exercice d’un vrai logiciel.</p>
+        <pre>with open("notes.txt", "w") as fichier:
+    fichier.write("14\\n17\\n11\\n")
+
+with open("notes.txt") as fichier:
+    contenu = fichier.read()</pre>
+        <p>Trois choses à comprendre :</p>
+        <ul>
+          <li><strong>le mode</strong> — <code>"w"</code> écrit (et
+          <strong>efface tout</strong> ce qu’il y avait !), <code>"r"</code> lit, c’est le mode
+          par défaut, <code>"a"</code> ajoute à la fin ;</li>
+          <li><strong>le <code>with</code></strong> — il ferme le fichier tout seul à la sortie
+          du bloc, même en cas d’erreur. Sans lui, il faut penser à <code>.close()</code>, et on
+          l’oublie ;</li>
+          <li><strong>le <code>\\n</code></strong> — <code>write</code> n’ajoute
+          <em>aucun</em> retour à la ligne. Sans lui, tout se colle.</li>
+        </ul>
+        <p><strong>Attention au mode <code>"w"</code> :</strong> il vide le fichier avant même
+        que tu écrives. Ouvrir en <code>"w"</code> un fichier qu’on voulait lire est la façon la
+        plus rapide de perdre son travail.</p>
+        <p>Ici, les fichiers vivent dans la mémoire de l’application et disparaissent quand tu
+        quittes la leçon. Le principe, lui, est exactement celui d’un vrai disque dur.</p>
+      `,
+      en: `
+        <p>So far everything vanished when the program ended. A file <strong>stays</strong>.
+        That is what separates an exercise from real software.</p>
+        <pre>with open("notes.txt", "w") as fichier:
+    fichier.write("14\\n17\\n11\\n")
+
+with open("notes.txt") as fichier:
+    contenu = fichier.read()</pre>
+        <p>Three things to understand:</p>
+        <ul>
+          <li><strong>the mode</strong> — <code>"w"</code> writes (and <strong>erases
+          everything</strong> that was there!), <code>"r"</code> reads and is the default,
+          <code>"a"</code> appends at the end;</li>
+          <li><strong>the <code>with</code></strong> — it closes the file by itself when the
+          block ends, even on error. Without it you must remember <code>.close()</code>, and you
+          will forget;</li>
+          <li><strong>the <code>\\n</code></strong> — <code>write</code> adds <em>no</em> line
+          break of its own. Without it, everything runs together.</li>
+        </ul>
+        <p><strong>Beware of mode <code>"w"</code>:</strong> it empties the file before you even
+        write. Opening in <code>"w"</code> a file you meant to read is the fastest way to lose
+        your work.</p>
+        <p>Here files live in the application's memory and disappear when you leave the lesson.
+        The principle is exactly that of a real hard drive.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'with open("courses.txt", "w") as fichier:\n    fichier.write("pain\\n")\n    fichier.write("lait\\n")\n    fichier.write("pommes\\n")\n\nwith open("courses.txt") as fichier:\n    contenu = fichier.read()\n\nprint(contenu)\nprint("---")\nprint(contenu.split())',
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Écris les trois notes <code>14</code>, <code>17</code> et <code>11</code> dans un
+             fichier <code>notes.txt</code>, une par ligne. Puis relis-le et affiche :</p>
+             <pre>Contenu : ['14', '17', '11']
+3 notes enregistrées</pre>
+             <p>Le compte doit venir du fichier relu, pas d’un nombre écrit à la main.</p>`,
+        en: `<p>Write the three marks <code>14</code>, <code>17</code> and <code>11</code> into a
+             file <code>notes.txt</code>, one per line. Then read it back and display:</p>
+             <pre>Contenu : ['14', '17', '11']
+3 notes enregistrées</pre>
+             <p>The count must come from the file you read back, not from a hand-written
+             number.</p>`,
+      },
+      depart: '# Écris le fichier, puis relis-le\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'open\\s*\\(\\s*[\'"]notes\\.txt[\'"]\\s*,\\s*[\'"]w[\'"]',
+          message: {
+            fr: 'Ouvre le fichier en écriture : <code>open("notes.txt", "w")</code>.',
+            en: 'Open the file for writing: <code>open("notes.txt", "w")</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: '\\.read\\s*\\(',
+          message: {
+            fr: 'Relis le fichier avec <code>.read()</code>.',
+            en: 'Read the file back with <code>.read()</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'len\\s*\\(',
+          message: {
+            fr: 'Compte ce que tu as relu avec <code>len()</code>.',
+            en: 'Count what you read back with <code>len()</code>.',
+          },
+        },
+        { type: 'sortieContient', valeur: { fr: "Contenu : ['14', '17', '11']", en: "Contenu : ['14', '17', '11']" } },
+        { type: 'sortieContient', valeur: { fr: '3 notes enregistrées', en: '3 notes enregistrées' } },
+      ],
+      indices: [
+        {
+          fr: 'Écriture : <code>with open("notes.txt", "w") as f:</code> puis <code>f.write("14\\n17\\n11\\n")</code>.',
+          en: 'Writing: <code>with open("notes.txt", "w") as f:</code> then <code>f.write("14\\n17\\n11\\n")</code>.',
+        },
+        {
+          fr: 'Lecture : un second <code>with open("notes.txt") as f:</code>, sans mode.',
+          en: 'Reading: a second <code>with open("notes.txt") as f:</code>, with no mode.',
+        },
+        {
+          fr: '<code>f.read().split()</code> rend directement la liste des trois notes.',
+          en: '<code>f.read().split()</code> gives you the list of the three marks directly.',
+        },
+      ],
+      solution:
+        'with open("notes.txt", "w") as fichier:\n    fichier.write("14\\n17\\n11\\n")\n\nwith open("notes.txt") as fichier:\n    notes = fichier.read().split()\n\nprint(f"Contenu : {notes}")\nprint(f"{len(notes)} notes enregistrées")',
+    },
+  },
+
+  'py-fic-2': {
+    langage: 'python',
+    xp: 35,
+    objectif: {
+      fr: 'Parcourir un fichier ligne par ligne, et lui ajouter du contenu.',
+      en: 'Go through a file line by line, and add content to it.',
+    },
+    explication: {
+      fr: `
+        <p><code>.read()</code> charge <strong>tout</strong> le fichier d’un coup. Sur trois
+        notes c’est parfait ; sur un fichier d’un giga-octet, la mémoire explose.</p>
+        <p>La bonne habitude est de parcourir le fichier comme une liste de lignes :</p>
+        <pre>with open("notes.txt") as fichier:
+    for ligne in fichier:
+        print(ligne.strip())</pre>
+        <p>Python ne lit alors qu’une ligne à la fois, quelle que soit la taille du fichier.</p>
+        <p><strong>Le <code>.strip()</code> n’est pas décoratif :</strong> chaque ligne lue
+        garde son retour à la ligne final. Sans lui, tes affichages se retrouvent espacés d’une
+        ligne vide, et une comparaison comme <code>ligne == "14"</code> échoue mystérieusement
+        — parce que la ligne vaut en réalité <code>"14\\n"</code>.</p>
+        <p>Pour ajouter sans effacer, le mode <code>"a"</code> (comme <em>append</em>) :</p>
+        <pre>with open("notes.txt", "a") as fichier:
+    fichier.write("20\\n")</pre>
+        <p>C’est la différence qui compte entre <code>"w"</code> et <code>"a"</code> :
+        le premier repart de zéro, le second continue.</p>
+      `,
+      en: `
+        <p><code>.read()</code> loads the <strong>whole</strong> file at once. On three marks
+        that is fine; on a one-gigabyte file, memory blows up.</p>
+        <p>The good habit is to walk the file like a list of lines:</p>
+        <pre>with open("notes.txt") as fichier:
+    for ligne in fichier:
+        print(ligne.strip())</pre>
+        <p>Python then reads only one line at a time, whatever the file size.</p>
+        <p><strong>The <code>.strip()</code> is not decorative:</strong> every line read keeps
+        its trailing line break. Without it your output ends up double-spaced, and a comparison
+        like <code>ligne == "14"</code> fails mysteriously — because the line is really
+        <code>"14\\n"</code>.</p>
+        <p>To add without erasing, mode <code>"a"</code> (for <em>append</em>):</p>
+        <pre>with open("notes.txt", "a") as fichier:
+    fichier.write("20\\n")</pre>
+        <p>That is the difference that matters between <code>"w"</code> and <code>"a"</code>:
+        the first starts from scratch, the second carries on.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'with open("journal.txt", "w") as fichier:\n    fichier.write("lundi : 2 h\\nmardi : 1 h\\n")\n\nwith open("journal.txt") as fichier:\n    for ligne in fichier:\n        print("→", ligne.strip())\n\nwith open("journal.txt", "a") as fichier:\n    fichier.write("mercredi : 3 h\\n")\n\nwith open("journal.txt") as fichier:\n    print(len(fichier.readlines()), "jours")',
+      note: {
+        fr: 'Enlève le <code>.strip()</code> et relance : tu verras apparaître les lignes vides.',
+        en: 'Remove the <code>.strip()</code> and run again: the blank lines will appear.',
+      },
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Un fichier <code>notes.txt</code> contient déjà trois notes. Fais deux choses :</p>
+             <ol>
+               <li>affiche chaque note, une par ligne, préfixée par <code>Note : </code> ;</li>
+               <li><strong>ajoute</strong> la note <code>20</code> sans effacer les autres, puis
+               annonce le nouveau total.</li>
+             </ol>
+             <pre>Note : 14
+Note : 17
+Note : 11
+Total : 4 notes</pre>`,
+        en: `<p>A file <code>notes.txt</code> already holds three marks. Do two things:</p>
+             <ol>
+               <li>display each mark, one per line, prefixed with <code>Note : </code>;</li>
+               <li><strong>append</strong> the mark <code>20</code> without erasing the others,
+               then announce the new total.</li>
+             </ol>
+             <pre>Note : 14
+Note : 17
+Note : 11
+Total : 4 notes</pre>`,
+      },
+      depart:
+        'with open("notes.txt", "w") as fichier:\n    fichier.write("14\\n17\\n11\\n")\n\n# Parcours ligne par ligne, puis ajoute la note 20\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'for\\s+\\w+\\s+in\\s+\\w+\\s*:',
+          message: {
+            fr: 'Parcours le fichier avec une boucle <code>for ligne in fichier:</code>.',
+            en: 'Walk the file with a <code>for ligne in fichier:</code> loop.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: '[\'"]a[\'"]\\s*\\)',
+          message: {
+            fr: 'Pour ajouter sans effacer, ouvre en mode <code>"a"</code>.',
+            en: 'To append without erasing, open in mode <code>"a"</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: '\\.strip\\s*\\(',
+          message: {
+            fr: 'Chaque ligne lue garde son retour à la ligne : enlève-le avec <code>.strip()</code>.',
+            en: 'Each line read keeps its line break: remove it with <code>.strip()</code>.',
+          },
+        },
+        { type: 'sortieContient', valeur: { fr: 'Note : 14', en: 'Note : 14' } },
+        { type: 'sortieContient', valeur: { fr: 'Note : 11', en: 'Note : 11' } },
+        { type: 'sortieContient', valeur: { fr: 'Total : 4 notes', en: 'Total : 4 notes' } },
+      ],
+      indices: [
+        {
+          fr: 'La boucle : <code>with open("notes.txt") as f:</code> puis <code>for ligne in f:</code>.',
+          en: 'The loop: <code>with open("notes.txt") as f:</code> then <code>for ligne in f:</code>.',
+        },
+        {
+          fr: 'L’ajout : <code>with open("notes.txt", "a") as f:</code> puis <code>f.write("20\\n")</code>.',
+          en: 'The append: <code>with open("notes.txt", "a") as f:</code> then <code>f.write("20\\n")</code>.',
+        },
+        {
+          fr: 'Pour compter à la fin, relis tout : <code>len(f.readlines())</code>.',
+          en: 'To count at the end, read it all back: <code>len(f.readlines())</code>.',
+        },
+      ],
+      solution:
+        'with open("notes.txt", "w") as fichier:\n    fichier.write("14\\n17\\n11\\n")\n\nwith open("notes.txt") as fichier:\n    for ligne in fichier:\n        print(f"Note : {ligne.strip()}")\n\nwith open("notes.txt", "a") as fichier:\n    fichier.write("20\\n")\n\nwith open("notes.txt") as fichier:\n    print(f"Total : {len(fichier.readlines())} notes")',
+    },
+  },
+
+  'py-fic-3': {
+    langage: 'python',
+    xp: 40,
+    objectif: {
+      fr: 'Enregistrer des données structurées, et les relire telles quelles.',
+      en: 'Save structured data, and read it back unchanged.',
+    },
+    explication: {
+      fr: `
+        <p>Un fichier texte range du texte. Mais comment enregistrer un
+        <strong>dictionnaire</strong>, avec ses nombres, ses listes et ses clés ? En le
+        transformant en texte selon une convention que tout le monde connaît : le
+        <strong>JSON</strong>.</p>
+        <pre>import json
+
+with open("profil.json", "w") as f:
+    json.dump(profil, f)
+
+with open("profil.json") as f:
+    profil = json.load(f)</pre>
+        <p>Deux fonctions, faciles à retenir : <code>dump</code> vide les données dans un
+        fichier, <code>load</code> les charge depuis un fichier.</p>
+        <p>Et surtout : <strong>les types sont conservés</strong>. Un nombre relu est un nombre,
+        une liste reste une liste. C’est toute la différence avec un fichier texte, où
+        <code>320</code> revient sous la forme <code>"320"</code>.</p>
+        <p>JSON n’est pas propre à Python : c’est le format d’échange de tout le web. Ton
+        application CodeWithMe enregistre ta progression en JSON, exactement comme ça.</p>
+        <p>Une limite à connaître : JSON ne sait stocker que des nombres, du texte, des
+        booléens, des listes et des dictionnaires. Un tuple ressort en liste, et une date doit
+        être convertie en texte avant.</p>
+      `,
+      en: `
+        <p>A text file stores text. But how do you save a <strong>dictionary</strong>, with its
+        numbers, lists and keys? By turning it into text using a convention everyone knows:
+        <strong>JSON</strong>.</p>
+        <pre>import json
+
+with open("profil.json", "w") as f:
+    json.dump(profil, f)
+
+with open("profil.json") as f:
+    profil = json.load(f)</pre>
+        <p>Two functions, easy to remember: <code>dump</code> dumps the data into a file,
+        <code>load</code> loads it back from a file.</p>
+        <p>Above all: <strong>types are preserved</strong>. A number read back is a number, a
+        list stays a list. That is the whole difference from a text file, where <code>320</code>
+        comes back as <code>"320"</code>.</p>
+        <p>JSON is not specific to Python: it is the exchange format of the entire web. Your
+        CodeWithMe application saves your progress in JSON, exactly like this.</p>
+        <p>One limit to know: JSON can only store numbers, text, booleans, lists and
+        dictionaries. A tuple comes back as a list, and a date must be converted to text
+        first.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'import json\n\nprofil = {"nom": "Louis", "xp": 320, "badges": ["premier-pas", "curieux"]}\n\nwith open("profil.json", "w") as fichier:\n    json.dump(profil, fichier)\n\n# On regarde à quoi ressemble le fichier :\nwith open("profil.json") as fichier:\n    print(fichier.read())\n\nwith open("profil.json") as fichier:\n    relu = json.load(fichier)\n\nprint(relu["nom"], relu["xp"] + 10)\nprint(type(relu["xp"]))',
+      note: {
+        fr: 'La dernière ligne le prouve : le XP relu est bien un <code>int</code>, pas du texte.',
+        en: 'The last line proves it: the XP read back really is an <code>int</code>, not text.',
+      },
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Enregistre le profil d’un joueur en JSON, puis relis-le et
+             <strong>calcule</strong> avec les valeurs relues :</p>
+             <pre>Louis a 320 XP
+Avec le bonus : 420
+2 badges</pre>
+             <p>Le bonus est de 100. S’il fallait convertir avec <code>int()</code>, c’est que
+             JSON n’a pas été utilisé.</p>`,
+        en: `<p>Save a player's profile as JSON, then read it back and <strong>compute</strong>
+             with the values you read:</p>
+             <pre>Louis a 320 XP
+Avec le bonus : 420
+2 badges</pre>
+             <p>The bonus is 100. If you needed <code>int()</code> to convert, then JSON was not
+             used.</p>`,
+      },
+      depart:
+        'import json\n\nprofil = {"nom": "Louis", "xp": 320, "badges": ["premier-pas", "curieux"]}\n\n# Enregistre en JSON, relis, puis calcule\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'json\\.dump\\s*\\(',
+          message: {
+            fr: 'Enregistre avec <code>json.dump(profil, fichier)</code>.',
+            en: 'Save with <code>json.dump(profil, fichier)</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'json\\.load\\s*\\(',
+          message: {
+            fr: 'Relis avec <code>json.load(fichier)</code>.',
+            en: 'Read back with <code>json.load(fichier)</code>.',
+          },
+        },
+        {
+          type: 'codeNeContientPas',
+          motif: '\\bint\\s*\\(',
+          message: {
+            fr: 'Aucune conversion n’est nécessaire : JSON conserve les types.',
+            en: 'No conversion is needed: JSON preserves types.',
+          },
+        },
+        { type: 'sortieContient', valeur: { fr: 'Louis a 320 XP', en: 'Louis a 320 XP' } },
+        { type: 'sortieContient', valeur: { fr: 'Avec le bonus : 420', en: 'Avec le bonus : 420' } },
+        { type: 'sortieContient', valeur: { fr: '2 badges', en: '2 badges' } },
+      ],
+      indices: [
+        {
+          fr: 'Écriture : <code>with open("profil.json", "w") as f:</code> puis <code>json.dump(profil, f)</code>.',
+          en: 'Writing: <code>with open("profil.json", "w") as f:</code> then <code>json.dump(profil, f)</code>.',
+        },
+        {
+          fr: 'Lecture : <code>relu = json.load(f)</code> dans un second <code>with</code>.',
+          en: 'Reading: <code>relu = json.load(f)</code> inside a second <code>with</code>.',
+        },
+        {
+          fr: 'Puis <code>relu["xp"] + 100</code> fonctionne directement, sans <code>int()</code>.',
+          en: 'Then <code>relu["xp"] + 100</code> works directly, with no <code>int()</code>.',
+        },
+      ],
+      solution:
+        'import json\n\nprofil = {"nom": "Louis", "xp": 320, "badges": ["premier-pas", "curieux"]}\n\nwith open("profil.json", "w") as fichier:\n    json.dump(profil, fichier)\n\nwith open("profil.json") as fichier:\n    relu = json.load(fichier)\n\nprint(f"{relu[\'nom\']} a {relu[\'xp\']} XP")\nprint(f"Avec le bonus : {relu[\'xp\'] + 100}")\nprint(f"{len(relu[\'badges\'])} badges")',
+    },
+  },
+
+  'py-fic-4': {
+    langage: 'python',
+    xp: 45,
+    objectif: {
+      fr: 'Assembler un vrai petit logiciel : enregistrer, relire, classer.',
+      en: 'Assemble a real small piece of software: save, reload, rank.',
+    },
+    explication: {
+      fr: `
+        <p>Voici le moment où tout se rejoint. Un tableau des scores, c’est exactement ce que
+        fait un jeu vidéo entre deux parties :</p>
+        <ol>
+          <li>des données dans un <strong>dictionnaire</strong> ;</li>
+          <li>enregistrées en <strong>JSON</strong> dans un fichier ;</li>
+          <li>relues au lancement suivant ;</li>
+          <li>classées avec <strong><code>sorted</code> et un <code>key</code></strong> ;</li>
+          <li>affichées avec une <strong>boucle</strong>.</li>
+        </ol>
+        <p>Cinq notions que tu as apprises séparément, et qui ne forment plus qu’un seul
+        programme. C’est ça, savoir programmer : pas connaître des instructions, mais savoir
+        les <strong>assembler</strong>.</p>
+        <p>Un détail utile pour le classement : <code>dictionnaire.items()</code> rend des paires
+        <code>(clé, valeur)</code>. On peut donc les trier comme des tuples, avec
+        <code>key=lambda e: e[1]</code> pour trier sur le score.</p>
+        <p>Et pour ne garder que les trois premiers, une découpe de liste :
+        <code>classement[:3]</code>.</p>
+      `,
+      en: `
+        <p>Here is where everything comes together. A scoreboard is exactly what a video game
+        does between two sessions:</p>
+        <ol>
+          <li>data in a <strong>dictionary</strong>;</li>
+          <li>saved as <strong>JSON</strong> in a file;</li>
+          <li>read back on the next launch;</li>
+          <li>ranked with <strong><code>sorted</code> and a <code>key</code></strong>;</li>
+          <li>displayed with a <strong>loop</strong>.</li>
+        </ol>
+        <p>Five ideas you learned separately, now forming a single program. That is what
+        programming is: not knowing instructions, but knowing how to <strong>assemble</strong>
+        them.</p>
+        <p>A useful detail for the ranking: <code>dictionary.items()</code> gives back
+        <code>(key, value)</code> pairs. So you can sort them like tuples, with
+        <code>key=lambda e: e[1]</code> to sort on the score.</p>
+        <p>And to keep only the top three, a list slice: <code>classement[:3]</code>.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'import json\n\nscores = {"Louis": 320, "Léa": 480}\n\nwith open("scores.json", "w") as fichier:\n    json.dump(scores, fichier)\n\nwith open("scores.json") as fichier:\n    relus = json.load(fichier)\n\nclassement = sorted(relus.items(), key=lambda e: e[1], reverse=True)\nprint(classement)\n\nfor rang, (nom, score) in enumerate(classement, start=1):\n    print(f"{rang}. {nom} — {score}")',
+      note: {
+        fr: '<code>enumerate(liste, start=1)</code> donne le rang en même temps que l’élément : pratique pour numéroter.',
+        en: '<code>enumerate(list, start=1)</code> gives the rank along with the item: handy for numbering.',
+      },
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Fabrique le tableau des scores de ton jeu. Enregistre-le en JSON, relis-le,
+             classe-le du meilleur au moins bon et affiche <strong>le podium</strong> :</p>
+             <pre>1. Léa — 480
+2. Marie — 410
+3. Louis — 320</pre>
+             <p>Seuls les <strong>trois premiers</strong> apparaissent, même s’il y a quatre
+             joueurs.</p>`,
+        en: `<p>Build your game's scoreboard. Save it as JSON, read it back, rank it from best
+             to worst and display <strong>the podium</strong>:</p>
+             <pre>1. Léa — 480
+2. Marie — 410
+3. Louis — 320</pre>
+             <p>Only the <strong>top three</strong> appear, even though there are four
+             players.</p>`,
+      },
+      depart:
+        'import json\n\nscores = {"Louis": 320, "Léa": 480, "Théo": 150, "Marie": 410}\n\n# Enregistre, relis, classe, affiche le podium\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'json\\.dump\\s*\\(',
+          message: {
+            fr: 'Enregistre d’abord les scores en JSON.',
+            en: 'First save the scores as JSON.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'json\\.load\\s*\\(',
+          message: {
+            fr: 'Relis le fichier avant de classer : c’est ce que ferait un vrai jeu au lancement.',
+            en: 'Read the file back before ranking: that is what a real game would do at launch.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'sorted\\s*\\(',
+          message: {
+            fr: 'Classe avec <code>sorted()</code> et un <code>key</code>.',
+            en: 'Rank with <code>sorted()</code> and a <code>key</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: '\\[\\s*:\\s*3\\s*\\]',
+          message: {
+            fr: 'Ne garde que les trois premiers en découpant la liste classée : <code>classement[:3]</code>.',
+            en: 'Keep only the top three by slicing the ranked list: <code>classement[:3]</code>.',
+          },
+        },
+        { type: 'sortieEgale', valeur: { fr: '1. Léa — 480\n2. Marie — 410\n3. Louis — 320', en: '1. Léa — 480\n2. Marie — 410\n3. Louis — 320' } },
+      ],
+      indices: [
+        {
+          fr: 'Reprends le motif de l’exemple : <code>sorted(relus.items(), key=lambda e: e[1], reverse=True)</code>.',
+          en: 'Reuse the example pattern: <code>sorted(relus.items(), key=lambda e: e[1], reverse=True)</code>.',
+        },
+        {
+          fr: 'Pour n’en garder que trois, découpe la liste : <code>classement[:3]</code>.',
+          en: 'To keep only three, slice the list: <code>classement[:3]</code>.',
+        },
+        {
+          fr: 'Pour numéroter : <code>for rang, (nom, score) in enumerate(classement[:3], start=1):</code>.',
+          en: 'To number them: <code>for rang, (nom, score) in enumerate(classement[:3], start=1):</code>.',
+        },
+      ],
+      solution:
+        'import json\n\nscores = {"Louis": 320, "Léa": 480, "Théo": 150, "Marie": 410}\n\nwith open("scores.json", "w") as fichier:\n    json.dump(scores, fichier)\n\nwith open("scores.json") as fichier:\n    relus = json.load(fichier)\n\nclassement = sorted(relus.items(), key=lambda e: e[1], reverse=True)\n\nfor rang, (nom, score) in enumerate(classement[:3], start=1):\n    print(f"{rang}. {nom} — {score}")',
+    },
+    projet: { titre: { fr: 'Mon tableau des scores', en: 'My scoreboard' } },
   },
 };
