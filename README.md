@@ -2,16 +2,37 @@
 
 **Apprendre à coder pour de vrai, et voir tout de suite ce que ça donne.**
 
-Une application de bureau pour Windows qui enseigne **Python, HTML, CSS, JavaScript et C++**
-à un grand débutant — 86 leçons, 13 projets, et un certificat à la fin.
+Un logiciel qui enseigne **Python, HTML, CSS, JavaScript et C++** à un grand débutant —
+86 leçons, 13 projets, et un certificat à la fin.
 
-Tout fonctionne **hors ligne**. Aucune donnée ne quitte l'ordinateur.
+Il existe en **application Windows** et en **site web**, avec exactement le même contenu et le
+même atelier. Aucune donnée ne quitte la machine dans un cas comme dans l'autre : il n'y a pas
+de serveur, pas de compte, pas de suivi.
 
 ![L'écran d'accueil](docs/images/accueil.png)
 
 ---
 
-## Télécharger
+## Deux façons de l'utiliser
+
+| | Application Windows | Version web |
+|---|---|---|
+| **Installation** | un `.exe` à télécharger | rien, une adresse suffit |
+| **Fonctionne hors ligne** | oui, complètement | après le premier chargement |
+| **Ses projets** | de vrais fichiers dans `Documents\CodeWithMe\` | gardés dans le navigateur, téléchargeables en un clic |
+| **Compilateur C++ de la machine** | utilisé s'il est installé | indisponible — le C++ tourne quand même, avec le moteur intégré |
+| **Sur une tablette, un Mac, un Linux** | non | oui |
+
+Tout le reste est identique : les 86 leçons, l'`input()` qui bloque vraiment, la tortue qui
+dessine, l'aperçu qui suit la frappe, les badges, l'espace tuteur et le certificat.
+
+> L'application Windows reste la version de référence pour un usage quotidien : elle démarre
+> plus vite et ne dépend d'aucune connexion. La version web sert à essayer sans rien installer,
+> ou à travailler sur un ordinateur du collège où l'installation est bloquée.
+
+---
+
+## Télécharger l'application Windows
 
 Les fichiers se trouvent dans la [page des versions](../../releases/latest).
 
@@ -85,6 +106,9 @@ Chaque projet terminé est écrit dans `Documents\CodeWithMe\Mes projets\` — u
 un `.py`, un `.cpp`. Il peut les rouvrir, les modifier, les montrer à sa famille ou les rendre
 en classe. Le fichier fonctionne **sans l'application**.
 
+Sur la version web, les projets sont gardés dans le navigateur et un bouton les télécharge —
+le fichier obtenu est le même.
+
 ### Un espace tuteur
 
 ![L'espace tuteur](docs/images/tuteur.png)
@@ -117,7 +141,8 @@ concrètement. Protégeable par un code à 4 chiffres, et exportable en bilan PD
 ```bash
 npm install
 npm run vendor      # extrait les bibliotheques embarquees dans vendor/
-npm start           # lance l'application
+npm start           # lance l'application de bureau
+npm run serveur:web # lance la version web sur http://127.0.0.1:4173
 ```
 
 ### Les contrôles
@@ -127,7 +152,8 @@ Rien n'est déclaré fonctionnel sans avoir été exécuté.
 | Commande | Ce qu'elle vérifie |
 |---|---|
 | `npm run check:content` | Les 86 leçons, dans les vrais moteurs : structure bilingue complète, solution de référence qui passe, code de départ qui **ne** passe pas, exemple qui s'exécute |
-| `npm test` | 128 vérifications : moteurs, atelier, correction, XP, galerie, espace tuteur, projet final, certificat, et le script qui contrôle les `.exe` produits |
+| `npm test` | 154 vérifications : moteurs, atelier, correction, XP, galerie, espace tuteur, projet final, certificat, le script qui contrôle les `.exe` produits, et la version web dans un vrai navigateur |
+| `npm run test:web` | Le site **construit** est servi puis ouvert dans un Chromium ordinaire : démarrage, isolation d'origine, `input()` bloquant, tortue, aperçu, C++, projets qui survivent au rechargement, et aucune ressource manquante |
 | `npm run test:paquet` | L'application **empaquetée** se lance et fonctionne — c'est là qu'on découvre un fichier manquant |
 | `npm run check:contrast` | Contrastes WCAG AA mesurés, et palette des graphiques contrôlée en simulant le daltonisme |
 | `npm run check:icones` | Aucun emoji dans l'interface — Windows les dessine lui-même, leur rendu changerait d'une machine à l'autre |
@@ -137,12 +163,13 @@ Rien n'est déclaré fonctionnel sans avoir été exécuté.
 
 ```
 electron/    processus principal : protocole app://, menus, profil, projets
-app/         interface : modules ES, sans framework
+app/         interface : modules ES, sans framework — partagee par les deux versions
   content/   les 86 lecons, en donnees pures — ajouter une lecon = ajouter un objet
 python/      turtle.py, le module tortue maison injecte dans Pyodide
 vendor/      Pyodide, JSCPP, CodeMirror, polices — embarques, aucun reseau requis
-tools/       vendorisation, controle du contenu, des icones et des couleurs
-tests/       Playwright pilotant l'application Electron reelle
+web/         pont-navigateur.js : window.cwm rendu par un navigateur
+tools/       vendorisation, controle du contenu, construction et serveur web
+tests/       Playwright pilotant l'application Electron reelle, et le site construit
 ```
 
 L'interface est en **JavaScript sans framework**. L'application est riche en contenu, pas en
@@ -162,6 +189,36 @@ npm run build:win     # necessite Windows
 En pratique, la construction est faite par GitHub Actions sur un runner `windows-latest` :
 onglet **Actions → Construire l'application Windows**, ou en poussant une étiquette `v1.0.0`,
 ce qui publie en plus une Release téléchargeable.
+
+### Publier la version web
+
+```bash
+npm run build:web         # produit dist-web/
+npm run serveur:web -- --dist   # sert exactement ce qui sera publie
+```
+
+`dist-web/` est un site **entièrement statique** : il suffit de le déposer chez un hébergeur.
+`netlify.toml` configure Netlify ; Cloudflare Pages lit les mêmes réglages (commande
+`npm run vendor && npm run build:web`, dossier `dist-web`).
+
+**Un hébergeur ne convient que s'il sait poser des en-têtes.** La construction écrit
+`dist-web/_headers` avec `Cross-Origin-Opener-Policy: same-origin` et
+`Cross-Origin-Embedder-Policy: require-corp`. Sans ces deux lignes, `SharedArrayBuffer`
+n'existe pas — et c'est lui qui permet à `input()` de **vraiment** attendre la réponse de
+l'élève. Sans lui, la console poserait la question puis passerait à la suite sans écouter.
+C'est pour cette seule raison que **GitHub Pages ne convient pas** : il ne permet pas de
+configurer les en-têtes.
+
+#### Comment le web réutilise le même code
+
+L'interface est chargée dans l'application de bureau par un protocole maison `app://`, que le
+navigateur ne connaît pas. `npm run build:web` traduit ces 21 adresses en chemins ordinaires
+**dans une copie**, et injecte `web/pont-navigateur.js` — l'équivalent navigateur du pont
+`window.cwm`, qui remplace les fichiers du disque par le stockage local et les téléchargements.
+
+Aucun fichier du dépôt n'est modifié par cette construction, et le code de l'application de
+bureau ne contient aucun test de plateforme. C'est ce qui garantit qu'ajouter le web ne peut
+pas casser l'installateur Windows.
 
 ---
 

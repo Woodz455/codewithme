@@ -137,12 +137,20 @@ export function ecranGalerie() {
 
       const chemin = racine.querySelector('.chemin-projets');
       if (chemin) {
-        chemin.textContent = projets.length
-          ? texte({
-              fr: `Tes créations sont de vrais fichiers, rangés dans ${infos.dossierProjets}`,
-              en: `Your creations are real files, stored in ${infos.dossierProjets}`,
-            })
-          : '';
+        // Un navigateur n'a pas de dossier a nommer : ses projets vivent dans
+        // le navigateur lui-meme, et le bouton « dossier » les telecharge. Dire
+        // « rangés dans null » serait pire que ne rien dire.
+        chemin.textContent = !projets.length
+          ? ''
+          : infos.dossierProjets
+            ? texte({
+                fr: `Tes créations sont de vrais fichiers, rangés dans ${infos.dossierProjets}`,
+                en: `Your creations are real files, stored in ${infos.dossierProjets}`,
+              })
+            : texte({
+                fr: 'Tes créations sont gardées dans ce navigateur. Télécharge-les pour en faire de vrais fichiers.',
+                en: 'Your creations are kept in this browser. Download them to get real files.',
+              });
       }
 
       remplir(grille, projets.length ? projets.map((p) => carteProjet(p, charger)) : etatVide());
