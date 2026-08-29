@@ -155,6 +155,27 @@ export const PARCOURS = [
           L('py-comp-3', 'Dictionnaires et ensembles', 'Dictionaries and sets'),
         ],
       },
+      {
+        id: 'py-hof',
+        titre: { fr: 'Fonctions d’ordre supérieur', en: 'Higher order functions' },
+        icone: 'eclair',
+        lecons: [
+          L('py-hof-1', 'Une fonction en paramètre', 'A function as a parameter'),
+          L('py-hof-2', 'La lambda, map et filter', 'Lambda, map and filter'),
+          L('py-hof-3', 'Trier selon son critère', 'Sorting by your own criterion'),
+        ],
+      },
+      {
+        id: 'py-err',
+        titre: { fr: 'Types et erreurs', en: 'Types and errors' },
+        icone: 'bug',
+        lecons: [
+          L('py-err-1', 'Les types et les conversions', 'Types and conversions'),
+          L('py-err-2', 'Lire une erreur, réparer', 'Reading an error, repairing'),
+          L('py-err-3', 'Attraper avec try / except', 'Catching with try / except'),
+          L('py-err-4', 'Lever une erreur, et finally', 'Raising an error, and finally'),
+        ],
+      },
     ],
   },
 

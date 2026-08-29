@@ -2543,4 +2543,824 @@ Alexandre a 9 lettres</pre>`,
         'prenoms = ["Louis", "Léa", "Alexandre"]\n\nlongueurs = {p: len(p) for p in prenoms}\n\nprint(longueurs)\nprint(f"Alexandre a {longueurs[\'Alexandre\']} lettres")',
     },
   },
+
+  /* ======================================= Fonctions d'ordre superieur ==== */
+
+  'py-hof-1': {
+    langage: 'python',
+    xp: 40,
+    objectif: {
+      fr: 'Ranger une fonction dans une variable, et la passer à une autre fonction.',
+      en: 'Store a function in a variable, and pass it to another function.',
+    },
+    explication: {
+      fr: `
+        <p>Voici une idée qui surprend, puis qui change tout : en Python, une fonction est
+        <strong>une valeur comme une autre</strong>. On peut la ranger dans une variable, la
+        mettre dans une liste, la donner à une autre fonction.</p>
+        <pre>def double(n):
+    return n * 2
+
+operation = double        # sans parenthèses
+print(operation(21))      # 42</pre>
+        <p><strong>Tout est dans les parenthèses.</strong> <code>double</code> désigne la
+        fonction elle-même ; <code>double(5)</code> l’<em>exécute</em> et désigne son résultat.
+        Confondre les deux est l’erreur numéro un sur ce sujet.</p>
+        <p>Ce qui devient possible : écrire une fonction qui <strong>reçoit une autre
+        fonction</strong> en paramètre.</p>
+        <pre>def applique(fonction, valeurs):
+    return [fonction(v) for v in valeurs]
+
+applique(double, [1, 2, 3])    # [2, 4, 6]</pre>
+        <p>On appelle ça une <strong>fonction d’ordre supérieur</strong>. Tu en connais déjà
+        une sans le savoir : <code>sorted(liste, key=…)</code> reçoit une fonction qui lui dit
+        selon quoi trier.</p>
+        <p>L’intérêt : <code>applique</code> ne sait rien de ce qu’elle applique. Elle marchera
+        avec n’importe quelle fonction future — c’est du code qu’on n’aura plus à réécrire.</p>
+      `,
+      en: `
+        <p>Here is an idea that surprises, then changes everything: in Python a function is
+        <strong>a value like any other</strong>. You can store it in a variable, put it in a
+        list, hand it to another function.</p>
+        <pre>def double(n):
+    return n * 2
+
+operation = double        # no brackets
+print(operation(21))      # 42</pre>
+        <p><strong>It is all in the brackets.</strong> <code>double</code> names the function
+        itself; <code>double(5)</code> <em>runs</em> it and names its result. Confusing the two
+        is mistake number one on this topic.</p>
+        <p>What becomes possible: writing a function that <strong>receives another
+        function</strong> as a parameter.</p>
+        <pre>def applique(fonction, valeurs):
+    return [fonction(v) for v in valeurs]
+
+applique(double, [1, 2, 3])    # [2, 4, 6]</pre>
+        <p>This is called a <strong>higher order function</strong>. You already know one without
+        realising: <code>sorted(liste, key=…)</code> takes a function telling it what to sort
+        by.</p>
+        <p>The point: <code>applique</code> knows nothing about what it applies. It will work
+        with any future function — code you will never have to rewrite.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'def double(n):\n    return n * 2\n\ndef carre(n):\n    return n * n\n\ndef applique(fonction, valeurs):\n    return [fonction(v) for v in valeurs]\n\nprint(applique(double, [1, 2, 3]))\nprint(applique(carre, [1, 2, 3]))\n\n# Une fonction rangée dans une variable :\noperation = double\nprint(operation(21))\n\n# Et même dans une liste :\nfor f in [double, carre]:\n    print(f(5))',
+      note: {
+        fr: 'Remarque : jamais de parenthèses quand on <em>donne</em> la fonction, seulement quand on l’exécute.',
+        en: 'Notice: never any brackets when you <em>hand over</em> the function, only when you run it.',
+      },
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Écris deux choses :</p>
+             <ol>
+               <li>une fonction <code>triple(n)</code> qui renvoie <code>n * 3</code> ;</li>
+               <li>une fonction <code>applique_a_tous(fonction, liste)</code> qui renvoie la
+               liste des résultats.</li>
+             </ol>
+             <p>Puis affiche :</p>
+             <pre>[3, 6, 9]</pre>
+             <p><code>applique_a_tous</code> ne doit <strong>pas</strong> contenir le mot
+             <code>triple</code> : elle doit marcher avec n’importe quelle fonction.</p>`,
+        en: `<p>Write two things:</p>
+             <ol>
+               <li>a function <code>triple(n)</code> returning <code>n * 3</code>;</li>
+               <li>a function <code>applique_a_tous(fonction, liste)</code> returning the list
+               of results.</li>
+             </ol>
+             <p>Then display:</p>
+             <pre>[3, 6, 9]</pre>
+             <p><code>applique_a_tous</code> must <strong>not</strong> contain the word
+             <code>triple</code>: it has to work with any function.</p>`,
+      },
+      depart: '# Définis triple, puis applique_a_tous, puis utilise-les sur [1, 2, 3]\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'def\\s+applique_a_tous\\s*\\(\\s*fonction\\s*,',
+          message: {
+            fr: 'La fonction doit recevoir une fonction en premier paramètre : <code>def applique_a_tous(fonction, liste):</code>.',
+            en: 'The function must take a function as its first parameter: <code>def applique_a_tous(fonction, liste):</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'applique_a_tous\\s*\\(\\s*triple\\s*,',
+          message: {
+            fr: 'Passe la fonction sans parenthèses : <code>applique_a_tous(triple, [1, 2, 3])</code>.',
+            en: 'Pass the function with no brackets: <code>applique_a_tous(triple, [1, 2, 3])</code>.',
+          },
+        },
+        { type: 'sortieContient', valeur: { fr: '[3, 6, 9]', en: '[3, 6, 9]' } },
+      ],
+      indices: [
+        {
+          fr: '<code>triple</code> tient en deux lignes, comme les fonctions que tu as déjà écrites.',
+          en: '<code>triple</code> fits in two lines, like the functions you have already written.',
+        },
+        {
+          fr: 'Dans <code>applique_a_tous</code>, une compréhension suffit : <code>return [fonction(v) for v in liste]</code>.',
+          en: 'Inside <code>applique_a_tous</code>, a comprehension is enough: <code>return [fonction(v) for v in liste]</code>.',
+        },
+        {
+          fr: 'À l’appel, écris <code>triple</code> tout court — avec des parenthèses, tu passerais son résultat.',
+          en: 'When calling, write plain <code>triple</code> — with brackets you would pass its result instead.',
+        },
+      ],
+      solution:
+        'def triple(n):\n    return n * 3\n\ndef applique_a_tous(fonction, liste):\n    return [fonction(v) for v in liste]\n\nprint(applique_a_tous(triple, [1, 2, 3]))',
+    },
+  },
+
+  'py-hof-2': {
+    langage: 'python',
+    xp: 40,
+    objectif: {
+      fr: 'Écrire une fonction minuscule sans lui donner de nom : la lambda.',
+      en: 'Write a tiny function without naming it: the lambda.',
+    },
+    explication: {
+      fr: `
+        <p>Quand une fonction tient en une expression et ne servira qu’une fois, lui trouver un
+        nom est une corvée. Python propose une forme courte, la <strong>lambda</strong> :</p>
+        <pre>lambda n: n * 2</pre>
+        <p>Ça se lit : « une fonction qui prend <code>n</code> et rend <code>n * 2</code> ».
+        Pas de <code>def</code>, pas de nom, pas de <code>return</code> — la valeur après les
+        deux points <em>est</em> le résultat.</p>
+        <p>Elles vont naturellement avec deux outils intégrés :</p>
+        <ul>
+          <li><code>map(fonction, liste)</code> — applique la fonction à
+          <strong>chaque</strong> élément ;</li>
+          <li><code>filter(fonction, liste)</code> — <strong>garde</strong> les éléments pour
+          lesquels la fonction dit <code>True</code>.</li>
+        </ul>
+        <p>Attention : les deux rendent un objet paresseux, qui ne calcule qu’au moment où on
+        le lit. Pour voir le résultat, il faut l’envelopper dans <code>list(…)</code>.</p>
+        <p><strong>Deux limites à connaître :</strong> une lambda ne contient
+        <strong>qu’une seule expression</strong> — ni <code>if</code> sur plusieurs lignes, ni
+        boucle. Et en Python, une compréhension fait souvent la même chose plus lisiblement :
+        <code>[n * 2 for n in liste]</code> se lit mieux que
+        <code>list(map(lambda n: n * 2, liste))</code>. Les lambdas brillent surtout
+        <strong>en paramètre</strong>, comme le <code>key=</code> d’un tri.</p>
+      `,
+      en: `
+        <p>When a function fits in one expression and will be used once, finding a name for it
+        is a chore. Python offers a short form, the <strong>lambda</strong>:</p>
+        <pre>lambda n: n * 2</pre>
+        <p>Read it as: "a function that takes <code>n</code> and gives back <code>n * 2</code>".
+        No <code>def</code>, no name, no <code>return</code> — the value after the colon
+        <em>is</em> the result.</p>
+        <p>They pair naturally with two built-in tools:</p>
+        <ul>
+          <li><code>map(function, list)</code> — applies the function to <strong>every</strong>
+          item;</li>
+          <li><code>filter(function, list)</code> — <strong>keeps</strong> the items for which
+          the function says <code>True</code>.</li>
+        </ul>
+        <p>Careful: both give back a lazy object that only computes when read. To see the
+        result you must wrap it in <code>list(…)</code>.</p>
+        <p><strong>Two limits to know:</strong> a lambda holds <strong>one single
+        expression</strong> — no multi-line <code>if</code>, no loop. And in Python a
+        comprehension often does the same thing more readably:
+        <code>[n * 2 for n in liste]</code> reads better than
+        <code>list(map(lambda n: n * 2, liste))</code>. Lambdas shine mostly
+        <strong>as a parameter</strong>, like the <code>key=</code> of a sort.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'double = lambda n: n * 2\nprint(double(21))\n\nnombres = [1, 2, 3, 4, 5]\nprint(list(map(lambda n: n * 2, nombres)))\nprint(list(filter(lambda n: n > 2, nombres)))\n\n# Sans le list(), on ne voit pas le résultat :\nprint(map(lambda n: n * 2, nombres))\n\n# La version compréhension, souvent préférable :\nprint([n * 2 for n in nombres])',
+      note: {
+        fr: 'L’avant-dernière ligne affiche un objet, pas une liste : c’est le piège de <code>map</code>.',
+        en: 'The second-to-last line shows an object, not a list: that is the <code>map</code> trap.',
+      },
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Des prix hors taxes doivent passer en TTC (× 1.2). Utilise
+             <strong><code>map</code> avec une lambda</strong> pour obtenir :</p>
+             <pre>[12.0, 30.0, 9.6, 48.0]</pre>
+             <p>N’oublie pas le <code>list()</code> autour, sinon tu afficheras un objet.</p>`,
+        en: `<p>Prices must be converted to include tax (× 1.2). Use <strong><code>map</code>
+             with a lambda</strong> to get:</p>
+             <pre>[12.0, 30.0, 9.6, 48.0]</pre>
+             <p>Do not forget the <code>list()</code> around it, or you will display an
+             object.</p>`,
+      },
+      depart: 'prix = [10, 25, 8, 40]\n\n# map + lambda, puis list() pour voir le résultat\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: '\\blambda\\b',
+          message: {
+            fr: 'Écris la transformation sous forme de lambda : <code>lambda p: p * 1.2</code>.',
+            en: 'Write the transformation as a lambda: <code>lambda p: p * 1.2</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: '\\bmap\\s*\\(',
+          message: {
+            fr: 'Applique-la à toute la liste avec <code>map</code>.',
+            en: 'Apply it to the whole list with <code>map</code>.',
+          },
+        },
+        { type: 'sortieContient', valeur: { fr: '[12.0, 30.0, 9.6, 48.0]', en: '[12.0, 30.0, 9.6, 48.0]' } },
+      ],
+      indices: [
+        {
+          fr: 'La lambda : <code>lambda p: p * 1.2</code>.',
+          en: 'The lambda: <code>lambda p: p * 1.2</code>.',
+        },
+        {
+          fr: '<code>map</code> prend la fonction en premier, la liste en second.',
+          en: '<code>map</code> takes the function first, the list second.',
+        },
+        {
+          fr: 'Le tout : <code>print(list(map(lambda p: p * 1.2, prix)))</code>.',
+          en: 'All together: <code>print(list(map(lambda p: p * 1.2, prix)))</code>.',
+        },
+      ],
+      solution: 'prix = [10, 25, 8, 40]\n\nprint(list(map(lambda p: p * 1.2, prix)))',
+    },
+  },
+
+  'py-hof-3': {
+    langage: 'python',
+    xp: 40,
+    objectif: {
+      fr: 'Trier selon le critère que l’on choisit.',
+      en: 'Sort by whichever criterion you choose.',
+    },
+    explication: {
+      fr: `
+        <p><code>sorted()</code> tout seul trie « naturellement » : les nombres par valeur, les
+        textes par ordre alphabétique. Mais que faire pour trier des mots
+        <strong>par longueur</strong>, ou des élèves <strong>par note</strong> ?</p>
+        <p>On lui donne une fonction, sous le nom <code>key</code>. Elle dit, pour chaque
+        élément, <strong>quelle valeur sert à comparer</strong> :</p>
+        <pre>sorted(["chien", "rat", "souris"], key=len)
+# ['rat', 'chien', 'souris']</pre>
+        <p><code>len</code> est passée sans parenthèses : c’est bien la fonction elle-même, et
+        <code>sorted</code> l’appellera sur chaque mot.</p>
+        <p>Quand le critère n’a pas de fonction toute prête, une lambda fait l’affaire :</p>
+        <pre>eleves = [("Louis", 15), ("Léa", 17)]
+sorted(eleves, key=lambda e: e[1], reverse=True)</pre>
+        <p>Ici chaque élément est un tuple ; <code>e[1]</code> désigne la note.
+        <code>reverse=True</code> trie du plus grand au plus petit.</p>
+        <p>C’est la fonction d’ordre supérieur la plus utile de toutes : classer un
+        tableau de scores, un carnet d’adresses, une liste de fichiers par date — c’est
+        toujours <code>sorted</code> avec le bon <code>key</code>.</p>
+      `,
+      en: `
+        <p><code>sorted()</code> on its own sorts "naturally": numbers by value, text
+        alphabetically. But how do you sort words <strong>by length</strong>, or pupils
+        <strong>by mark</strong>?</p>
+        <p>You give it a function, under the name <code>key</code>. It says, for each item,
+        <strong>which value to compare on</strong>:</p>
+        <pre>sorted(["chien", "rat", "souris"], key=len)
+# ['rat', 'chien', 'souris']</pre>
+        <p><code>len</code> is passed with no brackets: it really is the function itself, and
+        <code>sorted</code> will call it on each word.</p>
+        <p>When the criterion has no ready-made function, a lambda does the job:</p>
+        <pre>eleves = [("Louis", 15), ("Léa", 17)]
+sorted(eleves, key=lambda e: e[1], reverse=True)</pre>
+        <p>Here each item is a tuple; <code>e[1]</code> names the mark.
+        <code>reverse=True</code> sorts from largest to smallest.</p>
+        <p>This is the most useful higher order function of all: ranking a scoreboard, an
+        address book, a list of files by date — it is always <code>sorted</code> with the right
+        <code>key</code>.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'mots = ["chien", "rat", "souris"]\nprint(sorted(mots))\nprint(sorted(mots, key=len))\n\neleves = [("Louis", 15), ("Léa", 17), ("Théo", 12)]\nprint(sorted(eleves, key=lambda e: e[1]))\nprint(sorted(eleves, key=lambda e: e[1], reverse=True))\n\n# Trier par le premier élément du tuple, donc par prénom :\nprint(sorted(eleves, key=lambda e: e[0]))',
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Voici un tableau de scores, chaque entrée étant un tuple
+             <code>(prénom, note)</code>.</p>
+             <p>Classe-le de la <strong>meilleure note à la moins bonne</strong>, puis affiche
+             une ligne par élève :</p>
+             <pre>Marie : 19
+Léa : 17
+Louis : 15
+Théo : 12</pre>`,
+        en: `<p>Here is a scoreboard, each entry being a <code>(name, mark)</code> tuple.</p>
+             <p>Rank it from the <strong>best mark to the worst</strong>, then display one line
+             per pupil:</p>
+             <pre>Marie : 19
+Léa : 17
+Louis : 15
+Théo : 12</pre>`,
+      },
+      depart:
+        'eleves = [("Louis", 15), ("Léa", 17), ("Théo", 12), ("Marie", 19)]\n\n# Trie par note décroissante, puis affiche une ligne par élève\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'key\\s*=',
+          message: {
+            fr: 'Indique le critère de tri avec <code>key=</code>.',
+            en: 'Give the sorting criterion with <code>key=</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'reverse\\s*=\\s*True',
+          message: {
+            fr: 'De la meilleure à la moins bonne : <code>reverse=True</code>.',
+            en: 'From best to worst: <code>reverse=True</code>.',
+          },
+        },
+        { type: 'sortieEgale', valeur: { fr: 'Marie : 19\nLéa : 17\nLouis : 15\nThéo : 12', en: 'Marie : 19\nLéa : 17\nLouis : 15\nThéo : 12' } },
+      ],
+      indices: [
+        {
+          fr: 'Le critère est la note, c’est-à-dire le second élément : <code>key=lambda e: e[1]</code>.',
+          en: 'The criterion is the mark, that is the second item: <code>key=lambda e: e[1]</code>.',
+        },
+        {
+          fr: 'Range le résultat : <code>classement = sorted(eleves, key=lambda e: e[1], reverse=True)</code>.',
+          en: 'Store the result: <code>classement = sorted(eleves, key=lambda e: e[1], reverse=True)</code>.',
+        },
+        {
+          fr: 'Puis déballe dans la boucle : <code>for nom, note in classement:</code>.',
+          en: 'Then unpack in the loop: <code>for nom, note in classement:</code>.',
+        },
+      ],
+      solution:
+        'eleves = [("Louis", 15), ("Léa", 17), ("Théo", 12), ("Marie", 19)]\n\nclassement = sorted(eleves, key=lambda e: e[1], reverse=True)\n\nfor nom, note in classement:\n    print(f"{nom} : {note}")',
+    },
+  },
+
+  /* ================================================= Types et erreurs ===== */
+
+  'py-err-1': {
+    langage: 'python',
+    xp: 30,
+    objectif: {
+      fr: 'Connaître le type d’une valeur, et la convertir quand il le faut.',
+      en: 'Know the type of a value, and convert it when needed.',
+    },
+    explication: {
+      fr: `
+        <p>Chaque valeur en Python a un <strong>type</strong>, et ce type décide de ce qu’on
+        peut en faire. <code>type()</code> te le dit :</p>
+        <ul>
+          <li><code>int</code> — un nombre entier : <code>12</code></li>
+          <li><code>float</code> — un nombre à virgule : <code>1.5</code></li>
+          <li><code>str</code> — du texte : <code>"12"</code></li>
+          <li><code>bool</code> — vrai ou faux : <code>True</code></li>
+          <li><code>list</code>, <code>tuple</code>, <code>set</code>, <code>dict</code> — que
+          tu connais déjà</li>
+        </ul>
+        <p><strong>Le point qui compte :</strong> <code>12</code> et <code>"12"</code> ne sont
+        pas la même chose. Le premier est un nombre, le second est du texte qui
+        <em>ressemble</em> à un nombre. <code>"12" + 1</code> ne marche pas, et
+        <code>"12" + "1"</code> donne <code>"121"</code> — pas <code>13</code>.</p>
+        <p>D’où les conversions, qu’on écrit comme des fonctions :</p>
+        <pre>int("42")      # 42
+str(42)        # "42"
+float("1.5")   # 1.5
+int(3.9)       # 3  — la partie décimale est jetée, pas arrondie</pre>
+        <p>Ce dernier point surprend souvent : <code>int(3.9)</code> vaut <code>3</code>. Pour
+        arrondir, c’est <code>round()</code>.</p>
+        <p>C’est le sujet le plus utile de tous, parce que <code>input()</code> rend
+        <strong>toujours</strong> du texte. Chaque fois que tu demandes un nombre, tu convertis.</p>
+      `,
+      en: `
+        <p>Every value in Python has a <strong>type</strong>, and that type decides what you can
+        do with it. <code>type()</code> tells you:</p>
+        <ul>
+          <li><code>int</code> — a whole number: <code>12</code></li>
+          <li><code>float</code> — a decimal number: <code>1.5</code></li>
+          <li><code>str</code> — text: <code>"12"</code></li>
+          <li><code>bool</code> — true or false: <code>True</code></li>
+          <li><code>list</code>, <code>tuple</code>, <code>set</code>, <code>dict</code> — which
+          you already know</li>
+        </ul>
+        <p><strong>The point that matters:</strong> <code>12</code> and <code>"12"</code> are
+        not the same thing. The first is a number, the second is text that <em>looks</em> like a
+        number. <code>"12" + 1</code> does not work, and <code>"12" + "1"</code> gives
+        <code>"121"</code> — not <code>13</code>.</p>
+        <p>Hence conversions, written like functions:</p>
+        <pre>int("42")      # 42
+str(42)        # "42"
+float("1.5")   # 1.5
+int(3.9)       # 3  — the decimal part is dropped, not rounded</pre>
+        <p>That last point often surprises: <code>int(3.9)</code> is <code>3</code>. To round,
+        use <code>round()</code>.</p>
+        <p>This is the most useful topic of all, because <code>input()</code>
+        <strong>always</strong> gives back text. Every time you ask for a number, you convert.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'print(type(12))\nprint(type(1.5))\nprint(type("12"))\nprint(type(True))\nprint(type([1, 2]))\n\nprint("12" + "1")\nprint(int("12") + 1)\nprint(int(3.9), round(3.9))\nprint(str(42) + " ans")',
+      note: {
+        fr: 'Compare bien les deux premières lignes du second bloc : le même « + » ne fait pas du tout la même chose.',
+        en: 'Compare the first two lines of the second block: the same "+" does something completely different.',
+      },
+    },
+    defi: {
+      consigne: {
+        fr: `<p>La variable <code>saisie</code> contient le texte <code>"42"</code>. Affiche
+             exactement :</p>
+             <pre>Type de saisie : &lt;class 'str'&gt;
+42 + 1 = 43
+Type après conversion : &lt;class 'int'&gt;</pre>
+             <p>Les types doivent venir de <code>type()</code>, pas être recopiés.</p>`,
+        en: `<p>The variable <code>saisie</code> holds the text <code>"42"</code>. Display
+             exactly:</p>
+             <pre>Type de saisie : &lt;class 'str'&gt;
+42 + 1 = 43
+Type après conversion : &lt;class 'int'&gt;</pre>
+             <p>The types must come from <code>type()</code>, not be copied by hand.</p>`,
+      },
+      depart: 'saisie = "42"\n\n# Affiche le type, le calcul, puis le type converti\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'type\\s*\\(',
+          message: {
+            fr: 'Demande le type avec <code>type(saisie)</code>.',
+            en: 'Ask for the type with <code>type(saisie)</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'int\\s*\\(',
+          message: {
+            fr: 'Convertis le texte en nombre avec <code>int()</code>.',
+            en: 'Convert the text to a number with <code>int()</code>.',
+          },
+        },
+        {
+          type: 'codeNeContientPas',
+          motif: 'class\\s+',
+          message: {
+            fr: 'Ne recopie pas « class » : laisse <code>type()</code> l’écrire.',
+            en: 'Do not type "class" yourself: let <code>type()</code> write it.',
+          },
+        },
+        { type: 'sortieContient', valeur: { fr: "Type de saisie : <class 'str'>", en: "Type de saisie : <class 'str'>" } },
+        { type: 'sortieContient', valeur: { fr: '42 + 1 = 43', en: '42 + 1 = 43' } },
+        {
+          type: 'sortieContient',
+          valeur: { fr: "Type après conversion : <class 'int'>", en: "Type après conversion : <class 'int'>" },
+        },
+      ],
+      indices: [
+        {
+          fr: 'La première ligne : <code>print(f"Type de saisie : {type(saisie)}")</code>.',
+          en: 'The first line: <code>print(f"Type de saisie : {type(saisie)}")</code>.',
+        },
+        {
+          fr: 'Range le nombre : <code>nombre = int(saisie)</code>.',
+          en: 'Store the number: <code>nombre = int(saisie)</code>.',
+        },
+        {
+          fr: 'Puis <code>print(f"{nombre} + 1 = {nombre + 1}")</code> et le type de <code>nombre</code>.',
+          en: 'Then <code>print(f"{nombre} + 1 = {nombre + 1}")</code> and the type of <code>nombre</code>.',
+        },
+      ],
+      solution:
+        'saisie = "42"\nnombre = int(saisie)\n\nprint(f"Type de saisie : {type(saisie)}")\nprint(f"{nombre} + 1 = {nombre + 1}")\nprint(f"Type après conversion : {type(nombre)}")',
+    },
+  },
+
+  'py-err-2': {
+    langage: 'python',
+    xp: 35,
+    objectif: {
+      fr: 'Lire un message d’erreur et réparer le programme.',
+      en: 'Read an error message and repair the program.',
+    },
+    explication: {
+      fr: `
+        <p>Un message d’erreur n’est pas une punition : c’est le seul endroit où l’ordinateur
+        t’explique précisément ce qui l’a bloqué. Encore faut-il le lire — et la
+        <strong>dernière ligne</strong> est la plus importante.</p>
+        <p>Les cinq erreurs que tu rencontreras le plus :</p>
+        <ul>
+          <li><code>TypeError</code> — deux types incompatibles.
+          <em>« can only concatenate str to str »</em> : tu additionnes du texte et un
+          nombre ;</li>
+          <li><code>ValueError</code> — le bon type, mais une valeur impossible.
+          <code>int("douze")</code> ;</li>
+          <li><code>NameError</code> — un nom inconnu : faute de frappe, ou variable utilisée
+          avant d’exister ;</li>
+          <li><code>IndexError</code> — une position hors de la liste ;</li>
+          <li><code>KeyError</code> — une clé absente du dictionnaire.</li>
+        </ul>
+        <p>La méthode qui marche, toujours la même : <strong>lire le nom</strong> de l’erreur
+        (il dit la catégorie), <strong>lire le numéro de ligne</strong> (il dit où),
+        <strong>lire la phrase</strong> (elle dit quoi). Trois informations, et le plus souvent
+        la réparation devient évidente.</p>
+        <p>Un programmeur expérimenté ne fait pas moins d’erreurs qu’un débutant. Il les lit
+        plus vite.</p>
+      `,
+      en: `
+        <p>An error message is not a punishment: it is the one place where the computer tells
+        you exactly what stopped it. You just have to read it — and the <strong>last
+        line</strong> is the most important one.</p>
+        <p>The five errors you will meet most:</p>
+        <ul>
+          <li><code>TypeError</code> — two incompatible types.
+          <em>"can only concatenate str to str"</em>: you are adding text and a number;</li>
+          <li><code>ValueError</code> — right type, impossible value.
+          <code>int("douze")</code>;</li>
+          <li><code>NameError</code> — an unknown name: a typo, or a variable used before it
+          exists;</li>
+          <li><code>IndexError</code> — a position outside the list;</li>
+          <li><code>KeyError</code> — a key missing from the dictionary.</li>
+        </ul>
+        <p>The method that works, always the same: <strong>read the name</strong> of the error
+        (it gives the category), <strong>read the line number</strong> (it says where),
+        <strong>read the sentence</strong> (it says what). Three pieces of information, and most
+        of the time the fix becomes obvious.</p>
+        <p>An experienced programmer does not make fewer mistakes than a beginner. They read
+        them faster.</p>
+      `,
+    },
+    exemple: {
+      code: 'age = "12"\nprint("Dans 10 ans tu auras " + age + 10 + " ans")',
+      erreurAttendue: true,
+      note: {
+        fr: 'Lis la dernière ligne : <code>TypeError</code>, et la phrase qui dit qu’on ne peut coller que du texte à du texte.',
+        en: 'Read the last line: <code>TypeError</code>, and the sentence saying you can only concatenate text to text.',
+      },
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Le programme ci-contre <strong>plante</strong>. Lance-le, lis l’erreur, puis
+             répare-le.</p>
+             <p>Il doit demander un âge et afficher :</p>
+             <pre>Dans 10 ans tu auras 22 ans</pre>
+             <p>(La réponse fournie ici est <code>12</code>.)</p>`,
+        en: `<p>The program opposite <strong>crashes</strong>. Run it, read the error, then
+             repair it.</p>
+             <p>It must ask for an age and display:</p>
+             <pre>Dans 10 ans tu auras 22 ans</pre>
+             <p>(The answer supplied here is <code>12</code>.)</p>`,
+      },
+      depart: 'age = input("Ton âge ? ")\nprint("Dans 10 ans tu auras " + age + 10 + " ans")\n',
+      entree: '12',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'int\\s*\\(',
+          message: {
+            fr: '<code>input()</code> rend du texte : convertis-le avec <code>int()</code>.',
+            en: '<code>input()</code> gives back text: convert it with <code>int()</code>.',
+          },
+        },
+        { type: 'sortieContient', valeur: { fr: 'Dans 10 ans tu auras 22 ans', en: 'Dans 10 ans tu auras 22 ans' } },
+      ],
+      indices: [
+        {
+          fr: 'L’erreur est un <code>TypeError</code> : on ne peut pas coller un nombre à du texte avec <code>+</code>.',
+          en: 'The error is a <code>TypeError</code>: you cannot glue a number to text with <code>+</code>.',
+        },
+        {
+          fr: 'Convertis dès la saisie : <code>age = int(input("Ton âge ? "))</code>.',
+          en: 'Convert straight away: <code>age = int(input("Ton âge ? "))</code>.',
+        },
+        {
+          fr: 'Puis un f-string évite tous les <code>+</code> : <code>print(f"Dans 10 ans tu auras {age + 10} ans")</code>.',
+          en: 'Then an f-string avoids every <code>+</code>: <code>print(f"Dans 10 ans tu auras {age + 10} ans")</code>.',
+        },
+      ],
+      solution: 'age = int(input("Ton âge ? "))\nprint(f"Dans 10 ans tu auras {age + 10} ans")',
+    },
+  },
+
+  'py-err-3': {
+    langage: 'python',
+    xp: 40,
+    objectif: {
+      fr: 'Attraper une erreur au lieu de laisser le programme s’arrêter.',
+      en: 'Catch an error instead of letting the program stop.',
+    },
+    explication: {
+      fr: `
+        <p>Certaines erreurs ne sont pas des bugs : elles sont
+        <strong>prévisibles</strong>. Si tu demandes un nombre à quelqu’un, il tapera un jour
+        « douze ». Ton programme ne doit pas s’écrouler pour autant.</p>
+        <pre>try:
+    age = int(input("Ton âge ? "))
+    print(age + 10)
+except ValueError:
+    print("Ce n'est pas un nombre.")</pre>
+        <p>Le bloc <code>try</code> contient ce qui <em>pourrait</em> mal tourner. Si une erreur
+        survient, Python arrête ce bloc et saute dans le <code>except</code> correspondant. Sans
+        erreur, le <code>except</code> est simplement ignoré.</p>
+        <p><strong>Précise toujours quelle erreur tu attrapes.</strong> Un <code>except:</code>
+        tout nu attrape <em>tout</em>, y compris les vrais bugs que tu voulais voir — et tu
+        passeras des heures à chercher pourquoi ton programme « ne fait rien ».</p>
+        <p>On peut prévoir plusieurs cas :</p>
+        <pre>except ValueError:
+    …
+except ZeroDivisionError:
+    …</pre>
+        <p>Et pour lire le message au passage : <code>except ValueError as erreur:</code>, puis
+        <code>print(erreur)</code>.</p>
+      `,
+      en: `
+        <p>Some errors are not bugs: they are <strong>predictable</strong>. If you ask someone
+        for a number, one day they will type "twelve". Your program must not collapse for
+        that.</p>
+        <pre>try:
+    age = int(input("Ton âge ? "))
+    print(age + 10)
+except ValueError:
+    print("Ce n'est pas un nombre.")</pre>
+        <p>The <code>try</code> block holds what <em>might</em> go wrong. If an error happens,
+        Python stops that block and jumps into the matching <code>except</code>. With no error,
+        the <code>except</code> is simply skipped.</p>
+        <p><strong>Always say which error you are catching.</strong> A bare
+        <code>except:</code> catches <em>everything</em>, including the real bugs you wanted to
+        see — and you will spend hours wondering why your program "does nothing".</p>
+        <p>You can plan for several cases:</p>
+        <pre>except ValueError:
+    …
+except ZeroDivisionError:
+    …</pre>
+        <p>And to read the message along the way: <code>except ValueError as erreur:</code>,
+        then <code>print(erreur)</code>.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'def diviser(a, b):\n    try:\n        return a / b\n    except ZeroDivisionError:\n        return "impossible : division par zéro"\n\nprint(diviser(10, 2))\nprint(diviser(10, 0))\n\ntry:\n    nombre = int("douze")\nexcept ValueError as erreur:\n    print("ValueError :", erreur)\n\ntry:\n    print([1, 2][9])\nexcept IndexError:\n    print("Cette position n\'existe pas.")',
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Demande un nombre à l’utilisateur et affiche son double.</p>
+             <p>Mais si la réponse n’est <strong>pas</strong> un nombre, le programme ne doit
+             pas planter : il doit afficher</p>
+             <pre>Ce n'est pas un nombre.</pre>
+             <p>La réponse fournie ici est justement <code>douze</code>, écrit en toutes
+             lettres.</p>`,
+        en: `<p>Ask the user for a number and display its double.</p>
+             <p>But if the answer is <strong>not</strong> a number, the program must not crash:
+             it must display</p>
+             <pre>Ce n'est pas un nombre.</pre>
+             <p>The answer supplied here is precisely <code>douze</code>, spelled out.</p>`,
+      },
+      depart: 'nombre = int(input("Un nombre ? "))\nprint(nombre * 2)\n',
+      entree: 'douze',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: '\\btry\\s*:',
+          message: {
+            fr: 'Entoure la partie risquée d’un bloc <code>try:</code>.',
+            en: 'Wrap the risky part in a <code>try:</code> block.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'except\\s+ValueError',
+          message: {
+            fr: 'Attrape précisément la bonne erreur : <code>except ValueError:</code>.',
+            en: 'Catch precisely the right error: <code>except ValueError:</code>.',
+          },
+        },
+        { type: 'sortieContient', valeur: { fr: "Ce n'est pas un nombre.", en: "Ce n'est pas un nombre." } },
+      ],
+      indices: [
+        {
+          fr: 'Les deux lignes existantes vont dans le <code>try:</code>, indentées.',
+          en: 'The two existing lines go inside the <code>try:</code>, indented.',
+        },
+        {
+          fr: 'En dessous, au même niveau que <code>try</code> : <code>except ValueError:</code>.',
+          en: 'Below, at the same level as <code>try</code>: <code>except ValueError:</code>.',
+        },
+        {
+          fr: 'Dans le <code>except</code>, un seul <code>print</code> avec le message demandé.',
+          en: 'Inside the <code>except</code>, a single <code>print</code> with the requested message.',
+        },
+      ],
+      solution:
+        'try:\n    nombre = int(input("Un nombre ? "))\n    print(nombre * 2)\nexcept ValueError:\n    print("Ce n\'est pas un nombre.")',
+    },
+  },
+
+  'py-err-4': {
+    langage: 'python',
+    xp: 40,
+    objectif: {
+      fr: 'Signaler soi-même une erreur, et garantir qu’un nettoyage aura lieu.',
+      en: 'Raise an error yourself, and guarantee that cleanup happens.',
+    },
+    explication: {
+      fr: `
+        <p>Tu sais attraper les erreurs. Tu peux aussi en <strong>lever</strong> toi-même, avec
+        <code>raise</code> :</p>
+        <pre>if age &lt; 0:
+    raise ValueError("un âge ne peut pas être négatif")</pre>
+        <p>Pourquoi provoquer une erreur exprès ? Parce qu’une fonction qui reçoit une valeur
+        absurde ne doit <strong>pas</strong> faire semblant de travailler. Mieux vaut s’arrêter
+        net, avec un message clair, que renvoyer un résultat faux qui se propagera dans tout le
+        programme.</p>
+        <p>Deux blocs complètent <code>try</code> / <code>except</code> :</p>
+        <ul>
+          <li><code>else</code> — exécuté <strong>seulement si rien n’a planté</strong> ;</li>
+          <li><code>finally</code> — exécuté <strong>dans tous les cas</strong>, erreur ou
+          non.</li>
+        </ul>
+        <p><code>finally</code> sert au nettoyage : fermer un fichier, couper une connexion,
+        prévenir l’utilisateur que c’est terminé. Il s’exécute même si le <code>try</code> a
+        planté, même s’il contenait un <code>return</code>. C’est sa raison d’être.</p>
+        <p>Retiens l’ordre : <code>try</code>, <code>except</code>, <code>else</code>,
+        <code>finally</code>. Du plus risqué au plus certain.</p>
+      `,
+      en: `
+        <p>You know how to catch errors. You can also <strong>raise</strong> them yourself, with
+        <code>raise</code>:</p>
+        <pre>if age &lt; 0:
+    raise ValueError("un âge ne peut pas être négatif")</pre>
+        <p>Why cause an error on purpose? Because a function receiving an absurd value must
+        <strong>not</strong> pretend to work. Better to stop dead, with a clear message, than to
+        return a wrong result that will spread through the whole program.</p>
+        <p>Two blocks complete <code>try</code> / <code>except</code>:</p>
+        <ul>
+          <li><code>else</code> — run <strong>only if nothing crashed</strong>;</li>
+          <li><code>finally</code> — run <strong>in every case</strong>, error or not.</li>
+        </ul>
+        <p><code>finally</code> is for cleanup: closing a file, dropping a connection, telling
+        the user it is over. It runs even if the <code>try</code> crashed, even if it held a
+        <code>return</code>. That is its whole purpose.</p>
+        <p>Remember the order: <code>try</code>, <code>except</code>, <code>else</code>,
+        <code>finally</code>. From the riskiest to the most certain.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'def verifier_age(age):\n    if age < 0:\n        raise ValueError("un âge ne peut pas être négatif")\n    return age\n\ntry:\n    print(verifier_age(12))\n    print(verifier_age(-3))\nexcept ValueError as erreur:\n    print("Refusé :", erreur)\nelse:\n    print("Tout s\'est bien passé")\nfinally:\n    print("Vérification terminée.")',
+      note: {
+        fr: 'Le <code>else</code> ne s’affiche pas ici : une erreur a eu lieu. Le <code>finally</code>, lui, s’affiche toujours.',
+        en: 'The <code>else</code> does not show here: an error happened. The <code>finally</code> always shows.',
+      },
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Écris une fonction <code>racine(n)</code> qui <strong>refuse</strong> les nombres
+             négatifs en levant une <code>ValueError</code> avec le message
+             <code>nombre négatif</code>.</p>
+             <p>Appelle-la ensuite sur <code>-9</code> dans un <code>try</code>, attrape
+             l’erreur, et termine par un <code>finally</code>. Tu dois obtenir :</p>
+             <pre>Refusé : nombre négatif
+Calcul terminé.</pre>`,
+        en: `<p>Write a function <code>racine(n)</code> that <strong>refuses</strong> negative
+             numbers by raising a <code>ValueError</code> with the message
+             <code>nombre négatif</code>.</p>
+             <p>Then call it on <code>-9</code> inside a <code>try</code>, catch the error, and
+             finish with a <code>finally</code>. You must get:</p>
+             <pre>Refusé : nombre négatif
+Calcul terminé.</pre>`,
+      },
+      depart: 'import math\n\n# Définis racine(n) qui lève une ValueError si n est négatif\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'raise\\s+ValueError',
+          message: {
+            fr: 'Lève l’erreur toi-même : <code>raise ValueError("nombre négatif")</code>.',
+            en: 'Raise the error yourself: <code>raise ValueError("nombre négatif")</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: '\\bfinally\\s*:',
+          message: {
+            fr: 'Le message de fin doit être dans un bloc <code>finally:</code>.',
+            en: 'The closing message must be in a <code>finally:</code> block.',
+          },
+        },
+        { type: 'sortieContient', valeur: { fr: 'Refusé : nombre négatif', en: 'Refusé : nombre négatif' } },
+        { type: 'sortieContient', valeur: { fr: 'Calcul terminé.', en: 'Calcul terminé.' } },
+      ],
+      indices: [
+        {
+          fr: 'Dans la fonction : <code>if n < 0:</code> puis <code>raise ValueError("nombre négatif")</code>.',
+          en: 'Inside the function: <code>if n < 0:</code> then <code>raise ValueError("nombre négatif")</code>.',
+        },
+        {
+          fr: 'Attrape en récupérant le message : <code>except ValueError as erreur:</code>.',
+          en: 'Catch it while keeping the message: <code>except ValueError as erreur:</code>.',
+        },
+        {
+          fr: 'Puis <code>print("Refusé :", erreur)</code>, et le <code>finally:</code> pour la dernière ligne.',
+          en: 'Then <code>print("Refusé :", erreur)</code>, and the <code>finally:</code> for the last line.',
+        },
+      ],
+      solution:
+        'import math\n\ndef racine(n):\n    if n < 0:\n        raise ValueError("nombre négatif")\n    return math.sqrt(n)\n\ntry:\n    print(racine(-9))\nexcept ValueError as erreur:\n    print("Refusé :", erreur)\nfinally:\n    print("Calcul terminé.")',
+    },
+  },
 };
