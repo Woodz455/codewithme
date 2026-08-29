@@ -103,11 +103,35 @@ export const PARCOURS = [
         ],
       },
       {
+        id: 'py-tup',
+        titre: { fr: 'Tuples et ensembles', en: 'Tuples and sets' },
+        icone: 'liste',
+        lecons: [
+          L('py-tup-1', 'Le tuple : figé pour de bon', 'The tuple: frozen for good'),
+          L('py-tup-2', 'Déballer en une ligne', 'Unpacking in one line'),
+          L('py-tup-3', 'L’ensemble : zéro doublon', 'The set: zero duplicates'),
+          L('py-tup-4', 'Comparer deux ensembles', 'Comparing two sets'),
+        ],
+      },
+      {
+        id: 'py-dic',
+        titre: { fr: 'Les dictionnaires', en: 'Dictionaries' },
+        icone: 'dossier',
+        lecons: [
+          L('py-dic-1', 'Ranger par étiquette', 'Storing behind labels'),
+          L('py-dic-2', 'Ajouter, modifier, interroger', 'Adding, changing, querying'),
+          L('py-dic-3', 'Parcourir clé et valeur', 'Looping over key and value'),
+          L('py-dic-4', 'Projet : le bulletin scolaire', 'Project: the report card'),
+        ],
+      },
+      {
         id: 'py-fn',
         titre: { fr: 'Les fonctions', en: 'Functions' },
         icone: 'engrenage',
         lecons: [
           L('py-5-3', 'Créer ta propre fonction', 'Creating your own function'),
+          L('py-fn-1', 'Rendre un résultat : return', 'Giving back a result: return'),
+          L('py-fn-2', 'Valeurs par défaut', 'Default values'),
           L('py-5-4', 'Projet : le générateur de mots de passe', 'Project: password generator'),
         ],
       },
