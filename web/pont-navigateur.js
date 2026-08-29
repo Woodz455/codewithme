@@ -25,6 +25,19 @@
 const CLE_PROFIL = 'cwm:profil';
 const CLE_INDEX = 'cwm:projets';
 const CLE_CONTENU = 'cwm:projet:';
+const CLE_APERCU = 'cwm:apercu:';
+
+// La vignette d'un dessin de tortue pese 58 ko en PNG pleine taille. Rangee
+// dans l'index, elle le faisait grossir de 58 ko par projet : mesure faite,
+// l'index atteignait 3,5 Mo pour 60 projets et le stockage cassait vers 90.
+// Reduite a 320 px en JPEG, la meme vignette pese 3,5 ko — dix-sept fois
+// moins, pour une image affichee en petit dans la galerie.
+//
+// JPEG et pas WebP : le gain supplementaire est marginal (2,5 ko), et Safari
+// ne sait pas encoder en WebP — `toDataURL('image/webp')` y renvoie
+// silencieusement un PNG, donc quatre fois plus gros sans que rien ne le dise.
+const LARGEUR_APERCU = 320;
+const QUALITE_APERCU = 0.72;
 
 const EXTENSIONS = { python: '.py', cpp: '.cpp', web: '.html', html: '.html', javascript: '.js', css: '.css' };
 
@@ -44,15 +57,19 @@ function lireJson(cle, defaut) {
   }
 }
 
-function ecrireJson(cle, valeur) {
+function ecrireTexte(cle, texte) {
   try {
-    localStorage.setItem(cle, JSON.stringify(valeur));
+    localStorage.setItem(cle, texte);
     return true;
   } catch (erreur) {
     // QuotaExceededError, ou stockage refuse en navigation privee.
     console.warn(`[pont-web] impossible d'enregistrer ${cle} :`, erreur?.name || erreur);
     return false;
   }
+}
+
+function ecrireJson(cle, valeur) {
+  return ecrireTexte(cle, JSON.stringify(valeur));
 }
 
 /* ----------------------------------------------------------- telechargement */
@@ -161,16 +178,81 @@ function nomDeFichierSur(titre, identifiant) {
   return `${base || 'projet'}-${identifiant.slice(-6)}`;
 }
 
+/**
+ * Reduit une vignette avant de la ranger.
+ *
+ * En cas de pepin — image illisible, canevas indisponible — on renvoie `null`
+ * plutot que l'original : une vignette est decorative, et la garder entiere
+ * couterait la place d'une quinzaine de projets.
+ */
+async function reduireApercu(donneesImage) {
+  if (typeof donneesImage !== 'string' || !donneesImage.startsWith('data:image/')) return null;
+  try {
+    const image = await new Promise((resoudre, rejeter) => {
+      const element = new Image();
+      element.onload = () => resoudre(element);
+      element.onerror = () => rejeter(new Error('image illisible'));
+      element.src = donneesImage;
+    });
+    if (!image.width || !image.height) return null;
+
+    const largeur = Math.min(LARGEUR_APERCU, image.width);
+    const canevas = document.createElement('canvas');
+    canevas.width = largeur;
+    canevas.height = Math.max(1, Math.round((image.height / image.width) * largeur));
+
+    const contexte = canevas.getContext('2d');
+    // Le JPEG ne connait pas la transparence : sans ce fond, le trace de la
+    // tortue apparaitrait sur du noir.
+    contexte.fillStyle = '#ffffff';
+    contexte.fillRect(0, 0, canevas.width, canevas.height);
+    contexte.drawImage(image, 0, 0, canevas.width, canevas.height);
+
+    return canevas.toDataURL('image/jpeg', QUALITE_APERCU);
+  } catch {
+    return null;
+  }
+}
+
 const projets = {
+  /**
+   * L'index ne contient que des metadonnees ; les vignettes vivent a part et
+   * sont rattachees ici. C'est ce qui permet a une vignette de manquer sans
+   * que le projet disparaisse.
+   */
   async lister() {
-    // On ne renvoie que les projets dont le contenu est encore la : le
-    // nettoyage du navigateur peut avoir emporte l'un sans l'autre.
     const liste = lireJson(CLE_INDEX, []);
     const presents = liste.filter((p) => localStorage.getItem(CLE_CONTENU + p.id) !== null);
     if (presents.length !== liste.length) ecrireJson(CLE_INDEX, presents);
-    return presents;
+
+    const connus = new Set(presents.map((p) => p.id));
+    // Du contenu sans fiche occupe de la place pour rien, et rien ne le
+    // montrerait jamais a l'eleve. On le rend au navigateur.
+    for (const cle of Object.keys(localStorage)) {
+      if (cle.startsWith(CLE_CONTENU) && !connus.has(cle.slice(CLE_CONTENU.length))) {
+        localStorage.removeItem(cle);
+      } else if (cle.startsWith(CLE_APERCU) && !connus.has(cle.slice(CLE_APERCU.length))) {
+        localStorage.removeItem(cle);
+      }
+    }
+
+    return presents.map((p) => ({ ...p, apercu: localStorage.getItem(CLE_APERCU + p.id) }));
   },
 
+  /**
+   * Trois ecritures, par ordre d'importance decroissante — et c'est cet ordre
+   * qui decide de ce qu'on sacrifie quand le stockage est plein :
+   *
+   *   1. le code de l'eleve. S'il ne passe pas, rien n'est enregistre et on
+   *      le dit ;
+   *   2. la fiche dans l'index. Si elle ne passe pas, on ANNULE l'ecriture du
+   *      code : un projet invisible dans la galerie mais occupant la place
+   *      est le pire des deux mondes. Mesure faite avant cette correction :
+   *      sur 128 enregistrements, 89 restaient visibles et 39 disparaissaient
+   *      en silence, l'appel renvoyant malgre tout « enregistre » ;
+   *   3. la vignette. Purement decorative : son echec n'empeche pas
+   *      l'enregistrement, et la galerie retombe sur le logo du langage.
+   */
   async enregistrer(projet) {
     if (!projet?.langage || typeof projet.code !== 'string') {
       throw new Error('Projet incomplet.');
@@ -187,29 +269,43 @@ const projets = {
       langage: projet.langage,
       leconId: projet.leconId || null,
       fichier: existant?.fichier || `${nomDeFichierSur(projet.titre, identifiant)}${extension}`,
-      apercu: projet.apercu || existant?.apercu || null,
       creeLe: existant?.creeLe || new Date().toISOString(),
       modifieLe: new Date().toISOString(),
     };
 
-    // Le contenu d'abord : si le quota explose, on n'aura pas laisse une
-    // fiche dans l'index qui pointe vers un fichier inexistant.
-    if (!ecrireJson(CLE_CONTENU + identifiant, projet.code)) {
+    // Le code est range tel quel, et non en JSON : c'est ce texte exact qui
+    // sera telecharge. Encadre de guillemets et avec ses retours a la ligne
+    // echappes, le fichier obtenu ne serait plus executable.
+    const contenuPrecedent = localStorage.getItem(CLE_CONTENU + identifiant);
+    if (!ecrireTexte(CLE_CONTENU + identifiant, projet.code)) {
       throw new Error('Le navigateur n’a plus de place pour enregistrer ce projet.');
     }
 
     const suivante = existant
       ? liste.map((element) => (element.id === identifiant ? fiche : element))
       : [fiche, ...liste];
-    ecrireJson(CLE_INDEX, suivante);
 
-    return fiche;
+    if (!ecrireJson(CLE_INDEX, suivante)) {
+      // Retour en arriere : on ne laisse pas derriere nous un projet que
+      // l'eleve ne reverra jamais mais qui lui coute sa place.
+      if (contenuPrecedent === null) localStorage.removeItem(CLE_CONTENU + identifiant);
+      else localStorage.setItem(CLE_CONTENU + identifiant, contenuPrecedent);
+      throw new Error('Le navigateur n’a plus de place pour enregistrer ce projet.');
+    }
+
+    // Rangee telle quelle, pas en JSON : une data URL est deja du texte, et
+    // l'encadrer de guillemets la rendrait illisible pour `lister()`.
+    const vignette = await reduireApercu(projet.apercu);
+    if (vignette) ecrireTexte(CLE_APERCU + identifiant, vignette);
+
+    return { ...fiche, apercu: localStorage.getItem(CLE_APERCU + identifiant) };
   },
 
   async supprimer(identifiant) {
     const liste = lireJson(CLE_INDEX, []);
     if (!liste.some((p) => p.id === identifiant)) return false;
     localStorage.removeItem(CLE_CONTENU + identifiant);
+    localStorage.removeItem(CLE_APERCU + identifiant);
     ecrireJson(CLE_INDEX, liste.filter((p) => p.id !== identifiant));
     return true;
   },
@@ -308,3 +404,19 @@ window.cwm = {
   surNavigation() {},
   surBasculeLangue() {},
 };
+
+/* ------------------------------------------------------------ hors ligne -- */
+
+// L'enregistrement vit ici, et non dans une balise <script> en ligne : la
+// politique de securite du site interdit le script inline, et une exception
+// pour trois lignes n'en vaut pas le prix.
+//
+// Il echoue silencieusement en developpement (`npm run serveur:web` ne sert
+// pas de service worker, pour qu'aucun cache perime ne masque une
+// modification en cours). C'est voulu : le site reste parfaitement
+// fonctionnel sans lui, simplement il redemande le reseau.
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}

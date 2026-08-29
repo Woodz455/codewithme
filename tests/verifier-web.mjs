@@ -67,9 +67,23 @@ verifier('index.html ne contient plus d adresse app://', !indexHtml.includes('ap
 
 /* ---------------------------------------------------------- 2. le site --- */
 
+verifier('le service worker est ecrit', existsSync(join(DIST, 'sw.js')));
+const serviceWorker = readFileSync(join(DIST, 'sw.js'), 'utf8');
+verifier(
+  'sa liste de prechargement a ete remplie',
+  !serviceWorker.includes('__PRECACHE__') && !serviceWorker.includes('__VERSION__'),
+  'les marqueurs du modele sont restes en place'
+);
+verifier(
+  'Pyodide est exclu du prechargement',
+  !serviceWorker.includes('/vendor/pyodide/pyodide.asm.wasm'),
+  '13 Mo imposes des la premiere visite'
+);
+
 const { adresse, fermer } = await demarrer({ dossier: DIST, silencieux: true });
 const navigateur = await ouvrirNavigateur();
-const page = await navigateur.newPage();
+const contexte = await navigateur.newContext();
+const page = await contexte.newPage();
 
 // Tout ce que le navigateur n'a pas reussi a charger, et tout ce qui a explose.
 const manquants = [];
@@ -258,6 +272,46 @@ const persistance = await page.evaluate(async () => {
 });
 
 verifier('un projet est enregistre', persistance.present, JSON.stringify(persistance));
+
+// « Ses creations deviennent de vrais fichiers » est la promesse du logiciel.
+// Sur le web, le fichier passe par un telechargement : ce sont ces octets-la
+// qu'il faut verifier, pas ce que le stockage contient. Un code range en JSON
+// se telechargerait entre guillemets, sur une seule ligne, et ne s'executerait
+// plus — un defaut invisible tant qu'on ne regarde que la galerie.
+const CODE_PYTHON = 'import turtle\nt = turtle.Turtle()\nt.forward(100)\n';
+
+const telechargement = await page.evaluate(async (code) => {
+  const fiche = await window.cwm.projets.enregistrer({
+    titre: 'Ma rosace',
+    langage: 'python',
+    code,
+  });
+
+  // On intercepte le lien que le pont fabrique, et on lit le Blob qu'il vise.
+  let recu = null;
+  const clicOrigine = HTMLAnchorElement.prototype.click;
+  HTMLAnchorElement.prototype.click = function intercepte() {
+    if (this.download) recu = { nom: this.download, url: this.href };
+    else clicOrigine.call(this);
+  };
+  await window.cwm.projets.ouvrirDossier(fiche.id);
+  HTMLAnchorElement.prototype.click = clicOrigine;
+
+  if (!recu) return { erreur: 'aucun telechargement declenche' };
+  const texte = await (await fetch(recu.url)).text();
+  return { nom: recu.nom, texte };
+}, CODE_PYTHON);
+
+verifier(
+  'le fichier telecharge est le code exact de l eleve',
+  telechargement.texte === CODE_PYTHON,
+  JSON.stringify(telechargement).slice(0, 200)
+);
+verifier(
+  'il porte le nom du projet et la bonne extension',
+  /^ma-rosace-[a-z0-9]{6}\.py$/.test(String(telechargement.nom)),
+  String(telechargement.nom)
+);
 verifier(
   'le nom de fichier est correct malgre les accents',
   /^ma-premiere-page-[a-z0-9]{6}\.html$/.test(persistance.fiche.fichier),
@@ -274,14 +328,183 @@ const apresRechargement = await page.evaluate(async () => ({
   xp: (await window.cwm.profil.lire()).xp,
 }));
 
-verifier('le projet survit au rechargement', apresRechargement.projets === 1, String(apresRechargement.projets));
+verifier('le projet survit au rechargement', apresRechargement.projets === 2, String(apresRechargement.projets));
 verifier(
   'le profil survit au rechargement',
   apresRechargement.prenom === 'Louis' && apresRechargement.xp === 120,
   JSON.stringify(apresRechargement)
 );
 
-/* ------------------------------------------------- 7. rien n a manque ----- */
+/* -------------------------------------------- 7. quand le stockage est plein */
+
+process.stdout.write('\nStockage sature\n\n');
+
+// Un navigateur donne environ 5 Mo. Ce test le remplit vraiment, avec des
+// vignettes de la taille reellement mesuree sur un dessin de tortue (58 ko en
+// PNG pleine taille). Il repond a la seule question qui compte : quand ca
+// casse, est-ce que ca casse HONNETEMENT ?
+//
+// Avant correction, la reponse etait non : sur 128 enregistrements, 89
+// restaient visibles, 39 disparaissaient de la galerie tout en occupant la
+// place, et l'appel renvoyait quand meme une fiche — l'eleve lisait
+// « Enregistré ! » sur un projet deja perdu.
+const sature = await page.evaluate(async () => {
+  localStorage.clear();
+
+  // Une image reelle, pour que la reduction du pont ait quelque chose a faire.
+  const canevas = document.createElement('canvas');
+  canevas.width = 800;
+  canevas.height = 600;
+  const contexte = canevas.getContext('2d');
+  for (let i = 0; i < 400; i++) {
+    contexte.strokeStyle = `hsl(${i % 360}, 90%, 55%)`;
+    contexte.beginPath();
+    contexte.moveTo(Math.random() * 800, Math.random() * 600);
+    contexte.lineTo(Math.random() * 800, Math.random() * 600);
+    contexte.stroke();
+  }
+  const image = canevas.toDataURL('image/png');
+
+  let reussis = 0;
+  let erreur = null;
+  try {
+    for (let i = 0; i < 300; i++) {
+      await window.cwm.projets.enregistrer({
+        titre: `Rosace ${i}`,
+        langage: 'python',
+        code: `# projet ${i}\n` + 'x = 1\n'.repeat(400),
+        apercu: image,
+      });
+      reussis += 1;
+    }
+  } catch (e) {
+    erreur = String(e?.message || e);
+  }
+
+  const liste = await window.cwm.projets.lister();
+  const connus = new Set(liste.map((p) => p.id));
+  let orphelins = 0;
+  for (const cle of Object.keys(localStorage)) {
+    if (cle.startsWith('cwm:projet:') && !connus.has(cle.slice('cwm:projet:'.length))) orphelins += 1;
+  }
+
+  // Le profil doit survivre a un stockage sature : c'est la progression de
+  // l'eleve, la chose la moins remplacable de toutes.
+  const profil = await window.cwm.profil.lire();
+  profil.xp = 4242;
+  const profilEcrit = await window.cwm.profil.ecrire(profil);
+
+  const vignette = liste.find((p) => p.apercu)?.apercu ?? '';
+  // La largeur reelle de ce qui a ete range : c'est l'enonce direct de
+  // « l'image a bien ete reduite », quel que soit son contenu.
+  const largeur = vignette
+    ? await new Promise((r) => {
+        const i = new Image();
+        i.onload = () => r(i.width);
+        i.onerror = () => r(0);
+        i.src = vignette;
+      })
+    : 0;
+
+  localStorage.clear();
+  return {
+    reussis,
+    visibles: liste.length,
+    orphelins,
+    erreur,
+    profilEcrit,
+    tailleVignette: vignette.length,
+    tailleOrigine: image.length,
+    largeur,
+  };
+});
+
+verifier(
+  'tout enregistrement annonce reussi est visible dans la galerie',
+  sature.visibles === sature.reussis,
+  `${sature.reussis} annonces, ${sature.visibles} visibles`
+);
+verifier(
+  'aucun projet fantome n occupe la place',
+  sature.orphelins === 0,
+  `${sature.orphelins} contenus sans fiche`
+);
+verifier(
+  'le refus est explicite quand la place manque',
+  sature.erreur === null || /plus de place/.test(sature.erreur),
+  String(sature.erreur)
+);
+verifier(
+  'le profil reste enregistrable malgre le stockage sature',
+  sature.profilEcrit === true,
+  String(sature.profilEcrit)
+);
+verifier(
+  'les vignettes sont ramenees a 320 px avant d etre rangees',
+  sature.largeur === 320,
+  `${sature.largeur} px`
+);
+verifier(
+  'la vignette rangee est bien plus legere que celle recue',
+  sature.tailleVignette > 0 && sature.tailleVignette < sature.tailleOrigine / 4,
+  `${sature.tailleVignette} contre ${sature.tailleOrigine} caracteres`
+);
+// Ce chiffre est un plancher, pas une promesse : l'image de ce test est le
+// pire cas possible pour un JPEG (400 traits aleatoires). Un vrai dessin de
+// tortue se reduit a 3,5 ko, soit dix fois moins que celle-ci.
+verifier(
+  'la reduction permet de garder bien plus de projets',
+  sature.visibles >= 100,
+  `${sature.visibles} projets tiennent (90 environ avant reduction)`
+);
+
+/* ------------------------------------------------------------ 8. hors ligne */
+
+process.stdout.write('\nHors ligne\n\n');
+
+// Le vrai scenario : le wifi du college lache. Avant le service worker, cette
+// verification echouait — la page ne s'ouvrait tout simplement pas.
+// `ready` ne se resout qu'apres l'activation, donc apres que la mise en cache
+// d'installation a reellement abouti.
+await page.evaluate(async () => {
+  await navigator.serviceWorker.ready;
+  return true;
+});
+await contexte.setOffline(true);
+
+let horsLigne = false;
+try {
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForSelector('#application:not([hidden])', { timeout: 20000 });
+  horsLigne = true;
+} catch { /* reste faux */ }
+
+verifier("l application s ouvre sans reseau", horsLigne);
+
+// Python a tourne plus haut, donc Pyodide est passe en cache au premier
+// usage : il doit marcher sans reseau lui aussi.
+const pythonHorsLigne = horsLigne
+  ? await page.evaluate(async () => {
+      const { MoteurPython } = await import('/js/runners/python.js');
+      const moteur = new MoteurPython();
+      const sortie = [];
+      const fini = new Promise((r) => {
+        moteur.sur('sortie', (lignes) => lignes.forEach((l) => sortie.push(l.texte)));
+        moteur.sur('termine', () => r());
+        moteur.sur('erreur', () => r());
+      });
+      await moteur.executer('print(6 * 7)');
+      await Promise.race([fini, new Promise((r) => setTimeout(r, 60000))]);
+      moteur.detruire();
+      return sortie.join('');
+    })
+  : '';
+
+verifier('Python tourne encore sans reseau', pythonHorsLigne.includes('42'), pythonHorsLigne);
+
+await contexte.setOffline(false);
+
+/* ------------------------------------------------- 9. rien n a manque ----- */
 
 process.stdout.write('\nChargement complet\n\n');
 

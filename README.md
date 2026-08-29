@@ -18,13 +18,17 @@ de serveur, pas de compte, pas de suivi.
 | | Application Windows | Version web |
 |---|---|---|
 | **Installation** | un `.exe` à télécharger | rien, une adresse suffit |
-| **Fonctionne hors ligne** | oui, complètement | après le premier chargement |
+| **Fonctionne hors ligne** | oui, complètement | oui — dès la première visite, et Python dès qu'il l'a lancé une fois |
 | **Ses projets** | de vrais fichiers dans `Documents\CodeWithMe\` | gardés dans le navigateur, téléchargeables en un clic |
 | **Compilateur C++ de la machine** | utilisé s'il est installé | indisponible — le C++ tourne quand même, avec le moteur intégré |
 | **Sur une tablette, un Mac, un Linux** | non | oui |
 
 Tout le reste est identique : les 86 leçons, l'`input()` qui bloque vraiment, la tortue qui
 dessine, l'aperçu qui suit la frappe, les badges, l'espace tuteur et le certificat.
+
+Le site se met lui-même en cache : l'application, les 86 leçons, les polices, l'éditeur et le
+moteur C++ (2,4 Mo) dès la première visite, puis Pyodide (13 Mo) au premier lancement de
+Python. Après ça, le wifi peut lâcher — ça continue de marcher.
 
 > L'application Windows reste la version de référence pour un usage quotidien : elle démarre
 > plus vite et ne dépend d'aucune connexion. La version web sert à essayer sans rien installer,
@@ -152,8 +156,8 @@ Rien n'est déclaré fonctionnel sans avoir été exécuté.
 | Commande | Ce qu'elle vérifie |
 |---|---|
 | `npm run check:content` | Les 86 leçons, dans les vrais moteurs : structure bilingue complète, solution de référence qui passe, code de départ qui **ne** passe pas, exemple qui s'exécute |
-| `npm test` | 154 vérifications : moteurs, atelier, correction, XP, galerie, espace tuteur, projet final, certificat, le script qui contrôle les `.exe` produits, et la version web dans un vrai navigateur |
-| `npm run test:web` | Le site **construit** est servi puis ouvert dans un Chromium ordinaire : démarrage, isolation d'origine, `input()` bloquant, tortue, aperçu, C++, projets qui survivent au rechargement, et aucune ressource manquante |
+| `npm test` | 168 vérifications : moteurs, atelier, correction, XP, galerie, espace tuteur, projet final, certificat, le script qui contrôle les `.exe` produits, et la version web dans un vrai navigateur |
+| `npm run test:web` | Le site **construit** est servi puis ouvert dans un Chromium ordinaire : démarrage, isolation d'origine, `input()` bloquant, tortue, aperçu, C++, octets exacts d'un fichier téléchargé, comportement quand le stockage est **saturé**, et fonctionnement **réseau coupé** |
 | `npm run test:paquet` | L'application **empaquetée** se lance et fonctionne — c'est là qu'on découvre un fichier manquant |
 | `npm run check:contrast` | Contrastes WCAG AA mesurés, et palette des graphiques contrôlée en simulant le daltonisme |
 | `npm run check:icones` | Aucun emoji dans l'interface — Windows les dessine lui-même, leur rendu changerait d'une machine à l'autre |
@@ -167,7 +171,7 @@ app/         interface : modules ES, sans framework — partagee par les deux ve
   content/   les 86 lecons, en donnees pures — ajouter une lecon = ajouter un objet
 python/      turtle.py, le module tortue maison injecte dans Pyodide
 vendor/      Pyodide, JSCPP, CodeMirror, polices — embarques, aucun reseau requis
-web/         pont-navigateur.js : window.cwm rendu par un navigateur
+web/         pont-navigateur.js (window.cwm rendu par un navigateur) et sw.js (hors ligne)
 tools/       vendorisation, controle du contenu, construction et serveur web
 tests/       Playwright pilotant l'application Electron reelle, et le site construit
 ```
@@ -219,6 +223,13 @@ navigateur ne connaît pas. `npm run build:web` traduit ces 21 adresses en chemi
 Aucun fichier du dépôt n'est modifié par cette construction, et le code de l'application de
 bureau ne contient aucun test de plateforme. C'est ce qui garantit qu'ajouter le web ne peut
 pas casser l'installateur Windows.
+
+Les projets, eux, vivent dans le stockage du navigateur. C'est une ressource limitée — environ
+5 Mo — alors que l'aperçu d'un dessin de tortue pèse 58 Ko en PNG pleine taille. Le pont réduit
+donc chaque vignette à 320 px en JPEG (3,5 Ko, soit dix-sept fois moins) et range le code, la
+fiche et la vignette dans trois clés distinctes. L'ordre est délibéré : si la place manque, on
+perd la vignette avant la fiche, et la fiche avant le code — jamais l'inverse, et jamais en
+silence.
 
 ---
 

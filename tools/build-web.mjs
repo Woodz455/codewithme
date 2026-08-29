@@ -18,7 +18,8 @@
  * Lancer : npm run build:web
  */
 import { cpSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
-import { join, relative, extname } from 'node:path';
+import { createHash } from 'node:crypto';
+import { join, relative, extname, sep } from 'node:path';
 import {
   RACINE,
   traduire,
@@ -89,6 +90,44 @@ if (problemes.length) {
 const index = join(SORTIE, 'index.html');
 writeFileSync(index, injecterPont(readFileSync(index, 'utf8')));
 
+/* ------------------------------------------------------- service worker -- */
+
+// Ce qui est mis en cache des l'installation : tout, SAUF Pyodide.
+//
+// Pyodide pese 13 Mo des 15 du site. L'imposer a la premiere visite serait
+// brutal sur un forfait telephone, alors que le reste — interface, 86 lecons,
+// polices, editeur, moteur C++ — tient en 2,4 Mo. Pyodide est donc mis en
+// cache au premier usage par la regle de repli du service worker : des que
+// l'eleve a lance Python une fois, Python marche hors ligne aussi.
+const SANS_PRECHARGE = ['vendor/pyodide/', '_headers', 'sw.js'];
+
+const aPrecharger = fichiers(SORTIE)
+  .map((chemin) => relative(SORTIE, chemin).split(sep).join('/'))
+  .filter((chemin) => !SANS_PRECHARGE.some((exclu) => chemin.startsWith(exclu)))
+  .sort();
+
+// La version vient du CONTENU : une mise en ligne qui ne change rien garde le
+// meme cache, et la moindre correction le renouvelle. Une date de
+// construction, elle, jetterait le cache de tous les eleves a chaque
+// publication, meme identique.
+const empreinte = createHash('sha256');
+for (const chemin of aPrecharger) {
+  empreinte.update(chemin);
+  empreinte.update(readFileSync(join(SORTIE, chemin)));
+}
+const version = empreinte.digest('hex').slice(0, 12);
+
+// `/` en plus de `index.html` : c'est l'adresse que le navigateur demande
+// vraiment quand on ouvre le site.
+const listePrecharge = ['/', ...aPrecharger.map((chemin) => `/${chemin}`)];
+
+writeFileSync(
+  join(SORTIE, 'sw.js'),
+  readFileSync(join(RACINE, 'web/sw.js'), 'utf8')
+    .replace('__VERSION__', version)
+    .replace('__PRECACHE__', JSON.stringify(listePrecharge, null, 2))
+);
+
 /* ------------------------------------------------------------- en-tetes -- */
 
 // Format commun a Netlify et a Cloudflare Pages. La regle generale d'abord,
@@ -135,6 +174,7 @@ process.stdout.write(
   `\nVersion web construite dans dist-web/\n` +
     `  ${adresses} adresses app:// traduites dans ${traduits} fichiers\n` +
     `  pont navigateur injecte dans index.html\n` +
+    `  ${aPrecharger.length} fichiers mis en cache des l installation (version ${version})\n` +
     `  ${mega} Mo au total\n\n` +
     `  Essayer : npm run serveur:web\n` +
     `  Publier : deposer dist-web/ sur Netlify ou Cloudflare Pages\n\n`
