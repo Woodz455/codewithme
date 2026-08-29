@@ -22,8 +22,8 @@ export const PARCOURS = [
       en: 'The easiest language to start with. You give orders, the computer obeys.',
     },
     aboutissement: {
-      fr: 'Une rosace colorée dessinée par ton code, et un jeu « devine le nombre ».',
-      en: 'A colourful rosette drawn by your code, and a "guess the number" game.',
+      fr: 'Une rosace dessinée par ton code, un jeu « devine le nombre », un bulletin scolaire et un tableau des scores enregistré sur disque.',
+      en: 'A rosette drawn by your code, a "guess the number" game, a school report card and a scoreboard saved to disk.',
     },
     modules: [
       {
@@ -50,6 +50,16 @@ export const PARCOURS = [
         ],
       },
       {
+        id: 'py-op',
+        titre: { fr: 'Les opérateurs', en: 'Operators' },
+        icone: 'regle',
+        lecons: [
+          L('py-op-1', 'Diviser, et ce qui reste', 'Dividing, and what is left'),
+          L('py-op-2', 'Comparer : vrai ou faux', 'Comparing: true or false'),
+          L('py-op-3', 'Combiner : et, ou, non', 'Combining: and, or, not'),
+        ],
+      },
+      {
         id: 'py-3',
         titre: { fr: 'Décisions et boucles', en: 'Decisions and loops' },
         icone: 'decision',
@@ -73,14 +83,158 @@ export const PARCOURS = [
         ],
       },
       {
+        id: 'py-txt',
+        titre: { fr: 'Le texte', en: 'Text' },
+        icone: 'livre',
+        lecons: [
+          L('py-txt-1', 'Mesurer et découper un texte', 'Measuring and slicing text'),
+          L('py-txt-2', 'Nettoyer et transformer', 'Cleaning up and transforming'),
+          L('py-txt-3', 'Découper en mots, recoller', 'Splitting into words, gluing back'),
+          L('py-txt-4', 'Chercher dans un texte', 'Searching inside text'),
+        ],
+      },
+      {
         id: 'py-5',
-        titre: { fr: 'Listes et fonctions', en: 'Lists and functions' },
+        titre: { fr: 'Les listes', en: 'Lists' },
         icone: 'boite',
         lecons: [
           L('py-5-1', 'Ranger plusieurs valeurs : la liste', 'Storing several values: the list'),
           L('py-5-2', 'Parcourir une liste', 'Going through a list'),
+        ],
+      },
+      {
+        id: 'py-tup',
+        titre: { fr: 'Tuples et ensembles', en: 'Tuples and sets' },
+        icone: 'liste',
+        lecons: [
+          L('py-tup-1', 'Le tuple : figé pour de bon', 'The tuple: frozen for good'),
+          L('py-tup-2', 'Déballer en une ligne', 'Unpacking in one line'),
+          L('py-tup-3', 'L’ensemble : zéro doublon', 'The set: zero duplicates'),
+          L('py-tup-4', 'Comparer deux ensembles', 'Comparing two sets'),
+        ],
+      },
+      {
+        id: 'py-dic',
+        titre: { fr: 'Les dictionnaires', en: 'Dictionaries' },
+        icone: 'dossier',
+        lecons: [
+          L('py-dic-1', 'Ranger par étiquette', 'Storing behind labels'),
+          L('py-dic-2', 'Ajouter, modifier, interroger', 'Adding, changing, querying'),
+          L('py-dic-3', 'Parcourir clé et valeur', 'Looping over key and value'),
+          L('py-dic-4', 'Projet : le bulletin scolaire', 'Project: the report card'),
+        ],
+      },
+      {
+        id: 'py-fn',
+        titre: { fr: 'Les fonctions', en: 'Functions' },
+        icone: 'engrenage',
+        lecons: [
           L('py-5-3', 'Créer ta propre fonction', 'Creating your own function'),
+          L('py-fn-1', 'Rendre un résultat : return', 'Giving back a result: return'),
+          L('py-fn-2', 'Valeurs par défaut', 'Default values'),
           L('py-5-4', 'Projet : le générateur de mots de passe', 'Project: password generator'),
+        ],
+      },
+      {
+        id: 'py-mod',
+        titre: { fr: 'Les modules', en: 'Modules' },
+        icone: 'code',
+        lecons: [
+          L('py-mod-1', 'Les outils déjà livrés', 'The tools already shipped'),
+          L('py-mod-2', 'Trois façons d’importer', 'Three ways to import'),
+          L('py-mod-3', 'Écrire son propre module', 'Writing your own module'),
+        ],
+      },
+      {
+        id: 'py-comp',
+        titre: { fr: 'Les compréhensions', en: 'Comprehensions' },
+        icone: 'etincelles',
+        lecons: [
+          L('py-comp-1', 'Une liste en une ligne', 'A list in one line'),
+          L('py-comp-2', 'Filtrer en même temps', 'Filtering at the same time'),
+          L('py-comp-3', 'Dictionnaires et ensembles', 'Dictionaries and sets'),
+        ],
+      },
+      {
+        id: 'py-hof',
+        titre: { fr: 'Fonctions d’ordre supérieur', en: 'Higher order functions' },
+        icone: 'eclair',
+        lecons: [
+          L('py-hof-1', 'Une fonction en paramètre', 'A function as a parameter'),
+          L('py-hof-2', 'La lambda, map et filter', 'Lambda, map and filter'),
+          L('py-hof-3', 'Trier selon son critère', 'Sorting by your own criterion'),
+        ],
+      },
+      {
+        id: 'py-err',
+        titre: { fr: 'Types et erreurs', en: 'Types and errors' },
+        icone: 'bug',
+        lecons: [
+          L('py-err-1', 'Les types et les conversions', 'Types and conversions'),
+          L('py-err-2', 'Lire une erreur, réparer', 'Reading an error, repairing'),
+          L('py-err-3', 'Attraper avec try / except', 'Catching with try / except'),
+          L('py-err-4', 'Lever une erreur, et finally', 'Raising an error, and finally'),
+        ],
+      },
+      {
+        id: 'py-date',
+        titre: { fr: 'Les dates', en: 'Dates' },
+        icone: 'calendrier',
+        lecons: [
+          L('py-date-1', 'Une vraie date, ses morceaux', 'A real date, and its pieces'),
+          L('py-date-2', 'Calculer avec les dates', 'Computing with dates'),
+          L('py-date-3', 'Afficher et lire une date', 'Displaying and reading a date'),
+        ],
+      },
+      {
+        id: 'py-re',
+        titre: { fr: 'Expressions régulières', en: 'Regular expressions' },
+        icone: 'aimant',
+        lecons: [
+          L('py-re-1', 'Chercher une forme', 'Searching for a shape'),
+          L('py-re-2', 'Valider une saisie', 'Validating an input'),
+          L('py-re-3', 'Remplacer et découper', 'Replacing and splitting'),
+        ],
+      },
+      {
+        id: 'py-fic',
+        titre: { fr: 'Les fichiers', en: 'Files' },
+        icone: 'page',
+        lecons: [
+          L('py-fic-1', 'Écrire et relire un fichier', 'Writing and reading a file'),
+          L('py-fic-2', 'Ligne par ligne, et ajouter', 'Line by line, and appending'),
+          L('py-fic-3', 'Le format JSON', 'The JSON format'),
+          L('py-fic-4', 'Projet : le tableau des scores', 'Project: the scoreboard'),
+        ],
+      },
+      {
+        id: 'py-obj',
+        titre: { fr: 'Classes et objets', en: 'Classes and objects' },
+        icone: 'couronne',
+        lecons: [
+          L('py-obj-1', 'Créer son propre type', 'Creating your own type'),
+          L('py-obj-2', 'Des objets qui agissent', 'Objects that act'),
+          L('py-obj-3', 'Décider de son affichage', 'Deciding how it displays'),
+          L('py-obj-4', 'L’héritage', 'Inheritance'),
+        ],
+      },
+      {
+        id: 'py-stat',
+        titre: { fr: 'Les statistiques', en: 'Statistics' },
+        icone: 'statistiques',
+        lecons: [
+          L('py-stat-1', 'Moyenne, médiane, mode', 'Mean, median, mode'),
+          L('py-stat-2', 'Resserré ou dispersé', 'Tight or spread out'),
+          L('py-stat-3', 'Projet : le rapport de notes', 'Project: the marks report'),
+        ],
+      },
+      {
+        id: 'py-suite',
+        titre: { fr: 'La suite du voyage', en: 'The rest of the journey' },
+        icone: 'fusee',
+        lecons: [
+          L('py-suite-1', 'Choisir tes outils tout seul', 'Choosing your own tools'),
+          L('py-suite-2', 'Ce qui t’attend dehors', 'What awaits you outside'),
         ],
       },
     ],

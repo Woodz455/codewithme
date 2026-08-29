@@ -555,7 +555,7 @@ export const LECONS_PYTHON = {
         },
         {
           type: 'codeContient',
-          motif: 'int\\s*\\(',
+          motif: '\\bint\\s*\\(',
           message: {
             fr: 'input() rend du texte : convertis-le en nombre avec int() pour pouvoir ajouter 10.',
             en: 'input() gives back text: convert it with int() so you can add 10.',

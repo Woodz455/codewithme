@@ -1,0 +1,22 @@
+# Publication de la version web de CodeWithMe.
+#
+# Rien a configurer a la main : deposer ce depot sur Netlify suffit.
+# Les en-tetes, eux, sont dans dist-web/_headers, ecrit par la construction —
+# ils ne sont pas repetes ici pour qu'il n'y ait qu'une seule source de verite.
+#
+# L'isolation d'origine (COOP/COEP) que ce fichier `_headers` pose n'est PAS
+# optionnelle : sans elle, SharedArrayBuffer disparait et l'input() de la
+# console Python cesse de bloquer. C'est aussi pourquoi GitHub Pages, qui ne
+# sait pas poser d'en-tetes, ne convient pas.
+#
+# Cloudflare Pages lit le meme fichier `_headers` : la commande de construction
+# et le dossier a publier y sont les memes que ci-dessous.
+
+[build]
+  command = "npm run vendor && npm run build:web"
+  publish = "dist-web"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # Netlify n'a pas besoin des navigateurs de test.
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1"
