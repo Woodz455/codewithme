@@ -22,8 +22,8 @@ export const PARCOURS = [
       en: 'The easiest language to start with. You give orders, the computer obeys.',
     },
     aboutissement: {
-      fr: 'Une rosace colorée dessinée par ton code, et un jeu « devine le nombre ».',
-      en: 'A colourful rosette drawn by your code, and a "guess the number" game.',
+      fr: 'Une rosace dessinée par ton code, un jeu « devine le nombre », un bulletin scolaire et un tableau des scores enregistré sur disque.',
+      en: 'A rosette drawn by your code, a "guess the number" game, a school report card and a scoreboard saved to disk.',
     },
     modules: [
       {
@@ -205,6 +205,36 @@ export const PARCOURS = [
           L('py-fic-2', 'Ligne par ligne, et ajouter', 'Line by line, and appending'),
           L('py-fic-3', 'Le format JSON', 'The JSON format'),
           L('py-fic-4', 'Projet : le tableau des scores', 'Project: the scoreboard'),
+        ],
+      },
+      {
+        id: 'py-obj',
+        titre: { fr: 'Classes et objets', en: 'Classes and objects' },
+        icone: 'couronne',
+        lecons: [
+          L('py-obj-1', 'Créer son propre type', 'Creating your own type'),
+          L('py-obj-2', 'Des objets qui agissent', 'Objects that act'),
+          L('py-obj-3', 'Décider de son affichage', 'Deciding how it displays'),
+          L('py-obj-4', 'L’héritage', 'Inheritance'),
+        ],
+      },
+      {
+        id: 'py-stat',
+        titre: { fr: 'Les statistiques', en: 'Statistics' },
+        icone: 'statistiques',
+        lecons: [
+          L('py-stat-1', 'Moyenne, médiane, mode', 'Mean, median, mode'),
+          L('py-stat-2', 'Resserré ou dispersé', 'Tight or spread out'),
+          L('py-stat-3', 'Projet : le rapport de notes', 'Project: the marks report'),
+        ],
+      },
+      {
+        id: 'py-suite',
+        titre: { fr: 'La suite du voyage', en: 'The rest of the journey' },
+        icone: 'fusee',
+        lecons: [
+          L('py-suite-1', 'Choisir tes outils tout seul', 'Choosing your own tools'),
+          L('py-suite-2', 'Ce qui t’attend dehors', 'What awaits you outside'),
         ],
       },
     ],

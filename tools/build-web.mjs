@@ -95,7 +95,7 @@ writeFileSync(index, injecterPont(readFileSync(index, 'utf8')));
 // Ce qui est mis en cache des l'installation : tout, SAUF Pyodide.
 //
 // Pyodide pese 13 Mo des 15 du site. L'imposer a la premiere visite serait
-// brutal sur un forfait telephone, alors que le reste — interface, 86 lecons,
+// brutal sur un forfait telephone, alors que le reste — interface, 135 lecons,
 // polices, editeur, moteur C++ — tient en 2,4 Mo. Pyodide est donc mis en
 // cache au premier usage par la regle de repli du service worker : des que
 // l'eleve a lance Python une fois, Python marche hors ligne aussi.

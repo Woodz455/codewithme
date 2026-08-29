@@ -4545,4 +4545,1198 @@ Avec le bonus : 420
     },
     projet: { titre: { fr: 'Mon tableau des scores', en: 'My scoreboard' } },
   },
+
+  /* ================================================ Classes et objets ===== */
+
+  'py-obj-1': {
+    langage: 'python',
+    xp: 40,
+    objectif: {
+      fr: 'Créer son propre type de données, avec une classe.',
+      en: 'Create your own kind of data, with a class.',
+    },
+    explication: {
+      fr: `
+        <p>Un dictionnaire décrit bien un héros : <code>{"nom": "Zelda", "vie": 100}</code>.
+        Mais il ne <em>fait</em> rien, et rien n’empêche d’en créer un sans vie, ou avec une
+        clé mal orthographiée.</p>
+        <p>Une <strong>classe</strong> est un moule : elle décrit ce que toute chose de ce type
+        possède, et garantit qu’elle le possède.</p>
+        <pre>class Heros:
+    def __init__(self, nom, vie):
+        self.nom = nom
+        self.vie = vie
+
+zelda = Heros("Zelda", 100)
+print(zelda.nom)</pre>
+        <p>Trois mots à décoder :</p>
+        <ul>
+          <li><code>class Heros:</code> — le moule. Par convention, son nom prend une
+          <strong>majuscule</strong> ;</li>
+          <li><code>__init__</code> — la recette de fabrication, appelée automatiquement à
+          chaque <code>Heros(...)</code>. Les tirets bas doubles sont obligatoires ;</li>
+          <li><code>self</code> — <strong>l’objet en cours de fabrication</strong>.
+          <code>self.nom = nom</code> veut dire « range ce nom dans cet objet-ci ».</li>
+        </ul>
+        <p><code>self</code> déroute au début. Retiens ceci : il est
+        <strong>toujours le premier paramètre</strong>, et Python le passe tout seul — tu écris
+        <code>Heros("Zelda", 100)</code> avec deux valeurs, pas trois.</p>
+        <p>Un <strong>objet</strong> est ce qui sort du moule. Un moule, mille objets.</p>
+      `,
+      en: `
+        <p>A dictionary describes a hero fine: <code>{"nom": "Zelda", "vie": 100}</code>. But it
+        <em>does</em> nothing, and nothing stops you creating one with no health, or with a
+        misspelled key.</p>
+        <p>A <strong>class</strong> is a mould: it describes what everything of that kind has,
+        and guarantees it has it.</p>
+        <pre>class Heros:
+    def __init__(self, nom, vie):
+        self.nom = nom
+        self.vie = vie
+
+zelda = Heros("Zelda", 100)
+print(zelda.nom)</pre>
+        <p>Three words to decode:</p>
+        <ul>
+          <li><code>class Heros:</code> — the mould. By convention its name takes a
+          <strong>capital letter</strong>;</li>
+          <li><code>__init__</code> — the build recipe, called automatically on every
+          <code>Heros(...)</code>. The double underscores are compulsory;</li>
+          <li><code>self</code> — <strong>the object being built</strong>.
+          <code>self.nom = nom</code> means "store this name inside this particular
+          object".</li>
+        </ul>
+        <p><code>self</code> is confusing at first. Remember this: it is
+        <strong>always the first parameter</strong>, and Python passes it by itself — you write
+        <code>Heros("Zelda", 100)</code> with two values, not three.</p>
+        <p>An <strong>object</strong> is what comes out of the mould. One mould, a thousand
+        objects.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'class Heros:\n    def __init__(self, nom, vie):\n        self.nom = nom\n        self.vie = vie\n\nzelda = Heros("Zelda", 100)\nlink = Heros("Link", 120)\n\nprint(zelda.nom, zelda.vie)\nprint(link.nom, link.vie)\n\n# Deux objets distincts, sortis du même moule :\nzelda.vie = 80\nprint(zelda.vie, link.vie)',
+      note: {
+        fr: 'Modifier <code>zelda</code> ne touche pas <code>link</code> : ce sont deux objets indépendants.',
+        en: 'Changing <code>zelda</code> does not touch <code>link</code>: they are two independent objects.',
+      },
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Écris une classe <code>Livre</code> avec un <code>__init__</code> qui reçoit un
+             <code>titre</code>, un <code>auteur</code> et un nombre de <code>pages</code>.</p>
+             <p>Crée deux livres et affiche :</p>
+             <pre>Le Petit Prince, de Saint-Exupéry, 96 pages
+Harry Potter, de Rowling, 320 pages</pre>`,
+        en: `<p>Write a class <code>Livre</code> with an <code>__init__</code> taking a
+             <code>titre</code>, an <code>auteur</code> and a number of <code>pages</code>.</p>
+             <p>Create two books and display:</p>
+             <pre>Le Petit Prince, de Saint-Exupéry, 96 pages
+Harry Potter, de Rowling, 320 pages</pre>`,
+      },
+      depart: '# Définis la classe Livre, crée deux livres, affiche-les\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'class\\s+Livre\\s*:',
+          message: {
+            fr: 'Le moule s’écrit <code>class Livre:</code>, avec une majuscule.',
+            en: 'The mould is written <code>class Livre:</code>, with a capital letter.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'def\\s+__init__\\s*\\(\\s*self',
+          message: {
+            fr: 'La recette de fabrication : <code>def __init__(self, titre, auteur, pages):</code>.',
+            en: 'The build recipe: <code>def __init__(self, titre, auteur, pages):</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'self\\s*\\.\\s*titre\\s*=',
+          message: {
+            fr: 'Range le titre dans l’objet : <code>self.titre = titre</code>.',
+            en: 'Store the title inside the object: <code>self.titre = titre</code>.',
+          },
+        },
+        {
+          type: 'sortieEgale',
+          valeur: {
+            fr: 'Le Petit Prince, de Saint-Exupéry, 96 pages\nHarry Potter, de Rowling, 320 pages',
+            en: 'Le Petit Prince, de Saint-Exupéry, 96 pages\nHarry Potter, de Rowling, 320 pages',
+          },
+        },
+      ],
+      indices: [
+        {
+          fr: 'Dans <code>__init__</code>, trois lignes du même genre : <code>self.titre = titre</code>, etc.',
+          en: 'Inside <code>__init__</code>, three lines of the same kind: <code>self.titre = titre</code>, etc.',
+        },
+        {
+          fr: 'Création : <code>petit_prince = Livre("Le Petit Prince", "Saint-Exupéry", 96)</code>.',
+          en: 'Creation: <code>petit_prince = Livre("Le Petit Prince", "Saint-Exupéry", 96)</code>.',
+        },
+        {
+          fr: 'Affichage : <code>print(f"{petit_prince.titre}, de {petit_prince.auteur}, {petit_prince.pages} pages")</code>.',
+          en: 'Display: <code>print(f"{petit_prince.titre}, de {petit_prince.auteur}, {petit_prince.pages} pages")</code>.',
+        },
+      ],
+      solution:
+        'class Livre:\n    def __init__(self, titre, auteur, pages):\n        self.titre = titre\n        self.auteur = auteur\n        self.pages = pages\n\npetit_prince = Livre("Le Petit Prince", "Saint-Exupéry", 96)\nharry = Livre("Harry Potter", "Rowling", 320)\n\nprint(f"{petit_prince.titre}, de {petit_prince.auteur}, {petit_prince.pages} pages")\nprint(f"{harry.titre}, de {harry.auteur}, {harry.pages} pages")',
+    },
+  },
+
+  'py-obj-2': {
+    langage: 'python',
+    xp: 40,
+    objectif: {
+      fr: 'Donner des actions à ses objets, avec des méthodes.',
+      en: 'Give your objects actions, with methods.',
+    },
+    explication: {
+      fr: `
+        <p>Un objet qui ne fait que stocker n’est qu’un dictionnaire un peu habillé. Ce qui rend
+        une classe vraiment utile, ce sont ses <strong>méthodes</strong> : des fonctions qui
+        vivent dans le moule et agissent sur l’objet.</p>
+        <pre>class Heros:
+    def __init__(self, nom, vie):
+        self.nom = nom
+        self.vie = vie
+
+    def blesser(self, degats):
+        self.vie = self.vie - degats
+
+    def est_vivant(self):
+        return self.vie &gt; 0</pre>
+        <p>Une méthode s’écrit comme une fonction, à deux détails près : elle est
+        <strong>indentée dans la classe</strong>, et son premier paramètre est
+        <code>self</code>.</p>
+        <p>À l’usage, on écrit <code>zelda.blesser(30)</code> — un seul argument, parce que
+        <code>self</code>, c’est <code>zelda</code>, et Python s’en charge.</p>
+        <p><strong>Voilà tout l’intérêt :</strong> les données et ce qu’on peut en faire sont
+        rangés au même endroit. Personne ne peut blesser un héros en oubliant de vérifier sa
+        vie, parce que la règle est <em>dans</em> le héros. Avec un dictionnaire, cette règle
+        traînerait quelque part dans le programme, et un jour quelqu’un l’oublierait.</p>
+        <p>Erreur classique : oublier <code>self</code> devant l’attribut.
+        <code>vie = vie - degats</code> crée une variable locale qui disparaît aussitôt ;
+        l’objet, lui, n’a pas bougé.</p>
+      `,
+      en: `
+        <p>An object that only stores is just a dressed-up dictionary. What makes a class truly
+        useful are its <strong>methods</strong>: functions living inside the mould and acting on
+        the object.</p>
+        <pre>class Heros:
+    def __init__(self, nom, vie):
+        self.nom = nom
+        self.vie = vie
+
+    def blesser(self, degats):
+        self.vie = self.vie - degats
+
+    def est_vivant(self):
+        return self.vie &gt; 0</pre>
+        <p>A method is written like a function, with two details: it is
+        <strong>indented inside the class</strong>, and its first parameter is
+        <code>self</code>.</p>
+        <p>In use you write <code>zelda.blesser(30)</code> — one argument, because
+        <code>self</code> is <code>zelda</code>, and Python handles it.</p>
+        <p><strong>That is the whole point:</strong> the data and what you can do with it live
+        in the same place. Nobody can wound a hero while forgetting to check their health,
+        because the rule is <em>inside</em> the hero. With a dictionary that rule would sit
+        somewhere in the program, and one day someone would forget it.</p>
+        <p>Classic mistake: forgetting <code>self</code> before the attribute.
+        <code>vie = vie - degats</code> creates a local variable that vanishes at once; the
+        object has not changed.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'class Heros:\n    def __init__(self, nom, vie):\n        self.nom = nom\n        self.vie = vie\n\n    def blesser(self, degats):\n        self.vie = self.vie - degats\n\n    def soigner(self, points):\n        self.vie = self.vie + points\n\n    def est_vivant(self):\n        return self.vie > 0\n\nzelda = Heros("Zelda", 100)\nprint(zelda.vie, zelda.est_vivant())\n\nzelda.blesser(70)\nprint(zelda.vie, zelda.est_vivant())\n\nzelda.blesser(40)\nprint(zelda.vie, zelda.est_vivant())',
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Complète la classe <code>CompteEpargne</code> avec deux méthodes :</p>
+             <ul>
+               <li><code>deposer(montant)</code> — ajoute au solde ;</li>
+               <li><code>retirer(montant)</code> — retire du solde, mais
+               <strong>refuse</strong> si le solde deviendrait négatif (dans ce cas, elle ne
+               change rien).</li>
+             </ul>
+             <p>Le programme doit afficher :</p>
+             <pre>Solde : 150
+Solde : 100
+Retrait refusé
+Solde : 100</pre>`,
+        en: `<p>Complete the <code>CompteEpargne</code> class with two methods:</p>
+             <ul>
+               <li><code>deposer(montant)</code> — adds to the balance;</li>
+               <li><code>retirer(montant)</code> — takes from the balance, but
+               <strong>refuses</strong> if the balance would go negative (in that case it
+               changes nothing).</li>
+             </ul>
+             <p>The program must display:</p>
+             <pre>Solde : 150
+Solde : 100
+Retrait refusé
+Solde : 100</pre>`,
+      },
+      depart:
+        'class CompteEpargne:\n    def __init__(self, solde):\n        self.solde = solde\n\n    # Ajoute ici deposer() et retirer()\n\ncompte = CompteEpargne(100)\ncompte.deposer(50)\nprint(f"Solde : {compte.solde}")\ncompte.retirer(50)\nprint(f"Solde : {compte.solde}")\ncompte.retirer(500)\nprint(f"Solde : {compte.solde}")\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'def\\s+deposer\\s*\\(\\s*self',
+          message: {
+            fr: 'Une méthode commence par <code>def deposer(self, montant):</code>.',
+            en: 'A method starts with <code>def deposer(self, montant):</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'def\\s+retirer\\s*\\(\\s*self',
+          message: {
+            fr: 'Il manque <code>def retirer(self, montant):</code>.',
+            en: '<code>def retirer(self, montant):</code> is missing.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'self\\s*\\.\\s*solde\\s*=',
+          message: {
+            fr: 'Modifie bien l’attribut de l’objet : <code>self.solde = …</code>.',
+            en: 'Change the object attribute: <code>self.solde = …</code>.',
+          },
+        },
+        {
+          type: 'sortieEgale',
+          valeur: {
+            fr: 'Solde : 150\nSolde : 100\nRetrait refusé\nSolde : 100',
+            en: 'Solde : 150\nSolde : 100\nRetrait refusé\nSolde : 100',
+          },
+        },
+      ],
+      indices: [
+        {
+          fr: '<code>deposer</code> tient en une ligne : <code>self.solde = self.solde + montant</code>.',
+          en: '<code>deposer</code> fits in one line: <code>self.solde = self.solde + montant</code>.',
+        },
+        {
+          fr: 'Dans <code>retirer</code>, teste d’abord : <code>if montant > self.solde:</code>.',
+          en: 'Inside <code>retirer</code>, test first: <code>if montant > self.solde:</code>.',
+        },
+        {
+          fr: 'Si c’est trop, affiche « Retrait refusé » et sors avec <code>return</code> sans rien changer.',
+          en: 'If it is too much, display "Retrait refusé" and leave with <code>return</code> without changing anything.',
+        },
+      ],
+      solution:
+        'class CompteEpargne:\n    def __init__(self, solde):\n        self.solde = solde\n\n    def deposer(self, montant):\n        self.solde = self.solde + montant\n\n    def retirer(self, montant):\n        if montant > self.solde:\n            print("Retrait refusé")\n            return\n        self.solde = self.solde - montant\n\ncompte = CompteEpargne(100)\ncompte.deposer(50)\nprint(f"Solde : {compte.solde}")\ncompte.retirer(50)\nprint(f"Solde : {compte.solde}")\ncompte.retirer(500)\nprint(f"Solde : {compte.solde}")',
+    },
+  },
+
+  'py-obj-3': {
+    langage: 'python',
+    xp: 40,
+    objectif: {
+      fr: 'Décider comment son objet s’affiche.',
+      en: 'Decide how your object displays itself.',
+    },
+    explication: {
+      fr: `
+        <p>Affiche un objet, et tu obtiens quelque chose comme :</p>
+        <pre>&lt;__main__.Livre object at 0x7f3a2c&gt;</pre>
+        <p>Techniquement exact, humainement inutile. Python te laisse décider, avec une méthode
+        au nom particulier :</p>
+        <pre>def __str__(self):
+    return f"{self.titre}, de {self.auteur}"</pre>
+        <p>À partir de là, <code>print(mon_livre)</code> affiche ta phrase. Tu n’appelles jamais
+        <code>__str__</code> toi-même : c’est <code>print()</code> et <code>str()</code> qui le
+        font pour toi.</p>
+        <p>Ces méthodes à double tiret bas s’appellent des <strong>méthodes spéciales</strong>.
+        Elles branchent tes objets sur les mécanismes du langage. Tu en connais déjà une :
+        <code>__init__</code>. Il en existe pour la longueur (<code>__len__</code>), pour
+        l’égalité (<code>__eq__</code>), pour l’addition (<code>__add__</code>).</p>
+        <p>C’est ce qui explique que <code>len("chat")</code> et <code>len([1, 2])</code>
+        fonctionnent tous les deux : le texte et la liste ont chacun leur
+        <code>__len__</code>. Rien n’est spécial dans les types de Python — tes classes peuvent
+        faire pareil.</p>
+        <p>Une bonne <code>__str__</code> tient en une ligne et donne l’essentiel. C’est
+        elle qu’on lira dans mille messages de débogage.</p>
+      `,
+      en: `
+        <p>Display an object and you get something like:</p>
+        <pre>&lt;__main__.Livre object at 0x7f3a2c&gt;</pre>
+        <p>Technically exact, humanly useless. Python lets you decide, with a method that has a
+        particular name:</p>
+        <pre>def __str__(self):
+    return f"{self.titre}, de {self.auteur}"</pre>
+        <p>From then on, <code>print(mon_livre)</code> shows your sentence. You never call
+        <code>__str__</code> yourself: <code>print()</code> and <code>str()</code> do it for
+        you.</p>
+        <p>These double-underscore methods are called <strong>special methods</strong>. They
+        plug your objects into the language's machinery. You already know one:
+        <code>__init__</code>. There are others for length (<code>__len__</code>), equality
+        (<code>__eq__</code>), addition (<code>__add__</code>).</p>
+        <p>This is why <code>len("chat")</code> and <code>len([1, 2])</code> both work: text and
+        lists each have their own <code>__len__</code>. Nothing is special about Python's own
+        types — your classes can do the same.</p>
+        <p>A good <code>__str__</code> fits on one line and gives the essentials. It is what you
+        will read in a thousand debugging messages.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'class Livre:\n    def __init__(self, titre, auteur, pages):\n        self.titre = titre\n        self.auteur = auteur\n        self.pages = pages\n\n    def __str__(self):\n        return f"{self.titre} ({self.pages} p.)"\n\n    def __len__(self):\n        return self.pages\n\nlivre = Livre("Le Petit Prince", "Saint-Exupéry", 96)\n\nprint(livre)\nprint(str(livre).upper())\nprint(len(livre))\n\n# Dans une liste, chaque objet sait se décrire :\nfor l in [livre, Livre("Harry Potter", "Rowling", 320)]:\n    print("-", l)',
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Ajoute à la classe <code>Chanson</code> une méthode <code>__str__</code> pour que
+             <code>print</code> affiche le titre, l’artiste et la durée en minutes et
+             secondes :</p>
+             <pre>Imagine — Lennon (3:04)
+Yesterday — McCartney (2:05)</pre>
+             <p>La durée est stockée en secondes. <code>184</code> donne <code>3:04</code> — les
+             secondes s’écrivent sur <strong>deux chiffres</strong>.</p>`,
+        en: `<p>Add a <code>__str__</code> method to the <code>Chanson</code> class so that
+             <code>print</code> shows the title, the artist and the duration in minutes and
+             seconds:</p>
+             <pre>Imagine — Lennon (3:04)
+Yesterday — McCartney (2:05)</pre>
+             <p>The duration is stored in seconds. <code>184</code> gives <code>3:04</code> —
+             seconds are written with <strong>two digits</strong>.</p>`,
+      },
+      depart:
+        'class Chanson:\n    def __init__(self, titre, artiste, secondes):\n        self.titre = titre\n        self.artiste = artiste\n        self.secondes = secondes\n\n    # Ajoute __str__ ici\n\nfor c in [Chanson("Imagine", "Lennon", 184), Chanson("Yesterday", "McCartney", 125)]:\n    print(c)\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'def\\s+__str__\\s*\\(\\s*self\\s*\\)',
+          message: {
+            fr: 'Ajoute la méthode spéciale <code>def __str__(self):</code>.',
+            en: 'Add the special method <code>def __str__(self):</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: '\\breturn\\b',
+          message: {
+            fr: '<code>__str__</code> doit <strong>renvoyer</strong> le texte, pas l’afficher.',
+            en: '<code>__str__</code> must <strong>return</strong> the text, not print it.',
+          },
+        },
+        {
+          type: 'sortieEgale',
+          valeur: {
+            fr: 'Imagine — Lennon (3:04)\nYesterday — McCartney (2:05)',
+            en: 'Imagine — Lennon (3:04)\nYesterday — McCartney (2:05)',
+          },
+        },
+      ],
+      indices: [
+        {
+          fr: 'Les minutes : <code>self.secondes // 60</code>. Les secondes restantes : <code>self.secondes % 60</code>.',
+          en: 'Minutes: <code>self.secondes // 60</code>. Remaining seconds: <code>self.secondes % 60</code>.',
+        },
+        {
+          fr: 'Pour deux chiffres, un f-string sait le faire : <code>{reste:02d}</code>.',
+          en: 'For two digits, an f-string can do it: <code>{reste:02d}</code>.',
+        },
+        {
+          fr: '<code>return f"{self.titre} — {self.artiste} ({minutes}:{reste:02d})"</code>',
+          en: '<code>return f"{self.titre} — {self.artiste} ({minutes}:{reste:02d})"</code>',
+        },
+      ],
+      solution:
+        'class Chanson:\n    def __init__(self, titre, artiste, secondes):\n        self.titre = titre\n        self.artiste = artiste\n        self.secondes = secondes\n\n    def __str__(self):\n        minutes = self.secondes // 60\n        reste = self.secondes % 60\n        return f"{self.titre} — {self.artiste} ({minutes}:{reste:02d})"\n\nfor c in [Chanson("Imagine", "Lennon", 184), Chanson("Yesterday", "McCartney", 125)]:\n    print(c)',
+    },
+  },
+
+  'py-obj-4': {
+    langage: 'python',
+    xp: 45,
+    objectif: {
+      fr: 'Réutiliser une classe existante pour en écrire une plus précise.',
+      en: 'Reuse an existing class to write a more specific one.',
+    },
+    explication: {
+      fr: `
+        <p>Un chien est un animal. Il a tout ce qu’a un animal — un nom, un âge — plus ce qui
+        lui est propre. Recopier la classe <code>Animal</code> pour y ajouter deux lignes serait
+        du gâchis : le jour où l’on corrige un bug, il faudrait le corriger partout.</p>
+        <p>L’<strong>héritage</strong> évite ça :</p>
+        <pre>class Animal:
+    def __init__(self, nom):
+        self.nom = nom
+
+    def parler(self):
+        return f"{self.nom} fait un bruit"
+
+class Chien(Animal):
+    def parler(self):
+        return f"{self.nom} aboie"</pre>
+        <p>Les parenthèses de <code>class Chien(Animal)</code> disent : « un chien est un animal
+        ». Il reçoit <strong>gratuitement</strong> tout ce qu’a <code>Animal</code>, y compris
+        son <code>__init__</code>.</p>
+        <p>Et il peut <strong>redéfinir</strong> ce qui doit changer : ici <code>parler</code>.
+        C’est le mécanisme le plus utile de l’héritage — chacun garde le commun et ajuste le
+        particulier.</p>
+        <p>Le vrai bénéfice apparaît ensuite : une même boucle peut traiter des animaux et des
+        chiens sans jamais demander qui est qui. Chacun répond à sa façon. On appelle ça le
+        <strong>polymorphisme</strong> — un grand mot pour une idée simple : le même appel, une
+        réponse adaptée.</p>
+        <p><code>isinstance(rex, Animal)</code> vaut <code>True</code> pour un chien : il
+        <em>est</em> bien un animal.</p>
+      `,
+      en: `
+        <p>A dog is an animal. It has everything an animal has — a name, an age — plus what is
+        its own. Copying the <code>Animal</code> class to add two lines would be waste: the day
+        you fix a bug you would have to fix it everywhere.</p>
+        <p><strong>Inheritance</strong> avoids that:</p>
+        <pre>class Animal:
+    def __init__(self, nom):
+        self.nom = nom
+
+    def parler(self):
+        return f"{self.nom} fait un bruit"
+
+class Chien(Animal):
+    def parler(self):
+        return f"{self.nom} aboie"</pre>
+        <p>The brackets in <code>class Chien(Animal)</code> say: "a dog is an animal". It gets
+        <strong>for free</strong> everything <code>Animal</code> has, including its
+        <code>__init__</code>.</p>
+        <p>And it can <strong>redefine</strong> what must change: here <code>parler</code>. This
+        is inheritance's most useful mechanism — each keeps the common part and adjusts the
+        specific one.</p>
+        <p>The real benefit shows next: one single loop can handle animals and dogs without ever
+        asking who is who. Each answers in its own way. This is called
+        <strong>polymorphism</strong> — a big word for a simple idea: the same call, a fitting
+        answer.</p>
+        <p><code>isinstance(rex, Animal)</code> is <code>True</code> for a dog: it really
+        <em>is</em> an animal.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'class Animal:\n    def __init__(self, nom, age):\n        self.nom = nom\n        self.age = age\n\n    def parler(self):\n        return f"{self.nom} fait un bruit"\n\nclass Chien(Animal):\n    def parler(self):\n        return f"{self.nom} aboie"\n\nclass Chat(Animal):\n    def parler(self):\n        return f"{self.nom} miaule"\n\n# Une seule boucle, trois comportements :\nfor a in [Animal("Bestiole", 1), Chien("Rex", 3), Chat("Félix", 5)]:\n    print(a.parler())\n\nrex = Chien("Rex", 3)\nprint(rex.age)\nprint(isinstance(rex, Animal))',
+      note: {
+        fr: '<code>rex.age</code> fonctionne alors que <code>Chien</code> n’a pas d’<code>__init__</code> : il a hérité de celui d’<code>Animal</code>.',
+        en: '<code>rex.age</code> works although <code>Chien</code> has no <code>__init__</code>: it inherited the one from <code>Animal</code>.',
+      },
+    },
+    defi: {
+      consigne: {
+        fr: `<p>La classe <code>Vehicule</code> existe déjà. Écris une classe
+             <code>Velo</code> qui en <strong>hérite</strong> et redéfinit
+             <code>decrire()</code>.</p>
+             <p>La boucle finale doit afficher :</p>
+             <pre>Une voiture roule à 130 km/h
+Un vélo roule à 25 km/h, sans faire de bruit</pre>
+             <p><code>Velo</code> ne doit <strong>pas</strong> réécrire <code>__init__</code> :
+             il l’hérite.</p>`,
+        en: `<p>The <code>Vehicule</code> class already exists. Write a <code>Velo</code> class
+             that <strong>inherits</strong> from it and redefines <code>decrire()</code>.</p>
+             <p>The final loop must display:</p>
+             <pre>Une voiture roule à 130 km/h
+Un vélo roule à 25 km/h, sans faire de bruit</pre>
+             <p><code>Velo</code> must <strong>not</strong> rewrite <code>__init__</code>: it
+             inherits it.</p>`,
+      },
+      depart:
+        'class Vehicule:\n    def __init__(self, nom, vitesse):\n        self.nom = nom\n        self.vitesse = vitesse\n\n    def decrire(self):\n        return f"Une {self.nom} roule à {self.vitesse} km/h"\n\n# Écris la classe Velo ici\n\nfor v in [Vehicule("voiture", 130), Velo("vélo", 25)]:\n    print(v.decrire())\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'class\\s+Velo\\s*\\(\\s*Vehicule\\s*\\)',
+          message: {
+            fr: 'L’héritage s’écrit dans les parenthèses : <code>class Velo(Vehicule):</code>.',
+            en: 'Inheritance goes in the brackets: <code>class Velo(Vehicule):</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'def\\s+decrire\\s*\\(\\s*self\\s*\\)[\\s\\S]*def\\s+decrire\\s*\\(\\s*self\\s*\\)',
+          message: {
+            fr: '<code>Velo</code> doit redéfinir sa propre méthode <code>decrire()</code>.',
+            en: '<code>Velo</code> must redefine its own <code>decrire()</code> method.',
+          },
+        },
+        {
+          type: 'codeNeContientPas',
+          motif: 'class\\s+Velo[\\s\\S]*def\\s+__init__',
+          message: {
+            fr: '<code>Velo</code> hérite du <code>__init__</code> d’<code>Vehicule</code> : ne le réécris pas.',
+            en: '<code>Velo</code> inherits <code>Vehicule</code>\'s <code>__init__</code>: do not rewrite it.',
+          },
+        },
+        {
+          type: 'sortieEgale',
+          valeur: {
+            fr: 'Une voiture roule à 130 km/h\nUn vélo roule à 25 km/h, sans faire de bruit',
+            en: 'Une voiture roule à 130 km/h\nUn vélo roule à 25 km/h, sans faire de bruit',
+          },
+        },
+      ],
+      indices: [
+        {
+          fr: 'Commence par <code>class Velo(Vehicule):</code>, puis indente la méthode.',
+          en: 'Start with <code>class Velo(Vehicule):</code>, then indent the method.',
+        },
+        {
+          fr: 'La méthode porte le <strong>même nom</strong> que celle du parent : c’est ce qui la remplace.',
+          en: 'The method has the <strong>same name</strong> as the parent one: that is what replaces it.',
+        },
+        {
+          fr: '<code>return f"Un {self.nom} roule à {self.vitesse} km/h, sans faire de bruit"</code>',
+          en: '<code>return f"Un {self.nom} roule à {self.vitesse} km/h, sans faire de bruit"</code>',
+        },
+      ],
+      solution:
+        'class Vehicule:\n    def __init__(self, nom, vitesse):\n        self.nom = nom\n        self.vitesse = vitesse\n\n    def decrire(self):\n        return f"Une {self.nom} roule à {self.vitesse} km/h"\n\nclass Velo(Vehicule):\n    def decrire(self):\n        return f"Un {self.nom} roule à {self.vitesse} km/h, sans faire de bruit"\n\nfor v in [Vehicule("voiture", 130), Velo("vélo", 25)]:\n    print(v.decrire())',
+    },
+  },
+
+  /* ================================================= Les statistiques ===== */
+
+  'py-stat-1': {
+    langage: 'python',
+    xp: 35,
+    objectif: {
+      fr: 'Résumer une série de nombres : moyenne, médiane, mode.',
+      en: 'Summarise a series of numbers: mean, median, mode.',
+    },
+    explication: {
+      fr: `
+        <p>Le module <code>statistics</code> répond en une ligne à des questions qu’on se pose
+        tout le temps sur une série de nombres :</p>
+        <ul>
+          <li><code>mean(notes)</code> — la <strong>moyenne</strong> : le total divisé par le
+          nombre de valeurs ;</li>
+          <li><code>median(notes)</code> — la <strong>médiane</strong> : la valeur du milieu une
+          fois la série triée ;</li>
+          <li><code>mode(notes)</code> — le <strong>mode</strong> : la valeur qui revient le
+          plus souvent.</li>
+        </ul>
+        <p><strong>Pourquoi trois nombres et pas un ?</strong> Parce qu’ils ne disent pas la même
+        chose, et que la moyenne ment facilement.</p>
+        <p>Dans une classe où presque tout le monde a 10 mais où un élève a 20, la moyenne
+        remonte pour tout le monde alors que personne n’a progressé. La médiane, elle, ne bouge
+        pas : elle ignore l’ampleur des extrêmes et ne regarde que le milieu.</p>
+        <p>C’est pour ça qu’on parle du <em>salaire médian</em> plutôt que du salaire moyen : une
+        poignée de très hauts salaires suffirait à rendre la moyenne trompeuse.</p>
+        <p>Le mode, lui, est le seul qui fonctionne sur des choses non numériques : la couleur la
+        plus fréquente, la réponse la plus donnée.</p>
+      `,
+      en: `
+        <p>The <code>statistics</code> module answers in one line questions you constantly ask
+        about a series of numbers:</p>
+        <ul>
+          <li><code>mean(notes)</code> — the <strong>mean</strong>: the total divided by the
+          number of values;</li>
+          <li><code>median(notes)</code> — the <strong>median</strong>: the middle value once
+          the series is sorted;</li>
+          <li><code>mode(notes)</code> — the <strong>mode</strong>: the value appearing most
+          often.</li>
+        </ul>
+        <p><strong>Why three numbers and not one?</strong> Because they do not say the same
+        thing, and the mean lies easily.</p>
+        <p>In a class where almost everyone has 10 but one pupil has 20, the mean goes up for
+        everybody although nobody improved. The median does not move: it ignores how extreme the
+        extremes are and only looks at the middle.</p>
+        <p>That is why people speak of the <em>median salary</em> rather than the average one: a
+        handful of very high salaries would be enough to make the mean misleading.</p>
+        <p>The mode is the only one that works on non-numeric things: the most frequent colour,
+        the most given answer.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'import statistics as stat\n\nnotes = [12, 15, 9, 18, 15, 11]\n\nprint(sorted(notes))\nprint("moyenne :", round(stat.mean(notes), 2))\nprint("médiane :", stat.median(notes))\nprint("mode    :", stat.mode(notes))\n\n# La moyenne se laisse tirer par un extrême, pas la médiane :\navec_extreme = [10, 10, 10, 10, 100]\nprint(stat.mean(avec_extreme), stat.median(avec_extreme))',
+      note: {
+        fr: 'Les deux derniers nombres résument tout : moyenne 28, médiane 10, sur la même série.',
+        en: 'The last two numbers say it all: mean 28, median 10, on the very same series.',
+      },
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Résume les notes du contrôle en trois lignes :</p>
+             <pre>Moyenne : 13.33
+Médiane : 13.5
+Mode : 15</pre>
+             <p>La moyenne est arrondie à deux décimales. Utilise le module
+             <code>statistics</code>, pas des calculs à la main.</p>`,
+        en: `<p>Summarise the test marks in three lines:</p>
+             <pre>Moyenne : 13.33
+Médiane : 13.5
+Mode : 15</pre>
+             <p>The mean is rounded to two decimals. Use the <code>statistics</code> module, not
+             hand calculations.</p>`,
+      },
+      depart: 'notes = [12, 15, 9, 18, 15, 11]\n\n# Importe statistics, puis affiche les trois résumés\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'import\\s+statistics',
+          message: {
+            fr: 'Importe le module : <code>import statistics</code>.',
+            en: 'Import the module: <code>import statistics</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: '\\bmedian\\s*\\(',
+          message: {
+            fr: 'La médiane a sa fonction : <code>median()</code>.',
+            en: 'The median has its own function: <code>median()</code>.',
+          },
+        },
+        {
+          type: 'codeNeContientPas',
+          motif: 'sum\\s*\\(',
+          message: {
+            fr: 'Pas de calcul à la main : <code>mean()</code> fait déjà la moyenne.',
+            en: 'No hand calculation: <code>mean()</code> already does the average.',
+          },
+        },
+        { type: 'sortieContient', valeur: { fr: 'Moyenne : 13.33', en: 'Moyenne : 13.33' } },
+        { type: 'sortieContient', valeur: { fr: 'Médiane : 13.5', en: 'Médiane : 13.5' } },
+        { type: 'sortieContient', valeur: { fr: 'Mode : 15', en: 'Mode : 15' } },
+      ],
+      indices: [
+        {
+          fr: 'Un nom plus court aide : <code>import statistics as stat</code>.',
+          en: 'A shorter name helps: <code>import statistics as stat</code>.',
+        },
+        {
+          fr: 'La moyenne arrondie : <code>round(stat.mean(notes), 2)</code>.',
+          en: 'The rounded mean: <code>round(stat.mean(notes), 2)</code>.',
+        },
+        {
+          fr: 'Les deux autres n’ont pas besoin d’arrondi : <code>stat.median(notes)</code> et <code>stat.mode(notes)</code>.',
+          en: 'The other two need no rounding: <code>stat.median(notes)</code> and <code>stat.mode(notes)</code>.',
+        },
+      ],
+      solution:
+        'import statistics as stat\n\nnotes = [12, 15, 9, 18, 15, 11]\n\nprint(f"Moyenne : {round(stat.mean(notes), 2)}")\nprint(f"Médiane : {stat.median(notes)}")\nprint(f"Mode : {stat.mode(notes)}")',
+    },
+  },
+
+  'py-stat-2': {
+    langage: 'python',
+    xp: 40,
+    objectif: {
+      fr: 'Mesurer si une série est resserrée ou dispersée.',
+      en: 'Measure whether a series is tight or spread out.',
+    },
+    explication: {
+      fr: `
+        <p>Deux classes ont la même moyenne de 10,4. Dans l’une, tout le monde est entre 10 et
+        11. Dans l’autre, les notes vont de 2 à 20.</p>
+        <p>La moyenne ne fait aucune différence entre les deux. Elle est pourtant énorme : dans
+        un cas le cours est passé pour tout le monde, dans l’autre la moitié de la classe est
+        perdue.</p>
+        <p>Ce que la moyenne ne dit pas, l’<strong>écart-type</strong> le dit : il mesure à quel
+        point les valeurs s’écartent de la moyenne.</p>
+        <pre>stat.pstdev(serree)   # 0.49  — tout le monde au même niveau
+stat.pstdev(etalee)   # 7.23  — des écarts énormes</pre>
+        <p>Petit écart-type : les valeurs sont groupées. Grand écart-type : elles sont
+        éparpillées. Zéro : elles sont toutes identiques.</p>
+        <p>Il s’exprime dans la <strong>même unité</strong> que les données — ici des points de
+        note — ce qui le rend directement lisible : « en moyenne, on s’écarte de 7 points de la
+        moyenne ».</p>
+        <p><em>Une précision de vocabulaire :</em> <code>pstdev</code> s’utilise quand on a
+        <strong>toutes</strong> les valeurs (toute la classe). Il existe aussi
+        <code>stdev</code>, pour quand on n’a qu’un échantillon et qu’on veut deviner l’ensemble
+        — un sondage, par exemple. Ici, on a toute la classe.</p>
+      `,
+      en: `
+        <p>Two classes have the same average of 10.4. In one, everybody is between 10 and 11. In
+        the other, marks run from 2 to 20.</p>
+        <p>The mean makes no difference between them. Yet the difference is huge: in one case
+        the lesson landed for everyone, in the other half the class is lost.</p>
+        <p>What the mean does not say, the <strong>standard deviation</strong> does: it measures
+        how far the values stray from the mean.</p>
+        <pre>stat.pstdev(serree)   # 0.49  — everyone at the same level
+stat.pstdev(etalee)   # 7.23  — enormous gaps</pre>
+        <p>Small standard deviation: the values are grouped. Large one: they are scattered.
+        Zero: they are all identical.</p>
+        <p>It is expressed in the <strong>same unit</strong> as the data — here marks — which
+        makes it directly readable: "on average, we are 7 points away from the mean".</p>
+        <p><em>A note on vocabulary:</em> <code>pstdev</code> is used when you have
+        <strong>all</strong> the values (the whole class). There is also <code>stdev</code>, for
+        when you only have a sample and want to guess the whole — an opinion poll, say. Here we
+        have the whole class.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'import statistics as stat\n\nserree = [10, 11, 10, 11, 10]\netalee = [2, 18, 5, 20, 7]\n\nprint("Classe A — moyenne", round(stat.mean(serree), 2), "écart-type", round(stat.pstdev(serree), 2))\nprint("Classe B — moyenne", round(stat.mean(etalee), 2), "écart-type", round(stat.pstdev(etalee), 2))\n\nprint(min(serree), max(serree))\nprint(min(etalee), max(etalee))',
+      note: {
+        fr: 'Même moyenne exactement, et deux réalités qui n’ont rien à voir. C’est tout le sujet de cette leçon.',
+        en: 'Exactly the same mean, and two realities with nothing in common. That is the whole point of this lesson.',
+      },
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Compare les deux classes. Pour chacune, affiche la moyenne et l’écart-type
+             arrondis à deux décimales, puis conclus :</p>
+             <pre>Classe A : moyenne 10.4, écart-type 0.49
+Classe B : moyenne 10.4, écart-type 7.23
+Même moyenne, mais la classe B est plus dispersée.</pre>`,
+        en: `<p>Compare the two classes. For each, display the mean and standard deviation
+             rounded to two decimals, then conclude:</p>
+             <pre>Classe A : moyenne 10.4, écart-type 0.49
+Classe B : moyenne 10.4, écart-type 7.23
+Même moyenne, mais la classe B est plus dispersée.</pre>`,
+      },
+      depart:
+        'import statistics as stat\n\nclasse_a = [10, 11, 10, 11, 10]\nclasse_b = [2, 18, 5, 20, 7]\n\n# Une ligne par classe, puis la conclusion\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'pstdev\\s*\\(',
+          message: {
+            fr: 'L’écart-type d’une population complète : <code>stat.pstdev()</code>.',
+            en: 'The standard deviation of a full population: <code>stat.pstdev()</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'round\\s*\\(',
+          message: {
+            fr: 'Arrondis à deux décimales avec <code>round(…, 2)</code>.',
+            en: 'Round to two decimals with <code>round(…, 2)</code>.',
+          },
+        },
+        {
+          type: 'sortieContient',
+          valeur: { fr: 'Classe A : moyenne 10.4, écart-type 0.49', en: 'Classe A : moyenne 10.4, écart-type 0.49' },
+        },
+        {
+          type: 'sortieContient',
+          valeur: { fr: 'Classe B : moyenne 10.4, écart-type 7.23', en: 'Classe B : moyenne 10.4, écart-type 7.23' },
+        },
+        {
+          type: 'sortieContient',
+          valeur: {
+            fr: 'Même moyenne, mais la classe B est plus dispersée.',
+            en: 'Même moyenne, mais la classe B est plus dispersée.',
+          },
+        },
+      ],
+      indices: [
+        {
+          fr: 'Une ligne type : <code>print(f"Classe A : moyenne {round(stat.mean(classe_a), 2)}, écart-type {round(stat.pstdev(classe_a), 2)}")</code>.',
+          en: 'A typical line: <code>print(f"Classe A : moyenne {round(stat.mean(classe_a), 2)}, écart-type {round(stat.pstdev(classe_a), 2)}")</code>.',
+        },
+        {
+          fr: 'La seconde ligne est la même, avec <code>classe_b</code>.',
+          en: 'The second line is the same, with <code>classe_b</code>.',
+        },
+        {
+          fr: 'La troisième est un simple <code>print</code> de la phrase de conclusion.',
+          en: 'The third is a plain <code>print</code> of the closing sentence.',
+        },
+      ],
+      solution:
+        'import statistics as stat\n\nclasse_a = [10, 11, 10, 11, 10]\nclasse_b = [2, 18, 5, 20, 7]\n\nprint(f"Classe A : moyenne {round(stat.mean(classe_a), 2)}, écart-type {round(stat.pstdev(classe_a), 2)}")\nprint(f"Classe B : moyenne {round(stat.mean(classe_b), 2)}, écart-type {round(stat.pstdev(classe_b), 2)}")\nprint("Même moyenne, mais la classe B est plus dispersée.")',
+    },
+  },
+
+  'py-stat-3': {
+    langage: 'python',
+    xp: 45,
+    objectif: {
+      fr: 'Produire un rapport statistique complet sur une série réelle.',
+      en: 'Produce a full statistical report on a real series.',
+    },
+    explication: {
+      fr: `
+        <p>Un rapport statistique n’aligne pas des nombres au hasard : il répond, dans l’ordre, à
+        des questions qu’un lecteur se pose.</p>
+        <ol>
+          <li><strong>Combien ?</strong> — <code>len()</code></li>
+          <li><strong>Autour de quoi ?</strong> — moyenne et médiane</li>
+          <li><strong>À quel point regroupé ?</strong> — écart-type</li>
+          <li><strong>Jusqu’où ?</strong> — <code>min()</code> et <code>max()</code></li>
+          <li><strong>Et concrètement ?</strong> — une lecture en français</li>
+        </ol>
+        <p>Le dernier point est celui qu’on oublie, et c’est le seul qui compte pour celui qui
+        lit. « Écart-type 3.16 » ne dit rien à un parent ; « 5 élèves sur 10 sont au-dessus de la
+        moyenne » se comprend immédiatement.</p>
+        <p>Pour compter combien dépassent la moyenne, tu as déjà tout : une compréhension avec un
+        filtre, et <code>len()</code>.</p>
+        <pre>len([n for n in notes if n &gt; moyenne])</pre>
+        <p>Un dernier réflexe : range la moyenne dans une variable avant de t’en servir dans le
+        filtre. La recalculer à chaque tour de boucle fonctionne, mais c’est du travail refait
+        dix fois pour rien.</p>
+      `,
+      en: `
+        <p>A statistical report does not line up numbers at random: it answers, in order, the
+        questions a reader has.</p>
+        <ol>
+          <li><strong>How many?</strong> — <code>len()</code></li>
+          <li><strong>Around what?</strong> — mean and median</li>
+          <li><strong>How grouped?</strong> — standard deviation</li>
+          <li><strong>How far?</strong> — <code>min()</code> and <code>max()</code></li>
+          <li><strong>And in practice?</strong> — a plain-language reading</li>
+        </ol>
+        <p>That last point is the one people forget, and it is the only one that matters to the
+        reader. "Standard deviation 3.16" means nothing to a parent; "5 pupils out of 10 are
+        above average" is understood at once.</p>
+        <p>To count how many are above the mean you already have everything: a comprehension
+        with a filter, and <code>len()</code>.</p>
+        <pre>len([n for n in notes if n &gt; moyenne])</pre>
+        <p>One last reflex: store the mean in a variable before using it in the filter.
+        Recomputing it on every pass works, but it is the same work redone ten times for
+        nothing.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'import statistics as stat\n\ntemperatures = [18, 21, 19, 25, 17, 22]\nmoyenne = stat.mean(temperatures)\n\nprint(f"{len(temperatures)} relevés")\nprint(f"Moyenne : {round(moyenne, 2)} °C")\nprint(f"Entre {min(temperatures)} et {max(temperatures)} °C")\nprint(f"Écart-type : {round(stat.pstdev(temperatures), 2)}")\nprint(f"{len([t for t in temperatures if t > moyenne])} jours au-dessus de la moyenne")',
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Produis le rapport complet du contrôle. Il doit afficher, exactement :</p>
+             <pre>10 notes
+Moyenne : 13
+Médiane : 13.5
+Écart-type : 3.16
+La plus basse : 7, la plus haute : 18
+5 élèves au-dessus de la moyenne</pre>
+             <p>Tout doit être calculé. Change une note dans la liste, et les six lignes doivent
+             suivre.</p>`,
+        en: `<p>Produce the full report of the test. It must display, exactly:</p>
+             <pre>10 notes
+Moyenne : 13
+Médiane : 13.5
+Écart-type : 3.16
+La plus basse : 7, la plus haute : 18
+5 élèves au-dessus de la moyenne</pre>
+             <p>Everything must be computed. Change one mark in the list, and all six lines must
+             follow.</p>`,
+      },
+      depart:
+        'import statistics as stat\n\nnotes = [12, 15, 9, 18, 15, 11, 14, 7, 16, 13]\n\n# Les six lignes du rapport\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'pstdev\\s*\\(',
+          message: {
+            fr: 'L’écart-type manque : <code>stat.pstdev(notes)</code>.',
+            en: 'The standard deviation is missing: <code>stat.pstdev(notes)</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: '\\bfor\\b[\\s\\S]*\\bif\\b',
+          message: {
+            fr: 'Compte les élèves au-dessus de la moyenne avec une compréhension filtrée.',
+            en: 'Count the pupils above the mean with a filtered comprehension.',
+          },
+        },
+        { type: 'sortieContient', valeur: { fr: '10 notes', en: '10 notes' } },
+        { type: 'sortieContient', valeur: { fr: 'Moyenne : 13', en: 'Moyenne : 13' } },
+        { type: 'sortieContient', valeur: { fr: 'Médiane : 13.5', en: 'Médiane : 13.5' } },
+        { type: 'sortieContient', valeur: { fr: 'Écart-type : 3.16', en: 'Écart-type : 3.16' } },
+        {
+          type: 'sortieContient',
+          valeur: { fr: 'La plus basse : 7, la plus haute : 18', en: 'La plus basse : 7, la plus haute : 18' },
+        },
+        {
+          type: 'sortieContient',
+          valeur: { fr: '5 élèves au-dessus de la moyenne', en: '5 élèves au-dessus de la moyenne' },
+        },
+      ],
+      indices: [
+        {
+          fr: 'Commence par ranger la moyenne : <code>moyenne = stat.mean(notes)</code>.',
+          en: 'Start by storing the mean: <code>moyenne = stat.mean(notes)</code>.',
+        },
+        {
+          fr: 'Les extrêmes sont simplement <code>min(notes)</code> et <code>max(notes)</code>.',
+          en: 'The extremes are simply <code>min(notes)</code> and <code>max(notes)</code>.',
+        },
+        {
+          fr: 'La dernière ligne : <code>len([n for n in notes if n > moyenne])</code>.',
+          en: 'The last line: <code>len([n for n in notes if n > moyenne])</code>.',
+        },
+      ],
+      solution:
+        'import statistics as stat\n\nnotes = [12, 15, 9, 18, 15, 11, 14, 7, 16, 13]\nmoyenne = stat.mean(notes)\n\nprint(f"{len(notes)} notes")\nprint(f"Moyenne : {round(moyenne, 2)}")\nprint(f"Médiane : {stat.median(notes)}")\nprint(f"Écart-type : {round(stat.pstdev(notes), 2)}")\nprint(f"La plus basse : {min(notes)}, la plus haute : {max(notes)}")\nprint(f"{len([n for n in notes if n > moyenne])} élèves au-dessus de la moyenne")',
+    },
+    projet: { titre: { fr: 'Mon rapport de notes', en: 'My marks report' } },
+  },
+
+  /* ================================================== La suite du voyage == */
+
+  'py-suite-1': {
+    langage: 'python',
+    xp: 45,
+    objectif: {
+      fr: 'Assembler seul un programme complet, sans qu’on te dise quoi utiliser.',
+      en: 'Assemble a complete program on your own, with nobody telling you what to use.',
+    },
+    explication: {
+      fr: `
+        <p>Tu as vu, depuis le premier <code>print</code> : les variables, les opérateurs, le
+        texte, les conditions, les boucles, la tortue, les listes, les tuples, les ensembles,
+        les dictionnaires, les fonctions, les modules, les compréhensions, les fonctions
+        d’ordre supérieur, les types, les erreurs, les dates, les expressions régulières, les
+        fichiers, les classes et les statistiques.</p>
+        <p>Vingt et un sujets. Mais savoir programmer, ce n’est pas les connaître un par un :
+        c’est savoir <strong>lesquels choisir</strong> devant un problème qu’on ne t’a pas
+        préparé.</p>
+        <p>Ce défi ne te dit donc pas quoi utiliser. Il décrit un besoin, comme on te le
+        décrirait au travail, et c’est à toi de découper.</p>
+        <p>La méthode, quand on ne sait pas par où commencer, tient en trois questions :</p>
+        <ol>
+          <li><strong>Quelles données ?</strong> Une liste, un dictionnaire, des objets ?</li>
+          <li><strong>Quelles étapes ?</strong> Écris-les en français d’abord, en commentaires.
+          Le code viendra remplir les trous ;</li>
+          <li><strong>Quel affichage ?</strong> Regarde le résultat attendu, et travaille à
+          rebours.</li>
+        </ol>
+        <p>Cette habitude — décrire avant de coder — est ce qui sépare un programmeur qui
+        avance d’un programmeur qui bloque.</p>
+      `,
+      en: `
+        <p>Since that first <code>print</code> you have seen: variables, operators, text,
+        conditions, loops, the turtle, lists, tuples, sets, dictionaries, functions, modules,
+        comprehensions, higher order functions, types, errors, dates, regular expressions,
+        files, classes and statistics.</p>
+        <p>Twenty-one topics. But knowing how to program is not knowing them one by one: it is
+        knowing <strong>which ones to pick</strong> in front of a problem nobody prepared for
+        you.</p>
+        <p>So this challenge does not tell you what to use. It describes a need, the way it
+        would be described to you at work, and it is up to you to break it down.</p>
+        <p>The method, when you do not know where to start, is three questions:</p>
+        <ol>
+          <li><strong>What data?</strong> A list, a dictionary, objects?</li>
+          <li><strong>What steps?</strong> Write them in plain language first, as comments. The
+          code will fill the gaps;</li>
+          <li><strong>What output?</strong> Look at the expected result, and work backwards.</li>
+        </ol>
+        <p>This habit — describing before coding — is what separates a programmer who moves
+        forward from one who gets stuck.</p>
+      `,
+    },
+    exemple: {
+      code:
+        '# La méthode, sur un exemple : "trouver le mot le plus long d\'une phrase"\n\nphrase = "le petit chat dort tranquillement"\n\n# 1. Quelles données ? une liste de mots\nmots = phrase.split(" ")\n\n# 2. Quelles étapes ? trier par longueur, prendre le dernier\ntries = sorted(mots, key=len)\n\n# 3. Quel affichage ?\nprint(f"Le mot le plus long est « {tries[-1] } », {len(tries[-1])} lettres")',
+      note: {
+        fr: 'Les trois commentaires ont été écrits <strong>avant</strong> le code. C’est ça, la méthode.',
+        en: 'The three comments were written <strong>before</strong> the code. That is the method.',
+      },
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Une bibliothèque te donne sa liste de livres, chacun avec son titre et son nombre
+             de pages. Elle veut un petit rapport.</p>
+             <p>Affiche exactement :</p>
+             <pre>4 livres, 916 pages en tout
+Le plus long : Les Misérables (450 p.)
+Moyenne : 229.0 pages
+Titres courts : Germinal, Candide</pre>
+             <p>Un titre est « court » s’il fait <strong>moins de 12 caractères</strong>. Ils
+             apparaissent dans l’ordre de la liste, séparés par une virgule et une espace.</p>
+             <p>À toi de choisir tes outils. Tout ce dont tu as besoin, tu l’as déjà vu.</p>`,
+        en: `<p>A library gives you its list of books, each with a title and a page count. It
+             wants a short report.</p>
+             <p>Display exactly:</p>
+             <pre>4 livres, 916 pages en tout
+Le plus long : Les Misérables (450 p.)
+Moyenne : 229.0 pages
+Titres courts : Germinal, Candide</pre>
+             <p>A title is "short" if it is <strong>under 12 characters</strong>. They appear in
+             list order, separated by a comma and a space.</p>
+             <p>Pick your own tools. Everything you need, you have already seen.</p>`,
+      },
+      depart:
+        'livres = [\n    ("Les Misérables", 450),\n    ("Germinal", 210),\n    ("Candide", 96),\n    ("Le Rouge et le Noir", 160),\n]\n\n# 1. Quelles données ?\n# 2. Quelles étapes ?\n# 3. Quel affichage ?\n',
+      verifications: [
+        { type: 'sortieContient', valeur: { fr: '4 livres, 916 pages en tout', en: '4 livres, 916 pages en tout' } },
+        {
+          type: 'sortieContient',
+          valeur: { fr: 'Le plus long : Les Misérables (450 p.)', en: 'Le plus long : Les Misérables (450 p.)' },
+        },
+        { type: 'sortieContient', valeur: { fr: 'Moyenne : 229.0 pages', en: 'Moyenne : 229.0 pages' } },
+        { type: 'sortieContient', valeur: { fr: 'Titres courts : Germinal, Candide', en: 'Titres courts : Germinal, Candide' } },
+        {
+          type: 'codeNeContientPas',
+          motif: '916',
+          message: {
+            fr: 'Le total doit être calculé à partir de la liste, pas écrit à la main.',
+            en: 'The total must be computed from the list, not typed by hand.',
+          },
+        },
+      ],
+      indices: [
+        {
+          fr: 'Le total : <code>sum([p for _, p in livres])</code>. Le tiret bas sert à ignorer le titre.',
+          en: 'The total: <code>sum([p for _, p in livres])</code>. The underscore ignores the title.',
+        },
+        {
+          fr: 'Le plus long : <code>max(livres, key=lambda l: l[1])</code>, puis déballe-le.',
+          en: 'The longest: <code>max(livres, key=lambda l: l[1])</code>, then unpack it.',
+        },
+        {
+          fr: 'Les titres courts : <code>[t for t, p in livres if len(t) < 12]</code>, puis <code>", ".join(...)</code>.',
+          en: 'The short titles: <code>[t for t, p in livres if len(t) < 12]</code>, then <code>", ".join(...)</code>.',
+        },
+      ],
+      solution:
+        'livres = [\n    ("Les Misérables", 450),\n    ("Germinal", 210),\n    ("Candide", 96),\n    ("Le Rouge et le Noir", 160),\n]\n\npages = [p for _, p in livres]\ntotal = sum(pages)\n\nprint(f"{len(livres)} livres, {total} pages en tout")\n\ntitre_long, pages_long = max(livres, key=lambda l: l[1])\nprint(f"Le plus long : {titre_long} ({pages_long} p.)")\n\nprint(f"Moyenne : {total / len(livres)} pages")\n\ncourts = [t for t, p in livres if len(t) < 12]\nprint(f"Titres courts : {\', \'.join(courts)}")',
+    },
+    projet: { titre: { fr: 'Mon rapport de bibliothèque', en: 'My library report' } },
+  },
+
+  'py-suite-2': {
+    langage: 'python',
+    xp: 50,
+    objectif: {
+      fr: 'Savoir ce qui t’attend au-delà de cette application, et comment y accéder.',
+      en: 'Know what awaits you beyond this application, and how to get there.',
+    },
+    explication: {
+      fr: `
+        <p>Cette application embarque un vrai Python, mais il tourne
+        <strong>dans une page</strong>, sans réseau ni disque dur. Quatre choses très utiles lui
+        sont donc inaccessibles, et il vaut mieux le savoir que de se demander pourquoi ça ne
+        marche pas :</p>
+        <ul>
+          <li><strong>installer des bibliothèques</strong> — <code>pip</code> a besoin
+          d’Internet ;</li>
+          <li><strong>parler au web</strong> — <code>requests</code>, la lecture de sites, les
+          API : le navigateur interdit ces connexions à Python ;</li>
+          <li><strong>les environnements virtuels</strong> — <code>venv</code> a été retiré de
+          cette version de Python ;</li>
+          <li><strong>les grosses bibliothèques</strong> — <code>pandas</code>, <code>flask</code>,
+          <code>pymongo</code> : elles s’installent, et on ne peut pas installer ici.</li>
+        </ul>
+        <p>Rien de tout cela n’est perdu : ce sont exactement les prochaines étapes, et elles
+        s’ouvrent le jour où tu installes Python sur un vrai ordinateur, depuis
+        <strong>python.org</strong>. Trois commandes dans un terminal, et tu y es :</p>
+        <pre>python -m venv monprojet      # crée un environnement isolé
+pip install requests          # installe une bibliothèque
+pip install -r requirements.txt   # installe TOUT ce qu'un projet demande</pre>
+        <p>Ce dernier fichier, <code>requirements.txt</code>, est la carte d’identité d’un
+        projet Python : une bibliothèque par ligne, avec sa version. C’est ce que tu trouveras
+        dans presque tous les projets que tu croiseras, et c’est ce que tu vas écrire
+        maintenant — parce que ça, tu sais déjà le faire.</p>
+      `,
+      en: `
+        <p>This application ships a real Python, but it runs <strong>inside a page</strong>,
+        with no network and no hard drive. Four very useful things are therefore out of reach,
+        and it is better to know it than to wonder why things fail:</p>
+        <ul>
+          <li><strong>installing libraries</strong> — <code>pip</code> needs the internet;</li>
+          <li><strong>talking to the web</strong> — <code>requests</code>, reading websites,
+          APIs: the browser forbids those connections to Python;</li>
+          <li><strong>virtual environments</strong> — <code>venv</code> was removed from this
+          version of Python;</li>
+          <li><strong>the big libraries</strong> — <code>pandas</code>, <code>flask</code>,
+          <code>pymongo</code>: they are installed, and installing is not possible here.</li>
+        </ul>
+        <p>None of that is lost: these are exactly the next steps, and they open up the day you
+        install Python on a real computer, from <strong>python.org</strong>. Three commands in a
+        terminal and you are there:</p>
+        <pre>python -m venv monprojet      # creates an isolated environment
+pip install requests          # installs one library
+pip install -r requirements.txt   # installs EVERYTHING a project needs</pre>
+        <p>That last file, <code>requirements.txt</code>, is a Python project's identity card:
+        one library per line, with its version. It is what you will find in nearly every project
+        you meet, and it is what you are going to write now — because that, you already know how
+        to do.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'bibliotheques = {\n    "requests": "2.32.3",\n    "flask": "3.0.3",\n}\n\nwith open("requirements.txt", "w") as fichier:\n    for nom, version in bibliotheques.items():\n        fichier.write(f"{nom}=={version}\\n")\n\nwith open("requirements.txt") as fichier:\n    print(fichier.read())\n\nprint("À installer avec : pip install -r requirements.txt")',
+      note: {
+        fr: 'Le double égal n’est pas une comparaison ici : c’est la façon dont pip note « exactement cette version ».',
+        en: 'The double equals is not a comparison here: it is how pip writes "exactly this version".',
+      },
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Pour ton premier vrai projet Python, écris son <code>requirements.txt</code>.</p>
+             <p>Le dictionnaire des bibliothèques est fourni. Écris le fichier — une ligne
+             <code>nom==version</code> par bibliothèque, <strong>triée par nom</strong> — puis
+             relis-le et affiche :</p>
+             <pre>3 bibliothèques déclarées
+flask==3.0.3
+pandas==2.2.2
+requests==2.32.3
+Installe-les avec : pip install -r requirements.txt</pre>`,
+        en: `<p>For your first real Python project, write its <code>requirements.txt</code>.</p>
+             <p>The dictionary of libraries is provided. Write the file — one
+             <code>name==version</code> line per library, <strong>sorted by name</strong> — then
+             read it back and display:</p>
+             <pre>3 bibliothèques déclarées
+flask==3.0.3
+pandas==2.2.2
+requests==2.32.3
+Installe-les avec : pip install -r requirements.txt</pre>`,
+      },
+      depart:
+        'bibliotheques = {\n    "requests": "2.32.3",\n    "pandas": "2.2.2",\n    "flask": "3.0.3",\n}\n\n# Écris requirements.txt trié, relis-le, affiche le tout\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'open\\s*\\(\\s*[\'"]requirements\\.txt[\'"]',
+          message: {
+            fr: 'Le fichier porte un nom précis : <code>requirements.txt</code>.',
+            en: 'The file has a precise name: <code>requirements.txt</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'sorted\\s*\\(',
+          message: {
+            fr: 'Les lignes doivent être triées par nom : <code>sorted(...)</code>.',
+            en: 'The lines must be sorted by name: <code>sorted(...)</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: '\\.read\\s*\\(|readlines\\s*\\(|for\\s+\\w+\\s+in\\s+fichier',
+          message: {
+            fr: 'Relis vraiment le fichier plutôt que d’afficher le dictionnaire.',
+            en: 'Actually read the file back rather than displaying the dictionary.',
+          },
+        },
+        { type: 'sortieContient', valeur: { fr: '3 bibliothèques déclarées', en: '3 bibliothèques déclarées' } },
+        { type: 'sortieContient', valeur: { fr: 'flask==3.0.3', en: 'flask==3.0.3' } },
+        { type: 'sortieContient', valeur: { fr: 'pandas==2.2.2', en: 'pandas==2.2.2' } },
+        { type: 'sortieContient', valeur: { fr: 'requests==2.32.3', en: 'requests==2.32.3' } },
+        {
+          type: 'sortieContient',
+          valeur: {
+            fr: 'Installe-les avec : pip install -r requirements.txt',
+            en: 'Installe-les avec : pip install -r requirements.txt',
+          },
+        },
+      ],
+      indices: [
+        {
+          fr: 'Trie les clés : <code>for nom in sorted(bibliotheques):</code>.',
+          en: 'Sort the keys: <code>for nom in sorted(bibliotheques):</code>.',
+        },
+        {
+          fr: 'Chaque ligne : <code>fichier.write(f"{nom}=={bibliotheques[nom]}\\n")</code>.',
+          en: 'Each line: <code>fichier.write(f"{nom}=={bibliotheques[nom]}\\n")</code>.',
+        },
+        {
+          fr: 'Puis relis avec un second <code>with</code>, et affiche le contenu avec <code>.read()</code>.',
+          en: 'Then read back with a second <code>with</code>, and display the content with <code>.read()</code>.',
+        },
+      ],
+      solution:
+        'bibliotheques = {\n    "requests": "2.32.3",\n    "pandas": "2.2.2",\n    "flask": "3.0.3",\n}\n\nwith open("requirements.txt", "w") as fichier:\n    for nom in sorted(bibliotheques):\n        fichier.write(f"{nom}=={bibliotheques[nom]}\\n")\n\nprint(f"{len(bibliotheques)} bibliothèques déclarées")\n\nwith open("requirements.txt") as fichier:\n    print(fichier.read().strip())\n\nprint("Installe-les avec : pip install -r requirements.txt")',
+    },
+    projet: { titre: { fr: 'Mon premier requirements.txt', en: 'My first requirements.txt' } },
+  },
 };

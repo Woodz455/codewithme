@@ -3,7 +3,7 @@
 **Apprendre à coder pour de vrai, et voir tout de suite ce que ça donne.**
 
 Un logiciel qui enseigne **Python, HTML, CSS, JavaScript et C++** à un grand débutant —
-86 leçons, 13 projets, et un certificat à la fin.
+135 leçons, 18 projets, et un certificat à la fin.
 
 Il existe en **application Windows** et en **site web**, avec exactement le même contenu et le
 même atelier. Aucune donnée ne quitte la machine dans un cas comme dans l'autre : il n'y a pas
@@ -23,10 +23,10 @@ de serveur, pas de compte, pas de suivi.
 | **Compilateur C++ de la machine** | utilisé s'il est installé | indisponible — le C++ tourne quand même, avec le moteur intégré |
 | **Sur une tablette, un Mac, un Linux** | non | oui |
 
-Tout le reste est identique : les 86 leçons, l'`input()` qui bloque vraiment, la tortue qui
+Tout le reste est identique : les 135 leçons, l'`input()` qui bloque vraiment, la tortue qui
 dessine, l'aperçu qui suit la frappe, les badges, l'espace tuteur et le certificat.
 
-Le site se met lui-même en cache : l'application, les 86 leçons, les polices, l'éditeur et le
+Le site se met lui-même en cache : l'application, les 135 leçons, les polices, l'éditeur et le
 moteur C++ (2,4 Mo) dès la première visite, puis Pyodide (13 Mo) au premier lancement de
 Python. Après ça, le wifi peut lâcher — ça continue de marcher.
 
@@ -67,11 +67,11 @@ Cela n'est demandé qu'une seule fois.
 
 ## Ce qu'il y a dedans
 
-### 86 leçons, six parcours
+### 135 leçons, six parcours
 
 | Parcours | Leçons | Ce qu'il sait faire à la fin |
 |---|---:|---|
-| **Python** | 22 | Une rosace colorée dessinée par son code, un jeu « devine le nombre » |
+| **Python** | 71 | Une rosace dessinée par son code, un jeu « devine le nombre », un bulletin scolaire, un tableau des scores enregistré sur disque |
 | **HTML** | 14 | Sa page de présentation, avec images, liens et tableaux |
 | **CSS** | 16 | La même page transformée en vrai site, animations et affichage mobile compris |
 | **JavaScript** | 18 | Un quiz interactif, puis un petit jeu jouable au clavier |
@@ -81,6 +81,25 @@ Cela n'est demandé qu'une seule fois.
 Chaque leçon suit la même structure : une explication sans jargon, un exemple exécutable, un
 défi corrigé automatiquement, **trois indices progressifs** puis la solution commentée. Jamais
 de blocage.
+
+#### Le parcours Python en détail
+
+Vingt modules, du premier `print` aux classes, dans l'ordre où chaque notion sert à la
+suivante :
+
+> premiers pas · variables et calculs · **opérateurs** · décisions et boucles · tortue ·
+> **texte** · listes · **tuples et ensembles** · **dictionnaires** · fonctions ·
+> **modules** · **compréhensions** · **fonctions d'ordre supérieur** · **types et erreurs** ·
+> **dates** · **expressions régulières** · **fichiers** · **classes et objets** ·
+> **statistiques** · la suite du voyage
+
+Quatre sujets d'un cursus Python classique **ne sont pas enseignables ici**, et la dernière
+leçon le dit franchement plutôt que de faire semblant : installer des bibliothèques (`pip`),
+parler au web (`requests`, les API, le *scraping*), les environnements virtuels (`venv`) et
+les grosses bibliothèques (`pandas`, `flask`, `pymongo`). Toutes demandent un réseau ou une
+installation, que Python-dans-une-page n'a pas. La leçon explique ce qui les débloque — Python
+installé depuis python.org — et fait écrire un vrai `requirements.txt`, ce qui est la seule
+part de la gestion de paquets qui, elle, fonctionne hors ligne.
 
 ### Un atelier où le résultat est immédiat
 
@@ -155,7 +174,7 @@ Rien n'est déclaré fonctionnel sans avoir été exécuté.
 
 | Commande | Ce qu'elle vérifie |
 |---|---|
-| `npm run check:content` | Les 86 leçons, dans les vrais moteurs : structure bilingue complète, solution de référence qui passe, code de départ qui **ne** passe pas, exemple qui s'exécute |
+| `npm run check:content` | Les 135 leçons, dans les vrais moteurs : structure bilingue complète, solution de référence qui passe, code de départ qui **ne** passe pas, exemple qui s'exécute |
 | `npm test` | 168 vérifications : moteurs, atelier, correction, XP, galerie, espace tuteur, projet final, certificat, le script qui contrôle les `.exe` produits, et la version web dans un vrai navigateur |
 | `npm run test:web` | Le site **construit** est servi puis ouvert dans un Chromium ordinaire : démarrage, isolation d'origine, `input()` bloquant, tortue, aperçu, C++, octets exacts d'un fichier téléchargé, comportement quand le stockage est **saturé**, et fonctionnement **réseau coupé** |
 | `npm run test:paquet` | L'application **empaquetée** se lance et fonctionne — c'est là qu'on découvre un fichier manquant |
@@ -168,7 +187,7 @@ Rien n'est déclaré fonctionnel sans avoir été exécuté.
 ```
 electron/    processus principal : protocole app://, menus, profil, projets
 app/         interface : modules ES, sans framework — partagee par les deux versions
-  content/   les 86 lecons, en donnees pures — ajouter une lecon = ajouter un objet
+  content/   les 135 lecons, en donnees pures — ajouter une lecon = ajouter un objet
 python/      turtle.py, le module tortue maison injecte dans Pyodide
 vendor/      Pyodide, JSCPP, CodeMirror, polices — embarques, aucun reseau requis
 web/         pont-navigateur.js (window.cwm rendu par un navigateur) et sw.js (hors ligne)
