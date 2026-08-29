@@ -3363,4 +3363,676 @@ Calcul terminé.</pre>`,
         'import math\n\ndef racine(n):\n    if n < 0:\n        raise ValueError("nombre négatif")\n    return math.sqrt(n)\n\ntry:\n    print(racine(-9))\nexcept ValueError as erreur:\n    print("Refusé :", erreur)\nfinally:\n    print("Calcul terminé.")',
     },
   },
+
+  /* ======================================================== Les dates ===== */
+
+  'py-date-1': {
+    langage: 'python',
+    xp: 30,
+    objectif: {
+      fr: 'Manipuler une vraie date, et en extraire ce qu’on veut.',
+      en: 'Handle a real date, and pull out what you need.',
+    },
+    explication: {
+      fr: `
+        <p>Une date n’est pas du texte. <code>"14/06/2013"</code> ne sait pas quel jour de la
+        semaine c’était, ni combien de jours nous en séparent. Le module
+        <code>datetime</code> apporte un vrai type :</p>
+        <pre>from datetime import date
+
+naissance = date(2013, 6, 14)</pre>
+        <p>L’ordre est toujours <strong>année, mois, jour</strong> — le plus grand d’abord.
+        C’est aussi l’ordre de la norme internationale, celle qui permet de trier des dates
+        comme du texte sans se tromper.</p>
+        <p>Une fois construite, la date répond à des questions :</p>
+        <ul>
+          <li><code>.year</code>, <code>.month</code>, <code>.day</code> — ses morceaux ;</li>
+          <li><code>.weekday()</code> — le jour de la semaine, en nombre :
+          <strong>0 pour lundi</strong>, 6 pour dimanche.</li>
+        </ul>
+        <p>Ce <code>0</code> pour lundi est la source d’erreur classique. Le réflexe qui marche :
+        une liste des sept noms, et <code>JOURS[date.weekday()]</code>.</p>
+        <p>Il existe aussi <code>date.today()</code>, qui donne la date du jour. On ne l’utilise
+        pas ici : son résultat change chaque jour, et un exercice dont la réponse change n’est
+        pas corrigeable.</p>
+      `,
+      en: `
+        <p>A date is not text. <code>"14/06/2013"</code> does not know which day of the week it
+        was, nor how many days separate us from it. The <code>datetime</code> module brings a
+        real type:</p>
+        <pre>from datetime import date
+
+naissance = date(2013, 6, 14)</pre>
+        <p>The order is always <strong>year, month, day</strong> — largest first. It is also the
+        international standard order, the one that lets you sort dates as text without getting
+        it wrong.</p>
+        <p>Once built, the date answers questions:</p>
+        <ul>
+          <li><code>.year</code>, <code>.month</code>, <code>.day</code> — its pieces;</li>
+          <li><code>.weekday()</code> — the day of the week, as a number:
+          <strong>0 for Monday</strong>, 6 for Sunday.</li>
+        </ul>
+        <p>That <code>0</code> for Monday is the classic source of bugs. The reflex that works:
+        a list of the seven names, and <code>JOURS[date.weekday()]</code>.</p>
+        <p>There is also <code>date.today()</code>, giving today's date. We do not use it here:
+        its result changes every day, and an exercise whose answer changes cannot be marked.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'from datetime import date\n\nJOURS = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]\n\nnoel = date(2026, 12, 25)\n\nprint(noel)\nprint(noel.year, noel.month, noel.day)\nprint(noel.weekday())\nprint(JOURS[noel.weekday()])',
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Une date de naissance est déjà construite. Affiche ses morceaux et le jour de la
+             semaine <strong>en toutes lettres</strong> :</p>
+             <pre>Année : 2013
+Mois : 6
+Jour : 14
+C'était un vendredi</pre>
+             <p>Sers-toi de la liste <code>JOURS</code> déjà fournie.</p>`,
+        en: `<p>A birth date is already built. Display its pieces and the day of the week
+             <strong>spelled out</strong>:</p>
+             <pre>Année : 2013
+Mois : 6
+Jour : 14
+C'était un vendredi</pre>
+             <p>Use the <code>JOURS</code> list already provided.</p>`,
+      },
+      depart:
+        'from datetime import date\n\nJOURS = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]\nnaissance = date(2013, 6, 14)\n\n# Affiche les quatre lignes\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: '\\.weekday\\s*\\(',
+          message: {
+            fr: 'Le jour de la semaine se demande à la date : <code>naissance.weekday()</code>.',
+            en: 'Ask the date for the weekday: <code>naissance.weekday()</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'JOURS\\s*\\[',
+          message: {
+            fr: 'Traduis le numéro en nom avec la liste : <code>JOURS[…]</code>.',
+            en: 'Turn the number into a name using the list: <code>JOURS[…]</code>.',
+          },
+        },
+        { type: 'sortieContient', valeur: { fr: 'Année : 2013', en: 'Année : 2013' } },
+        { type: 'sortieContient', valeur: { fr: 'Mois : 6', en: 'Mois : 6' } },
+        { type: 'sortieContient', valeur: { fr: 'Jour : 14', en: 'Jour : 14' } },
+        { type: 'sortieContient', valeur: { fr: "C'était un vendredi", en: "C'était un vendredi" } },
+      ],
+      indices: [
+        {
+          fr: 'Les trois premières lignes utilisent <code>naissance.year</code>, <code>.month</code> et <code>.day</code>.',
+          en: 'The first three lines use <code>naissance.year</code>, <code>.month</code> and <code>.day</code>.',
+        },
+        {
+          fr: '<code>naissance.weekday()</code> rend un nombre entre 0 et 6.',
+          en: '<code>naissance.weekday()</code> gives a number between 0 and 6.',
+        },
+        {
+          fr: 'Ce nombre est une position dans la liste : <code>JOURS[naissance.weekday()]</code>.',
+          en: 'That number is a position in the list: <code>JOURS[naissance.weekday()]</code>.',
+        },
+      ],
+      solution:
+        'from datetime import date\n\nJOURS = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]\nnaissance = date(2013, 6, 14)\n\nprint(f"Année : {naissance.year}")\nprint(f"Mois : {naissance.month}")\nprint(f"Jour : {naissance.day}")\nprint(f"C\'était un {JOURS[naissance.weekday()]}")',
+    },
+  },
+
+  'py-date-2': {
+    langage: 'python',
+    xp: 35,
+    objectif: {
+      fr: 'Calculer avec des dates : combien de jours, quelle date dans N jours.',
+      en: 'Compute with dates: how many days, what date in N days.',
+    },
+    explication: {
+      fr: `
+        <p>Voilà pourquoi une date est un type à part et pas du texte : on peut
+        <strong>calculer</strong> avec.</p>
+        <p>Soustraire deux dates donne une <strong>durée</strong>, un objet
+        <code>timedelta</code>. Sa propriété <code>.days</code> donne le nombre de jours :</p>
+        <pre>(fin - debut).days      # 110</pre>
+        <p>Et pour avancer dans le temps, on ajoute un <code>timedelta</code> :</p>
+        <pre>from datetime import timedelta
+
+debut + timedelta(days=100)</pre>
+        <p>Ce sont les deux seules opérations à connaître, et elles couvrent presque tout :
+        « dans combien de jours les vacances », « quelle date dans trois semaines », « quel âge
+        a cette personne ».</p>
+        <p>L’immense avantage : <strong>les mois de longueurs différentes et les années
+        bissextiles sont gérés pour toi</strong>. Ajouter 100 jours au 1<sup>er</sup> septembre
+        traverse septembre, octobre, novembre et tombe juste — ce qu’un calcul à la main rate
+        une fois sur deux.</p>
+        <p>On compare aussi les dates comme des nombres : <code>debut &lt; fin</code> vaut
+        <code>True</code>.</p>
+      `,
+      en: `
+        <p>This is why a date is its own type and not text: you can <strong>compute</strong>
+        with it.</p>
+        <p>Subtracting two dates gives a <strong>duration</strong>, a <code>timedelta</code>
+        object. Its <code>.days</code> property gives the number of days:</p>
+        <pre>(fin - debut).days      # 110</pre>
+        <p>And to move forward in time, you add a <code>timedelta</code>:</p>
+        <pre>from datetime import timedelta
+
+debut + timedelta(days=100)</pre>
+        <p>These are the only two operations to know, and they cover nearly everything: "how
+        many days until the holidays", "what date in three weeks", "how old is this person".</p>
+        <p>The huge advantage: <strong>months of different lengths and leap years are handled
+        for you</strong>. Adding 100 days to 1 September crosses September, October and November
+        and lands correctly — something a hand calculation gets wrong half the time.</p>
+        <p>Dates also compare like numbers: <code>debut &lt; fin</code> is <code>True</code>.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'from datetime import date, timedelta\n\ndebut = date(2026, 9, 1)\nfin = date(2026, 12, 20)\n\ndureeue = fin - debut\nprint(dureeue)\nprint(dureeue.days)\n\nprint(debut + timedelta(days=100))\nprint(debut + timedelta(weeks=2))\nprint(debut < fin)',
+    },
+    defi: {
+      consigne: {
+        fr: `<p>La rentrée est le 1<sup>er</sup> septembre 2026, les vacances de Noël commencent
+             le 20 décembre 2026.</p>
+             <p>Affiche le nombre de jours qui les séparent, puis la date qu’il sera 100 jours
+             après la rentrée :</p>
+             <pre>110 jours avant les vacances
+Dans 100 jours : 2026-12-10</pre>`,
+        en: `<p>Term starts on 1 September 2026, the Christmas holidays begin on
+             20 December 2026.</p>
+             <p>Display the number of days between them, then the date it will be 100 days after
+             the start of term:</p>
+             <pre>110 jours avant les vacances
+Dans 100 jours : 2026-12-10</pre>`,
+      },
+      depart:
+        'from datetime import date, timedelta\n\nrentree = date(2026, 9, 1)\nvacances = date(2026, 12, 20)\n\n# Le nombre de jours, puis la date dans 100 jours\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: '\\.days\\b',
+          message: {
+            fr: 'La soustraction donne une durée : prends son <code>.days</code>.',
+            en: 'The subtraction gives a duration: take its <code>.days</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'timedelta\\s*\\(',
+          message: {
+            fr: 'Pour avancer de 100 jours, ajoute un <code>timedelta(days=100)</code>.',
+            en: 'To move 100 days forward, add a <code>timedelta(days=100)</code>.',
+          },
+        },
+        { type: 'sortieContient', valeur: { fr: '110 jours avant les vacances', en: '110 jours avant les vacances' } },
+        { type: 'sortieContient', valeur: { fr: 'Dans 100 jours : 2026-12-10', en: 'Dans 100 jours : 2026-12-10' } },
+      ],
+      indices: [
+        {
+          fr: 'La durée : <code>(vacances - rentree).days</code>.',
+          en: 'The duration: <code>(vacances - rentree).days</code>.',
+        },
+        {
+          fr: 'Les parenthèses comptent : on soustrait d’abord, on demande <code>.days</code> ensuite.',
+          en: 'The brackets matter: subtract first, then ask for <code>.days</code>.',
+        },
+        {
+          fr: 'La seconde ligne : <code>rentree + timedelta(days=100)</code>.',
+          en: 'The second line: <code>rentree + timedelta(days=100)</code>.',
+        },
+      ],
+      solution:
+        'from datetime import date, timedelta\n\nrentree = date(2026, 9, 1)\nvacances = date(2026, 12, 20)\n\nprint(f"{(vacances - rentree).days} jours avant les vacances")\nprint(f"Dans 100 jours : {rentree + timedelta(days=100)}")',
+    },
+  },
+
+  'py-date-3': {
+    langage: 'python',
+    xp: 35,
+    objectif: {
+      fr: 'Afficher une date à la française, et lire une date écrite en texte.',
+      en: 'Display a date the French way, and read a date written as text.',
+    },
+    explication: {
+      fr: `
+        <p>Affichée telle quelle, une date sort au format international :
+        <code>2026-12-25</code>. Pratique pour trier, moins pour un bulletin.</p>
+        <p>Deux méthodes font la traduction dans les deux sens, et leurs noms se retiennent
+        bien :</p>
+        <ul>
+          <li><code>strftime</code> — <em>string <strong>from</strong> time</em> : d’une date
+          vers du texte ;</li>
+          <li><code>strptime</code> — <em>string <strong>parse</strong> time</em> : d’un texte
+          vers une date.</li>
+        </ul>
+        <pre>maintenant.strftime("%d/%m/%Y à %H:%M")   # 01/01/2026 à 14:30
+datetime.strptime("25/12/2026", "%d/%m/%Y")</pre>
+        <p>Le format se décrit avec des codes commençant par <code>%</code> :</p>
+        <ul>
+          <li><code>%d</code> jour, <code>%m</code> mois, <code>%Y</code> année sur 4
+          chiffres ;</li>
+          <li><code>%H</code> heures, <code>%M</code> minutes.</li>
+        </ul>
+        <p>Tout le reste — les barres obliques, le mot « à », les espaces — est recopié tel
+        quel.</p>
+        <p><code>strptime</code> est le plus délicat : le format que tu donnes doit décrire
+        <strong>exactement</strong> le texte reçu. Un texte en <code>25-12-2026</code> lu avec
+        un format en <code>%d/%m/%Y</code> lève une <code>ValueError</code> — que tu sais
+        maintenant attraper.</p>
+      `,
+      en: `
+        <p>Displayed as is, a date comes out in international format: <code>2026-12-25</code>.
+        Handy for sorting, less so for a report card.</p>
+        <p>Two methods translate both ways, and their names are easy to remember:</p>
+        <ul>
+          <li><code>strftime</code> — <em>string <strong>from</strong> time</em>: from a date to
+          text;</li>
+          <li><code>strptime</code> — <em>string <strong>parse</strong> time</em>: from text to
+          a date.</li>
+        </ul>
+        <pre>maintenant.strftime("%d/%m/%Y à %H:%M")   # 01/01/2026 à 14:30
+datetime.strptime("25/12/2026", "%d/%m/%Y")</pre>
+        <p>The format is described with codes starting with <code>%</code>:</p>
+        <ul>
+          <li><code>%d</code> day, <code>%m</code> month, <code>%Y</code> four-digit year;</li>
+          <li><code>%H</code> hours, <code>%M</code> minutes.</li>
+        </ul>
+        <p>Everything else — slashes, the word "à", spaces — is copied as is.</p>
+        <p><code>strptime</code> is the trickier one: the format you give must describe the text
+        received <strong>exactly</strong>. Text like <code>25-12-2026</code> read with a
+        <code>%d/%m/%Y</code> format raises a <code>ValueError</code> — which you now know how
+        to catch.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'from datetime import datetime\n\nrendez_vous = datetime(2026, 1, 1, 14, 30)\n\nprint(rendez_vous)\nprint(rendez_vous.strftime("%d/%m/%Y"))\nprint(rendez_vous.strftime("%d/%m/%Y à %H:%M"))\n\nlue = datetime.strptime("25/12/2026", "%d/%m/%Y")\nprint(lue.date())\nprint(lue.year)',
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Un rendez-vous est fixé au 1<sup>er</sup> janvier 2026 à 14 h 30, et une date
+             d’examen arrive sous forme de texte : <code>"25/12/2026"</code>.</p>
+             <p>Affiche :</p>
+             <pre>Rendez-vous : 01/01/2026 à 14:30
+Examen : 2026-12-25</pre>
+             <p>La seconde ligne demande de <strong>lire</strong> le texte pour en faire une
+             vraie date.</p>`,
+        en: `<p>An appointment is set for 1 January 2026 at 14:30, and an exam date arrives as
+             text: <code>"25/12/2026"</code>.</p>
+             <p>Display:</p>
+             <pre>Rendez-vous : 01/01/2026 à 14:30
+Examen : 2026-12-25</pre>
+             <p>The second line requires <strong>reading</strong> the text into a real date.</p>`,
+      },
+      depart:
+        'from datetime import datetime\n\nrendez_vous = datetime(2026, 1, 1, 14, 30)\ntexte_examen = "25/12/2026"\n\n# Formate le premier, lis le second\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: '\\.strftime\\s*\\(',
+          message: {
+            fr: 'Pour écrire la date à la française : <code>.strftime("%d/%m/%Y à %H:%M")</code>.',
+            en: 'To write the date the French way: <code>.strftime("%d/%m/%Y à %H:%M")</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'strptime\\s*\\(',
+          message: {
+            fr: 'Pour transformer le texte en date : <code>datetime.strptime(texte, format)</code>.',
+            en: 'To turn text into a date: <code>datetime.strptime(text, format)</code>.',
+          },
+        },
+        { type: 'sortieContient', valeur: { fr: 'Rendez-vous : 01/01/2026 à 14:30', en: 'Rendez-vous : 01/01/2026 à 14:30' } },
+        { type: 'sortieContient', valeur: { fr: 'Examen : 2026-12-25', en: 'Examen : 2026-12-25' } },
+      ],
+      indices: [
+        {
+          fr: 'Première ligne : <code>rendez_vous.strftime("%d/%m/%Y à %H:%M")</code>.',
+          en: 'First line: <code>rendez_vous.strftime("%d/%m/%Y à %H:%M")</code>.',
+        },
+        {
+          fr: 'Lecture : <code>examen = datetime.strptime(texte_examen, "%d/%m/%Y")</code>.',
+          en: 'Reading: <code>examen = datetime.strptime(texte_examen, "%d/%m/%Y")</code>.',
+        },
+        {
+          fr: 'Affiche seulement la date, sans l’heure : <code>examen.date()</code>.',
+          en: 'Display only the date, without the time: <code>examen.date()</code>.',
+        },
+      ],
+      solution:
+        'from datetime import datetime\n\nrendez_vous = datetime(2026, 1, 1, 14, 30)\ntexte_examen = "25/12/2026"\n\nprint(f"Rendez-vous : {rendez_vous.strftime(\'%d/%m/%Y à %H:%M\')}")\n\nexamen = datetime.strptime(texte_examen, "%d/%m/%Y")\nprint(f"Examen : {examen.date()}")',
+    },
+  },
+
+  /* ========================================= Les expressions regulieres === */
+
+  'py-re-1': {
+    langage: 'python',
+    xp: 40,
+    objectif: {
+      fr: 'Décrire une forme de texte, et trouver tout ce qui lui ressemble.',
+      en: 'Describe a shape of text, and find everything that matches it.',
+    },
+    explication: {
+      fr: `
+        <p>Chercher <code>"chat"</code> dans un texte, tu sais faire. Mais chercher
+        <strong>tous les nombres</strong>, ou <strong>tous les mots qui commencent par une
+        majuscule</strong> ? Il n’y a pas de mot précis à chercher : il y a une
+        <strong>forme</strong>.</p>
+        <p>C’est le rôle des <strong>expressions régulières</strong>, du module <code>re</code>.
+        On décrit la forme avec quelques symboles :</p>
+        <ul>
+          <li><code>\\d</code> — un chiffre &nbsp;·&nbsp; <code>\\w</code> — une lettre ou un
+          chiffre &nbsp;·&nbsp; <code>\\s</code> — une espace</li>
+          <li><code>+</code> — le précédent, <strong>une fois ou plus</strong></li>
+          <li><code>[A-Z]</code> — un caractère parmi cet intervalle</li>
+        </ul>
+        <p>Ainsi <code>\\d+</code> signifie « un ou plusieurs chiffres à la suite », c’est-à-dire
+        un nombre.</p>
+        <pre>import re
+re.findall(r"\\d+", "Commande 12 : 3 pizzas")   # ['12', '3']</pre>
+        <p>Note le <code>r</code> devant les guillemets : il dit à Python de ne pas interpréter
+        les <code>\\</code> lui-même. <strong>Mets-le toujours</strong> sur une expression
+        régulière ; sans lui, certaines fonctionnent par chance et d’autres non.</p>
+        <p><code>findall</code> rend une liste de tout ce qui correspond — vide si rien ne
+        correspond, jamais d’erreur.</p>
+      `,
+      en: `
+        <p>Searching for <code>"chat"</code> in a text you can already do. But searching for
+        <strong>every number</strong>, or <strong>every word starting with a capital</strong>?
+        There is no precise word to look for: there is a <strong>shape</strong>.</p>
+        <p>That is the job of <strong>regular expressions</strong>, from the <code>re</code>
+        module. You describe the shape with a few symbols:</p>
+        <ul>
+          <li><code>\\d</code> — a digit &nbsp;·&nbsp; <code>\\w</code> — a letter or digit
+          &nbsp;·&nbsp; <code>\\s</code> — a space</li>
+          <li><code>+</code> — the previous one, <strong>once or more</strong></li>
+          <li><code>[A-Z]</code> — one character from that range</li>
+        </ul>
+        <p>So <code>\\d+</code> means "one or more digits in a row", that is, a number.</p>
+        <pre>import re
+re.findall(r"\\d+", "Commande 12 : 3 pizzas")   # ['12', '3']</pre>
+        <p>Notice the <code>r</code> before the quotes: it tells Python not to interpret the
+        <code>\\</code> itself. <strong>Always use it</strong> on a regular expression; without
+        it, some work by luck and others do not.</p>
+        <p><code>findall</code> gives back a list of everything matching — empty if nothing
+        matches, never an error.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'import re\n\ntexte = "Commande 12 : 3 pizzas et 2 sodas"\n\nprint(re.findall(r"\\d+", texte))\nprint(re.findall(r"[A-Z][a-zé]+", "Louis et Léa vont à Lyon"))\nprint(re.findall(r"\\w+", "chat, chien; lapin"))\n\n# Rien ne correspond : une liste vide, pas une erreur\nprint(re.findall(r"\\d+", "aucun chiffre ici"))',
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Extrais <strong>tous les nombres</strong> de la phrase, puis affiche leur somme :</p>
+             <pre>Nombres trouvés : ['12', '3', '2']
+Somme : 17</pre>
+             <p>Attention : <code>findall</code> rend du <strong>texte</strong>. Il faudra
+             convertir avant d’additionner.</p>`,
+        en: `<p>Extract <strong>every number</strong> from the sentence, then display their
+             sum:</p>
+             <pre>Nombres trouvés : ['12', '3', '2']
+Somme : 17</pre>
+             <p>Careful: <code>findall</code> gives back <strong>text</strong>. You will need to
+             convert before adding.</p>`,
+      },
+      depart: 'import re\n\ntexte = "Commande 12 : 3 pizzas et 2 sodas"\n\n# Trouve les nombres, puis fais-en la somme\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'findall\\s*\\(',
+          message: {
+            fr: 'Cherche toutes les correspondances avec <code>re.findall()</code>.',
+            en: 'Find every match with <code>re.findall()</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'int\\s*\\(',
+          message: {
+            fr: '<code>findall</code> rend du texte : convertis chaque élément avec <code>int()</code>.',
+            en: '<code>findall</code> gives text back: convert each item with <code>int()</code>.',
+          },
+        },
+        { type: 'sortieContient', valeur: { fr: "Nombres trouvés : ['12', '3', '2']", en: "Nombres trouvés : ['12', '3', '2']" } },
+        { type: 'sortieContient', valeur: { fr: 'Somme : 17', en: 'Somme : 17' } },
+      ],
+      indices: [
+        {
+          fr: 'Le motif d’un nombre : <code>r"\\d+"</code>, avec le <code>r</code> devant.',
+          en: 'The pattern for a number: <code>r"\\d+"</code>, with the <code>r</code> in front.',
+        },
+        {
+          fr: 'Range le résultat : <code>nombres = re.findall(r"\\d+", texte)</code>.',
+          en: 'Store the result: <code>nombres = re.findall(r"\\d+", texte)</code>.',
+        },
+        {
+          fr: 'Pour la somme, une compréhension : <code>sum([int(n) for n in nombres])</code>.',
+          en: 'For the sum, a comprehension: <code>sum([int(n) for n in nombres])</code>.',
+        },
+      ],
+      solution:
+        'import re\n\ntexte = "Commande 12 : 3 pizzas et 2 sodas"\nnombres = re.findall(r"\\d+", texte)\n\nprint(f"Nombres trouvés : {nombres}")\nprint(f"Somme : {sum([int(n) for n in nombres])}")',
+    },
+  },
+
+  'py-re-2': {
+    langage: 'python',
+    xp: 40,
+    objectif: {
+      fr: 'Vérifier qu’une saisie a exactement la bonne forme.',
+      en: 'Check that an input has exactly the right shape.',
+    },
+    explication: {
+      fr: `
+        <p>L’autre grand usage des expressions régulières : <strong>valider</strong>. Une date,
+        un code postal, un mot de passe — ils doivent avoir une forme précise, et
+        <code>fullmatch</code> vérifie que le texte y correspond <strong>en entier</strong> :</p>
+        <pre>re.fullmatch(r"\\d{2}-\\d{2}-\\d{4}", "25-12-2026")   # correspond
+re.fullmatch(r"\\d{2}-\\d{2}-\\d{4}", "5-12-2026")    # None</pre>
+        <p>Un nouveau symbole : <code>{2}</code> veut dire « exactement deux fois ». On a
+        aussi <code>{2,4}</code> pour « entre deux et quatre fois », et <code>{2,}</code> pour
+        « au moins deux fois ».</p>
+        <p><code>fullmatch</code> rend soit une correspondance, soit <code>None</code>. Comme
+        <code>None</code> est considéré comme faux, on écrit simplement :</p>
+        <pre>if re.fullmatch(motif, saisie):</pre>
+        <p>ou <code>bool(re.fullmatch(...))</code> pour obtenir un vrai <code>True</code> /
+        <code>False</code>.</p>
+        <p><strong>Pourquoi <code>fullmatch</code> et pas <code>search</code> ?</strong> Parce
+        que <code>search</code> se contente de trouver le motif <em>quelque part</em> :
+        <code>"bonjour 25-12-2026 !"</code> passerait le test. Pour valider une saisie, on veut
+        que <strong>tout</strong> corresponde, du premier au dernier caractère.</p>
+      `,
+      en: `
+        <p>The other big use of regular expressions: <strong>validating</strong>. A date, a
+        postcode, a password — they must have a precise shape, and <code>fullmatch</code> checks
+        that the text matches it <strong>entirely</strong>:</p>
+        <pre>re.fullmatch(r"\\d{2}-\\d{2}-\\d{4}", "25-12-2026")   # matches
+re.fullmatch(r"\\d{2}-\\d{2}-\\d{4}", "5-12-2026")    # None</pre>
+        <p>A new symbol: <code>{2}</code> means "exactly twice". There is also
+        <code>{2,4}</code> for "between two and four times", and <code>{2,}</code> for "at least
+        twice".</p>
+        <p><code>fullmatch</code> gives back either a match or <code>None</code>. Since
+        <code>None</code> counts as false, you simply write:</p>
+        <pre>if re.fullmatch(motif, saisie):</pre>
+        <p>or <code>bool(re.fullmatch(...))</code> to get a real <code>True</code> /
+        <code>False</code>.</p>
+        <p><strong>Why <code>fullmatch</code> and not <code>search</code>?</strong> Because
+        <code>search</code> merely finds the pattern <em>somewhere</em>:
+        <code>"bonjour 25-12-2026 !"</code> would pass the test. To validate an input you want
+        <strong>everything</strong> to match, from the first character to the last.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'import re\n\nmotif = r"\\d{2}-\\d{2}-\\d{4}"\n\nprint(bool(re.fullmatch(motif, "25-12-2026")))\nprint(bool(re.fullmatch(motif, "5-12-2026")))\nprint(bool(re.fullmatch(motif, "bonjour 25-12-2026 !")))\n\n# search, lui, se contente de trouver quelque part :\nprint(bool(re.search(motif, "bonjour 25-12-2026 !")))',
+      note: {
+        fr: 'Les deux dernières lignes montrent toute la différence entre valider et chercher.',
+        en: 'The last two lines show the whole difference between validating and searching.',
+      },
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Vérifie que chaque code postal de la liste a bien la forme
+             <strong>cinq chiffres, rien d’autre</strong>. Affiche une ligne par code :</p>
+             <pre>69001 : True
+6900 : False
+69001A : False
+75116 : True</pre>`,
+        en: `<p>Check that each postcode in the list has the shape <strong>five digits, nothing
+             else</strong>. Display one line per code:</p>
+             <pre>69001 : True
+6900 : False
+69001A : False
+75116 : True</pre>`,
+      },
+      depart: 'import re\n\ncodes = ["69001", "6900", "69001A", "75116"]\n\n# Une boucle, et une validation par code\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'fullmatch\\s*\\(',
+          message: {
+            fr: 'Il faut que <strong>tout</strong> corresponde : utilise <code>re.fullmatch()</code>.',
+            en: 'The <strong>whole</strong> thing must match: use <code>re.fullmatch()</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: '\\{\\s*5\\s*\\}',
+          message: {
+            fr: 'Exactement cinq chiffres s’écrit <code>\\d{5}</code>.',
+            en: 'Exactly five digits is written <code>\\d{5}</code>.',
+          },
+        },
+        { type: 'sortieEgale', valeur: { fr: '69001 : True\n6900 : False\n69001A : False\n75116 : True', en: '69001 : True\n6900 : False\n69001A : False\n75116 : True' } },
+      ],
+      indices: [
+        {
+          fr: 'Le motif : <code>r"\\d{5}"</code>.',
+          en: 'The pattern: <code>r"\\d{5}"</code>.',
+        },
+        {
+          fr: 'Dans la boucle : <code>valide = bool(re.fullmatch(r"\\d{5}", code))</code>.',
+          en: 'Inside the loop: <code>valide = bool(re.fullmatch(r"\\d{5}", code))</code>.',
+        },
+        {
+          fr: 'Puis <code>print(f"{code} : {valide}")</code>.',
+          en: 'Then <code>print(f"{code} : {valide}")</code>.',
+        },
+      ],
+      solution:
+        'import re\n\ncodes = ["69001", "6900", "69001A", "75116"]\n\nfor code in codes:\n    valide = bool(re.fullmatch(r"\\d{5}", code))\n    print(f"{code} : {valide}")',
+    },
+  },
+
+  'py-re-3': {
+    langage: 'python',
+    xp: 40,
+    objectif: {
+      fr: 'Remplacer et découper selon une forme, pas selon un texte exact.',
+      en: 'Replace and split by shape, not by exact text.',
+    },
+    explication: {
+      fr: `
+        <p>Tu connais <code>.replace()</code> et <code>.split()</code>. Ils sont limités : ils
+        ne travaillent que sur un texte <strong>exact</strong>.</p>
+        <p>Comment remplacer « une ou plusieurs espaces » par une seule ? <code>.replace</code>
+        ne sait pas le dire. <code>re</code> si :</p>
+        <pre>re.sub(r"\\s+", " ", "trop    d   espaces")
+# "trop d espaces"</pre>
+        <p><code>re.sub(motif, remplacement, texte)</code> remplace <strong>toutes</strong> les
+        correspondances. C’est l’outil de nettoyage par excellence : normaliser des espaces,
+        retirer la ponctuation, masquer des numéros.</p>
+        <p>Et <code>re.split</code> découpe sur plusieurs séparateurs à la fois :</p>
+        <pre>re.split(r"[,;]", "chat,chien;lapin")
+# ['chat', 'chien', 'lapin']</pre>
+        <p>Ici <code>[,;]</code> veut dire « une virgule <em>ou</em> un point-virgule ». Avec
+        <code>.split()</code> ordinaire, il faudrait deux passages et un remplacement
+        intermédiaire.</p>
+        <p><strong>Un conseil de fin de sujet :</strong> les expressions régulières sont
+        puissantes et vite illisibles. Si la tienne dépasse une ligne, elle sera incompréhensible
+        dans un mois — y compris pour toi. Deux étapes simples valent mieux qu’une expression
+        géniale.</p>
+      `,
+      en: `
+        <p>You know <code>.replace()</code> and <code>.split()</code>. They are limited: they
+        only work on <strong>exact</strong> text.</p>
+        <p>How do you replace "one or more spaces" with a single one? <code>.replace</code>
+        cannot express that. <code>re</code> can:</p>
+        <pre>re.sub(r"\\s+", " ", "trop    d   espaces")
+# "trop d espaces"</pre>
+        <p><code>re.sub(pattern, replacement, text)</code> replaces <strong>every</strong>
+        match. It is the cleanup tool par excellence: normalising spaces, stripping punctuation,
+        masking numbers.</p>
+        <p>And <code>re.split</code> cuts on several separators at once:</p>
+        <pre>re.split(r"[,;]", "chat,chien;lapin")
+# ['chat', 'chien', 'lapin']</pre>
+        <p>Here <code>[,;]</code> means "a comma <em>or</em> a semicolon". With ordinary
+        <code>.split()</code> you would need two passes and an intermediate replacement.</p>
+        <p><strong>A closing piece of advice:</strong> regular expressions are powerful and
+        quickly unreadable. If yours runs past one line, it will be incomprehensible in a month
+        — including to you. Two simple steps beat one brilliant expression.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'import re\n\nprint(re.sub(r"\\s+", " ", "trop    d   espaces"))\nprint(re.sub(r"\\d", "*", "carte 1234 5678"))\nprint(re.split(r"[,;]", "chat,chien;lapin"))\nprint(re.split(r"\\s+", "un   deux  trois"))',
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Une liste d’ingrédients a été saisie n’importe comment : séparateurs mélangés et
+             espaces en trop.</p>
+             <p>Nettoie-la et affiche :</p>
+             <pre>3 ingrédients : farine, oeufs, lait</pre>
+             <p>Découpe sur les virgules <em>et</em> les points-virgules, et débarrasse chaque
+             ingrédient de ses espaces.</p>`,
+        en: `<p>A list of ingredients was typed carelessly: mixed separators and extra
+             spaces.</p>
+             <p>Clean it up and display:</p>
+             <pre>3 ingrédients : farine, oeufs, lait</pre>
+             <p>Split on commas <em>and</em> semicolons, and strip each ingredient of its
+             spaces.</p>`,
+      },
+      depart: 'import re\n\nsaisie = "farine ,  oeufs;lait"\n\n# Découpe sur , et ; puis nettoie chaque morceau\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 're\\.split\\s*\\(',
+          message: {
+            fr: 'Deux séparateurs à la fois : <code>re.split(r"[,;]", saisie)</code>.',
+            en: 'Two separators at once: <code>re.split(r"[,;]", saisie)</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: '\\.strip\\s*\\(',
+          message: {
+            fr: 'Chaque morceau garde des espaces : nettoie-le avec <code>.strip()</code>.',
+            en: 'Each piece keeps spaces: clean it with <code>.strip()</code>.',
+          },
+        },
+        { type: 'sortieEgale', valeur: { fr: '3 ingrédients : farine, oeufs, lait', en: '3 ingrédients : farine, oeufs, lait' } },
+      ],
+      indices: [
+        {
+          fr: 'Le découpage : <code>morceaux = re.split(r"[,;]", saisie)</code>.',
+          en: 'The split: <code>morceaux = re.split(r"[,;]", saisie)</code>.',
+        },
+        {
+          fr: 'Nettoie tout d’un coup avec une compréhension : <code>[m.strip() for m in morceaux]</code>.',
+          en: 'Clean them all at once with a comprehension: <code>[m.strip() for m in morceaux]</code>.',
+        },
+        {
+          fr: 'Puis recolle : <code>", ".join(ingredients)</code>, et compte avec <code>len()</code>.',
+          en: 'Then glue back: <code>", ".join(ingredients)</code>, and count with <code>len()</code>.',
+        },
+      ],
+      solution:
+        'import re\n\nsaisie = "farine ,  oeufs;lait"\n\nmorceaux = re.split(r"[,;]", saisie)\ningredients = [m.strip() for m in morceaux]\n\nprint(f"{len(ingredients)} ingrédients : {\', \'.join(ingredients)}")',
+    },
+  },
 };

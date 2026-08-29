@@ -176,6 +176,26 @@ export const PARCOURS = [
           L('py-err-4', 'Lever une erreur, et finally', 'Raising an error, and finally'),
         ],
       },
+      {
+        id: 'py-date',
+        titre: { fr: 'Les dates', en: 'Dates' },
+        icone: 'calendrier',
+        lecons: [
+          L('py-date-1', 'Une vraie date, ses morceaux', 'A real date, and its pieces'),
+          L('py-date-2', 'Calculer avec les dates', 'Computing with dates'),
+          L('py-date-3', 'Afficher et lire une date', 'Displaying and reading a date'),
+        ],
+      },
+      {
+        id: 'py-re',
+        titre: { fr: 'Expressions régulières', en: 'Regular expressions' },
+        icone: 'aimant',
+        lecons: [
+          L('py-re-1', 'Chercher une forme', 'Searching for a shape'),
+          L('py-re-2', 'Valider une saisie', 'Validating an input'),
+          L('py-re-3', 'Remplacer et découper', 'Replacing and splitting'),
+        ],
+      },
     ],
   },
 
