@@ -1886,4 +1886,661 @@ Léa habite à Paris.</pre>
         'def fiche(nom, ville="Lyon"):\n    return f"{nom} habite à {ville}."\n\nprint(fiche("Louis"))\nprint(fiche("Léa", "Paris"))',
     },
   },
+
+  /* ====================================================== Les modules ===== */
+
+  'py-mod-1': {
+    langage: 'python',
+    xp: 30,
+    objectif: {
+      fr: 'Utiliser les outils déjà livrés avec Python.',
+      en: 'Use the tools that already ship with Python.',
+    },
+    explication: {
+      fr: `
+        <p>Python arrive avec des centaines d’outils tout faits, rangés dans des
+        <strong>modules</strong>. On ne les charge pas tous au démarrage — ce serait du
+        gaspillage. On demande ceux dont on a besoin :</p>
+        <pre>import math
+print(math.sqrt(16))     # 4.0</pre>
+        <p>Une fois importé, on écrit le nom du module, un point, puis l’outil voulu. Ce point
+        n’est pas décoratif : il dit d’où vient la fonction, et évite que deux modules qui ont
+        chacun un <code>random</code> se marchent dessus.</p>
+        <p>Trois modules que tu utiliseras tout le temps :</p>
+        <ul>
+          <li><code>math</code> — <code>sqrt</code> (racine carrée), <code>floor</code>,
+          <code>ceil</code>, <code>pi</code> ;</li>
+          <li><code>random</code> — <code>randint(1, 6)</code> pour un dé,
+          <code>choice(liste)</code> pour tirer au sort, <code>shuffle</code> pour
+          mélanger ;</li>
+          <li><code>datetime</code> — les dates, que tu verras bientôt.</li>
+        </ul>
+        <p>Cette collection s’appelle la <strong>bibliothèque standard</strong>. C’est une des
+        grandes forces de Python : beaucoup de choses sont déjà là, sans rien installer.</p>
+      `,
+      en: `
+        <p>Python ships with hundreds of ready-made tools, stored in <strong>modules</strong>.
+        They are not all loaded at start-up — that would be wasteful. You ask for the ones you
+        need:</p>
+        <pre>import math
+print(math.sqrt(16))     # 4.0</pre>
+        <p>Once imported, you write the module name, a dot, then the tool you want. That dot is
+        not decorative: it says where the function comes from, and stops two modules that each
+        have a <code>random</code> from clashing.</p>
+        <p>Three modules you will use constantly:</p>
+        <ul>
+          <li><code>math</code> — <code>sqrt</code> (square root), <code>floor</code>,
+          <code>ceil</code>, <code>pi</code>;</li>
+          <li><code>random</code> — <code>randint(1, 6)</code> for a die,
+          <code>choice(liste)</code> to draw at random, <code>shuffle</code> to shuffle;</li>
+          <li><code>datetime</code> — dates, which you will see soon.</li>
+        </ul>
+        <p>This collection is called the <strong>standard library</strong>. It is one of
+        Python's great strengths: a lot is already there, with nothing to install.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'import math\nimport random\n\nprint(math.sqrt(16))\nprint(math.floor(3.7), math.ceil(3.2))\nprint(round(math.pi, 4))\n\nrandom.seed(1)\nprint(random.randint(1, 6))\nprint(random.choice(["pierre", "feuille", "ciseaux"]))',
+      note: {
+        fr: '<code>random.seed(1)</code> fige le hasard : sans lui, l’exemple donnerait un résultat différent à chaque fois.',
+        en: '<code>random.seed(1)</code> freezes randomness: without it the example would give a different result every time.',
+      },
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Une pièce carrée a une surface de <strong>36 m²</strong>. Utilise le module
+             <code>math</code> pour trouver la longueur d’un côté, puis affiche :</p>
+             <pre>Un côté mesure 6.0 m
+Périmètre : 24.0 m</pre>
+             <p>La racine carrée doit venir de <code>math</code>, pas d’un calcul deviné.</p>`,
+        en: `<p>A square room has an area of <strong>36 m²</strong>. Use the <code>math</code>
+             module to find the length of one side, then display:</p>
+             <pre>Un côté mesure 6.0 m
+Périmètre : 24.0 m</pre>
+             <p>The square root must come from <code>math</code>, not from a guessed
+             calculation.</p>`,
+      },
+      depart: 'surface = 36\n\n# Importe math, trouve le côté, puis le périmètre\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'import\\s+math',
+          message: {
+            fr: 'Il faut d’abord importer le module : <code>import math</code>.',
+            en: 'You must import the module first: <code>import math</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'sqrt\\s*\\(',
+          message: {
+            fr: 'La racine carrée, c’est <code>math.sqrt()</code>.',
+            en: 'The square root is <code>math.sqrt()</code>.',
+          },
+        },
+        { type: 'sortieContient', valeur: { fr: 'Un côté mesure 6.0 m', en: 'Un côté mesure 6.0 m' } },
+        { type: 'sortieContient', valeur: { fr: 'Périmètre : 24.0 m', en: 'Périmètre : 24.0 m' } },
+      ],
+      indices: [
+        {
+          fr: 'La première ligne du programme : <code>import math</code>.',
+          en: 'The first line of the program: <code>import math</code>.',
+        },
+        {
+          fr: 'Le côté : <code>cote = math.sqrt(surface)</code>.',
+          en: 'The side: <code>cote = math.sqrt(surface)</code>.',
+        },
+        {
+          fr: 'Le périmètre d’un carré, c’est <code>cote * 4</code>.',
+          en: 'The perimeter of a square is <code>cote * 4</code>.',
+        },
+      ],
+      solution:
+        'import math\n\nsurface = 36\ncote = math.sqrt(surface)\n\nprint(f"Un côté mesure {cote} m")\nprint(f"Périmètre : {cote * 4} m")',
+    },
+  },
+
+  'py-mod-2': {
+    langage: 'python',
+    xp: 30,
+    objectif: {
+      fr: 'Choisir la bonne forme d’import, et savoir laquelle éviter.',
+      en: 'Choose the right form of import, and know which one to avoid.',
+    },
+    explication: {
+      fr: `
+        <p>Il y a trois façons d’importer, et elles ne se valent pas.</p>
+        <p><strong>1. Le module entier</strong> — la plus sûre :</p>
+        <pre>import math
+math.sqrt(16)</pre>
+        <p><strong>2. Quelques noms précis</strong> — plus court à écrire :</p>
+        <pre>from math import sqrt, pi
+sqrt(16)</pre>
+        <p><strong>3. Sous un autre nom</strong> — quand le nom est long :</p>
+        <pre>import statistics as stat
+stat.mean([1, 2, 3])</pre>
+        <p>Il en existe une quatrième, <code>from math import *</code>, qui importe
+        <strong>tout</strong> d’un coup. <strong>Ne l’utilise pas.</strong> Elle déverse des
+        dizaines de noms dans ton programme sans que tu saches lesquels ; le jour où l’un
+        d’eux écrase une de tes variables, l’erreur est presque introuvable.</p>
+        <p>La bonne habitude : <code>import module</code> par défaut, et
+        <code>from module import nom</code> quand tu n’as besoin que d’une ou deux choses et
+        que tu les répètes souvent.</p>
+      `,
+      en: `
+        <p>There are three ways to import, and they are not equal.</p>
+        <p><strong>1. The whole module</strong> — the safest:</p>
+        <pre>import math
+math.sqrt(16)</pre>
+        <p><strong>2. A few specific names</strong> — shorter to write:</p>
+        <pre>from math import sqrt, pi
+sqrt(16)</pre>
+        <p><strong>3. Under another name</strong> — when the name is long:</p>
+        <pre>import statistics as stat
+stat.mean([1, 2, 3])</pre>
+        <p>There is a fourth one, <code>from math import *</code>, which imports
+        <strong>everything</strong> at once. <strong>Do not use it.</strong> It dumps dozens of
+        names into your program without you knowing which; the day one of them overwrites one
+        of your variables, the bug is nearly impossible to find.</p>
+        <p>The good habit: <code>import module</code> by default, and
+        <code>from module import name</code> when you only need one or two things and repeat
+        them often.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'import math\nfrom math import sqrt, pi\nimport statistics as stat\n\nprint(math.sqrt(25))\nprint(sqrt(25))\nprint(round(pi, 2))\nprint(stat.mean([10, 20, 30]))\n\n# Le nom du module reste accessible dans les deux premiers cas :\nprint(math.floor(pi))',
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Importe <strong>uniquement</strong> <code>sqrt</code> et <code>pi</code> depuis
+             <code>math</code>, avec la forme <code>from … import …</code>, puis affiche l’aire
+             d’un disque de rayon 3 et la racine de 81 :</p>
+             <pre>Aire du disque : 28.27
+Racine de 81 : 9.0</pre>
+             <p>L’aire d’un disque, c’est <code>pi × rayon²</code>, arrondie à deux décimales.</p>`,
+        en: `<p>Import <strong>only</strong> <code>sqrt</code> and <code>pi</code> from
+             <code>math</code>, using the <code>from … import …</code> form, then display the
+             area of a circle of radius 3 and the square root of 81:</p>
+             <pre>Aire du disque : 28.27
+Racine de 81 : 9.0</pre>
+             <p>The area of a circle is <code>pi × radius²</code>, rounded to two decimals.</p>`,
+      },
+      depart: 'rayon = 3\n\n# Importe sqrt et pi, puis calcule\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'from\\s+math\\s+import',
+          message: {
+            fr: 'Utilise la deuxième forme : <code>from math import sqrt, pi</code>.',
+            en: 'Use the second form: <code>from math import sqrt, pi</code>.',
+          },
+        },
+        {
+          type: 'codeNeContientPas',
+          motif: 'import\\s+\\*',
+          message: {
+            fr: 'Pas d’import global : nomme précisément ce dont tu as besoin.',
+            en: 'No star import: name precisely what you need.',
+          },
+        },
+        {
+          type: 'codeNeContientPas',
+          motif: 'math\\s*\\.',
+          message: {
+            fr: 'Avec <code>from … import …</code>, on écrit <code>sqrt(81)</code> sans <code>math.</code> devant.',
+            en: 'With <code>from … import …</code>, you write <code>sqrt(81)</code> with no <code>math.</code> in front.',
+          },
+        },
+        { type: 'sortieContient', valeur: { fr: 'Aire du disque : 28.27', en: 'Aire du disque : 28.27' } },
+        { type: 'sortieContient', valeur: { fr: 'Racine de 81 : 9.0', en: 'Racine de 81 : 9.0' } },
+      ],
+      indices: [
+        {
+          fr: 'La première ligne : <code>from math import sqrt, pi</code>.',
+          en: 'The first line: <code>from math import sqrt, pi</code>.',
+        },
+        {
+          fr: 'L’aire : <code>pi * rayon ** 2</code>, à passer dans <code>round(…, 2)</code>.',
+          en: 'The area: <code>pi * rayon ** 2</code>, passed through <code>round(…, 2)</code>.',
+        },
+        {
+          fr: 'Comme les noms sont importés directement, écris <code>sqrt(81)</code>, sans préfixe.',
+          en: 'Since the names are imported directly, write <code>sqrt(81)</code>, with no prefix.',
+        },
+      ],
+      solution:
+        'from math import sqrt, pi\n\nrayon = 3\naire = pi * rayon ** 2\n\nprint(f"Aire du disque : {round(aire, 2)}")\nprint(f"Racine de 81 : {sqrt(81)}")',
+    },
+  },
+
+  'py-mod-3': {
+    langage: 'python',
+    xp: 40,
+    objectif: {
+      fr: 'Écrire son propre module et l’importer dans son programme.',
+      en: 'Write your own module and import it into your program.',
+    },
+    explication: {
+      fr: `
+        <p>Un module n’a rien de magique : <strong>c’est un fichier <code>.py</code></strong>.
+        Le tien en est un. Si tu écris tes fonctions dans <code>outils.py</code>, tu peux les
+        importer ailleurs avec <code>import outils</code>.</p>
+        <p>Le nom du module, c’est le nom du fichier <strong>sans le <code>.py</code></strong>.
+        Voilà pourquoi on ne nomme jamais un fichier <code>math.py</code> : Python irait
+        chercher le tien à la place du vrai.</p>
+        <p>Ici, on va créer le fichier depuis le programme lui-même, avec <code>open()</code> —
+        que tu reverras en détail plus loin :</p>
+        <pre>with open("outils.py", "w") as f:
+    f.write("def double(n):\\n    return n * 2\\n")
+
+import outils
+print(outils.double(21))</pre>
+        <p>C’est exactement ce que fait un vrai projet : plusieurs fichiers, chacun avec son
+        rôle, qui s’appellent entre eux. Découper son code en modules est ce qui permet de
+        retrouver quelque chose dans un programme de dix mille lignes.</p>
+        <p>Note le <code>\\n</code> dans le texte écrit : c’est un retour à la ligne. Sans lui,
+        tout le code du module tiendrait sur une seule ligne et ne fonctionnerait pas.</p>
+      `,
+      en: `
+        <p>A module is nothing magical: <strong>it is a <code>.py</code> file</strong>. Yours is
+        one. If you write your functions in <code>outils.py</code>, you can import them
+        elsewhere with <code>import outils</code>.</p>
+        <p>The module name is the file name <strong>without the <code>.py</code></strong>. That
+        is why you never name a file <code>math.py</code>: Python would pick yours instead of
+        the real one.</p>
+        <p>Here we will create the file from the program itself, using <code>open()</code> —
+        which you will meet in detail later:</p>
+        <pre>with open("outils.py", "w") as f:
+    f.write("def double(n):\\n    return n * 2\\n")
+
+import outils
+print(outils.double(21))</pre>
+        <p>This is exactly what a real project does: several files, each with its role, calling
+        each other. Splitting code into modules is what lets you find anything in a
+        ten-thousand-line program.</p>
+        <p>Notice the <code>\\n</code> inside the written text: it is a line break. Without it,
+        the whole module code would sit on one line and would not work.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'with open("mesoutils.py", "w") as fichier:\n    fichier.write("def double(n):\\n    return n * 2\\n")\n    fichier.write("\\n")\n    fichier.write("MESSAGE = \\"Salut depuis le module !\\"\\n")\n\nimport mesoutils\n\nprint(mesoutils.double(21))\nprint(mesoutils.MESSAGE)',
+      note: {
+        fr: 'Un module peut contenir des fonctions ET des valeurs, comme <code>math.pi</code>.',
+        en: 'A module can hold functions AND values, just like <code>math.pi</code>.',
+      },
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Crée un module <code>geometrie.py</code> qui contient une fonction
+             <code>perimetre(cote)</code> renvoyant <code>cote * 4</code>.</p>
+             <p>Puis importe-le et affiche :</p>
+             <pre>Périmètre : 20</pre>
+             <p>La fonction doit vraiment vivre dans le module : c’est
+             <code>geometrie.perimetre(5)</code> qui doit être appelé.</p>`,
+        en: `<p>Create a module <code>geometrie.py</code> holding a function
+             <code>perimetre(cote)</code> that returns <code>cote * 4</code>.</p>
+             <p>Then import it and display:</p>
+             <pre>Périmètre : 20</pre>
+             <p>The function must really live in the module: it is
+             <code>geometrie.perimetre(5)</code> that must be called.</p>`,
+      },
+      depart: '# Écris le fichier geometrie.py, importe-le, puis utilise-le\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: 'open\\s*\\(\\s*[\'"]geometrie\\.py',
+          message: {
+            fr: 'Crée le fichier : <code>open("geometrie.py", "w")</code>.',
+            en: 'Create the file: <code>open("geometrie.py", "w")</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'import\\s+geometrie',
+          message: {
+            fr: 'Importe ton module : <code>import geometrie</code>.',
+            en: 'Import your module: <code>import geometrie</code>.',
+          },
+        },
+        {
+          type: 'codeContient',
+          motif: 'geometrie\\s*\\.\\s*perimetre',
+          message: {
+            fr: 'Appelle la fonction à travers le module : <code>geometrie.perimetre(5)</code>.',
+            en: 'Call the function through the module: <code>geometrie.perimetre(5)</code>.',
+          },
+        },
+        { type: 'sortieContient', valeur: { fr: 'Périmètre : 20', en: 'Périmètre : 20' } },
+      ],
+      indices: [
+        {
+          fr: 'Ouvre le fichier en écriture : <code>with open("geometrie.py", "w") as f:</code>.',
+          en: 'Open the file for writing: <code>with open("geometrie.py", "w") as f:</code>.',
+        },
+        {
+          fr: 'Écris le code du module en une chaîne : <code>f.write("def perimetre(cote):\\n    return cote * 4\\n")</code>.',
+          en: 'Write the module code as one string: <code>f.write("def perimetre(cote):\\n    return cote * 4\\n")</code>.',
+        },
+        {
+          fr: 'Ensuite <code>import geometrie</code>, puis <code>print(f"Périmètre : {geometrie.perimetre(5)}")</code>.',
+          en: 'Then <code>import geometrie</code>, then <code>print(f"Périmètre : {geometrie.perimetre(5)}")</code>.',
+        },
+      ],
+      solution:
+        'with open("geometrie.py", "w") as fichier:\n    fichier.write("def perimetre(cote):\\n    return cote * 4\\n")\n\nimport geometrie\n\nprint(f"Périmètre : {geometrie.perimetre(5)}")',
+    },
+  },
+
+  /* ================================================= Les comprehensions === */
+
+  'py-comp-1': {
+    langage: 'python',
+    xp: 35,
+    objectif: {
+      fr: 'Fabriquer une liste en une seule ligne, à partir d’une autre.',
+      en: 'Build a list in a single line, from another one.',
+    },
+    explication: {
+      fr: `
+        <p>Voici un motif que tu écris déjà souvent : partir d’une liste, transformer chaque
+        élément, ranger le résultat.</p>
+        <pre>carres = []
+for n in range(1, 6):
+    carres.append(n * n)</pre>
+        <p>Python offre une écriture directe pour ces trois lignes — la
+        <strong>compréhension de liste</strong> :</p>
+        <pre>carres = [n * n for n in range(1, 6)]</pre>
+        <p>Ça se lit de droite à gauche pour comprendre, mais de gauche à droite pour l’écrire :
+        <em>« ce que je veux garder </em><code>n * n</code><em>, pour chaque </em><code>n</code>
+        <em> dans </em><code>range(1, 6)</code><em> »</em>.</p>
+        <p>Les crochets ne sont pas décoratifs : ils annoncent qu’on fabrique une
+        <strong>liste</strong>. Le résultat est une vraie liste, avec tout ce que tu sais déjà
+        faire dessus.</p>
+        <p><strong>Un conseil qui compte :</strong> la compréhension est faite pour les
+        transformations <em>courtes</em>. Dès qu’elle ne tient plus confortablement sur une
+        ligne, la boucle classique redevient plus lisible. Le but est de se comprendre, pas
+        d’écrire court.</p>
+      `,
+      en: `
+        <p>Here is a pattern you already write often: start from a list, transform every item,
+        store the result.</p>
+        <pre>carres = []
+for n in range(1, 6):
+    carres.append(n * n)</pre>
+        <p>Python offers a direct way to write those three lines — the
+        <strong>list comprehension</strong>:</p>
+        <pre>carres = [n * n for n in range(1, 6)]</pre>
+        <p>Read it right to left to understand it, left to right to write it:
+        <em>"what I want to keep, </em><code>n * n</code><em>, for each </em><code>n</code>
+        <em> in </em><code>range(1, 6)</code><em>"</em>.</p>
+        <p>The square brackets are not decorative: they announce that you are building a
+        <strong>list</strong>. The result is a real list, with everything you already know how
+        to do to it.</p>
+        <p><strong>Advice that matters:</strong> comprehensions are for <em>short</em>
+        transformations. As soon as one no longer fits comfortably on a line, the classic loop
+        becomes more readable again. The goal is to be understood, not to write short.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'carres = [n * n for n in range(1, 6)]\nprint(carres)\n\nmots = ["chat", "chien", "souris"]\nmajuscules = [m.upper() for m in mots]\nlongueurs = [len(m) for m in mots]\n\nprint(majuscules)\nprint(longueurs)\n\n# La version longue, pour comparer :\nautre = []\nfor m in mots:\n    autre.append(m.upper())\nprint(autre == majuscules)',
+    },
+    defi: {
+      consigne: {
+        fr: `<p>À partir de la liste de prix hors taxes, fabrique <strong>en une seule
+             ligne</strong> la liste des prix doublés.</p>
+             <pre>[10, 25, 8, 40]
+[20, 50, 16, 80]</pre>
+             <p>Une compréhension est obligatoire : pas de <code>append</code>.</p>`,
+        en: `<p>From the list of prices, build <strong>in a single line</strong> the list of
+             doubled prices.</p>
+             <pre>[10, 25, 8, 40]
+[20, 50, 16, 80]</pre>
+             <p>A comprehension is required: no <code>append</code>.</p>`,
+      },
+      depart: 'prix = [10, 25, 8, 40]\nprint(prix)\n\n# Fabrique la liste doubles en une ligne\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: '\\[[^\\]]*\\bfor\\b[^\\]]*\\]',
+          message: {
+            fr: 'Écris une compréhension : <code>[… for … in …]</code>, entre crochets.',
+            en: 'Write a comprehension: <code>[… for … in …]</code>, inside square brackets.',
+          },
+        },
+        {
+          type: 'codeNeContientPas',
+          motif: '\\.append\\s*\\(',
+          message: {
+            fr: 'Ici, pas de <code>append</code> : c’est tout l’intérêt de la compréhension.',
+            en: 'No <code>append</code> here: that is the whole point of a comprehension.',
+          },
+        },
+        { type: 'sortieContient', valeur: { fr: '[20, 50, 16, 80]', en: '[20, 50, 16, 80]' } },
+      ],
+      indices: [
+        {
+          fr: 'La forme est <code>[expression for element in liste]</code>.',
+          en: 'The shape is <code>[expression for item in list]</code>.',
+        },
+        {
+          fr: 'Ici l’expression est <code>p * 2</code> et l’élément <code>p</code>.',
+          en: 'Here the expression is <code>p * 2</code> and the item is <code>p</code>.',
+        },
+        {
+          fr: '<code>doubles = [p * 2 for p in prix]</code>, puis <code>print(doubles)</code>.',
+          en: '<code>doubles = [p * 2 for p in prix]</code>, then <code>print(doubles)</code>.',
+        },
+      ],
+      solution: 'prix = [10, 25, 8, 40]\nprint(prix)\n\ndoubles = [p * 2 for p in prix]\nprint(doubles)',
+    },
+  },
+
+  'py-comp-2': {
+    langage: 'python',
+    xp: 35,
+    objectif: {
+      fr: 'Filtrer pendant qu’on transforme, avec un if dans la compréhension.',
+      en: 'Filter while transforming, with an if inside the comprehension.',
+    },
+    explication: {
+      fr: `
+        <p>Une compréhension peut aussi <strong>trier le grain de l’ivraie</strong>. Il suffit
+        d’ajouter un <code>if</code> à la fin :</p>
+        <pre>pairs = [n for n in range(10) if n % 2 == 0]
+# [0, 2, 4, 6, 8]</pre>
+        <p>Ce <code>if</code> décide de ce qui <strong>entre</strong> dans la liste. Ce qui ne
+        passe pas le test est simplement ignoré — la liste résultante est donc souvent plus
+        courte que celle de départ.</p>
+        <p>On peut évidemment filtrer <em>et</em> transformer dans la même ligne :</p>
+        <pre>[m.upper() for m in mots if len(m) > 3]</pre>
+        <p>Là, il faut lire dans l’ordre d’exécution : pour chaque mot, <em>si</em> il est
+        assez long, <em>alors</em> mets sa version en majuscules dans la liste.</p>
+        <p>Attention à ne pas confondre avec l’autre <code>if</code>, celui qui choisit une
+        valeur : <code>["pair" if n % 2 == 0 else "impair" for n in nombres]</code>. Celui-là
+        se place <strong>avant</strong> le <code>for</code> et garde tous les éléments ; le
+        filtre se place <strong>après</strong> et en supprime. La position change tout.</p>
+      `,
+      en: `
+        <p>A comprehension can also <strong>separate the wheat from the chaff</strong>. Just add
+        an <code>if</code> at the end:</p>
+        <pre>pairs = [n for n in range(10) if n % 2 == 0]
+# [0, 2, 4, 6, 8]</pre>
+        <p>That <code>if</code> decides what <strong>gets into</strong> the list. Anything
+        failing the test is simply skipped — so the resulting list is often shorter than the
+        starting one.</p>
+        <p>You can of course filter <em>and</em> transform on the same line:</p>
+        <pre>[m.upper() for m in mots if len(m) > 3]</pre>
+        <p>Read that in running order: for each word, <em>if</em> it is long enough,
+        <em>then</em> put its uppercase version into the list.</p>
+        <p>Do not confuse it with the other <code>if</code>, the one that picks a value:
+        <code>["pair" if n % 2 == 0 else "impair" for n in nombres]</code>. That one goes
+        <strong>before</strong> the <code>for</code> and keeps every item; the filter goes
+        <strong>after</strong> and removes some. Position changes everything.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'nombres = list(range(1, 21))\n\nmultiples = [n for n in nombres if n % 3 == 0]\nprint(multiples)\n\nmots = ["chat", "chien", "souris", "rat"]\nprint([m.upper() for m in mots if len(m) > 3])\n\n# L\'autre if, celui qui choisit une valeur :\nprint(["pair" if n % 2 == 0 else "impair" for n in range(1, 6)])',
+    },
+    defi: {
+      consigne: {
+        fr: `<p>Sur les notes d’un contrôle, garde <strong>uniquement celles au-dessus de
+             10</strong>, puis affiche-les et compte-les :</p>
+             <pre>Reçus : [15, 12, 17, 11]
+Nombre de reçus : 4</pre>
+             <p>Une seule compréhension avec un <code>if</code>, et aucune boucle
+             <code>for</code> écrite sur plusieurs lignes.</p>`,
+        en: `<p>From the marks of a test, keep <strong>only those above 10</strong>, then
+             display them and count them:</p>
+             <pre>Reçus : [15, 12, 17, 11]
+Nombre de reçus : 4</pre>
+             <p>One single comprehension with an <code>if</code>, and no multi-line
+             <code>for</code> loop.</p>`,
+      },
+      depart: 'notes = [15, 8, 12, 17, 9, 11, 4]\n\n# Garde les notes au-dessus de 10\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: '\\[[^\\]]*\\bfor\\b[^\\]]*\\bif\\b[^\\]]*\\]',
+          message: {
+            fr: 'Le filtre se place à la fin de la compréhension : <code>[n for n in notes if …]</code>.',
+            en: 'The filter goes at the end of the comprehension: <code>[n for n in notes if …]</code>.',
+          },
+        },
+        {
+          type: 'codeNeContientPas',
+          motif: '\\.append\\s*\\(',
+          message: {
+            fr: 'Pas de <code>append</code> : tout tient dans la compréhension.',
+            en: 'No <code>append</code>: everything fits inside the comprehension.',
+          },
+        },
+        { type: 'sortieContient', valeur: { fr: 'Reçus : [15, 12, 17, 11]', en: 'Reçus : [15, 12, 17, 11]' } },
+        { type: 'sortieContient', valeur: { fr: 'Nombre de reçus : 4', en: 'Nombre de reçus : 4' } },
+      ],
+      indices: [
+        {
+          fr: 'La forme complète : <code>[n for n in notes if n > 10]</code>.',
+          en: 'The full shape: <code>[n for n in notes if n > 10]</code>.',
+        },
+        {
+          fr: 'Range le résultat dans une variable, tu en auras besoin deux fois.',
+          en: 'Store the result in a variable, you will need it twice.',
+        },
+        {
+          fr: 'Le compte est <code>len(recus)</code>, pas un nombre écrit à la main.',
+          en: 'The count is <code>len(recus)</code>, not a hand-written number.',
+        },
+      ],
+      solution:
+        'notes = [15, 8, 12, 17, 9, 11, 4]\n\nrecus = [n for n in notes if n > 10]\n\nprint(f"Reçus : {recus}")\nprint(f"Nombre de reçus : {len(recus)}")',
+    },
+  },
+
+  'py-comp-3': {
+    langage: 'python',
+    xp: 35,
+    objectif: {
+      fr: 'Fabriquer un dictionnaire ou un ensemble de la même façon.',
+      en: 'Build a dictionary or a set in the same way.',
+    },
+    explication: {
+      fr: `
+        <p>Le même mécanisme fabrique aussi des dictionnaires et des ensembles. Ce qui change,
+        c’est uniquement <strong>ce qu’on met autour</strong> :</p>
+        <ul>
+          <li>des crochets <code>[ ]</code> → une <strong>liste</strong> ;</li>
+          <li>des accolades avec <code>clé: valeur</code> → un
+          <strong>dictionnaire</strong> ;</li>
+          <li>des accolades avec une seule valeur → un <strong>ensemble</strong>.</li>
+        </ul>
+        <pre>{m: len(m) for m in mots}      # {'chat': 4, 'chien': 5}
+{len(m) for m in mots}         # {4, 5}</pre>
+        <p>La compréhension de dictionnaire est particulièrement utile pour
+        <strong>indexer</strong> : partir d’une liste et fabriquer une fiche où l’on retrouve
+        chaque chose par son nom.</p>
+        <p>Celle d’ensemble, elle, dédoublonne au passage : la deuxième ligne ci-dessus ne rend
+        que deux longueurs, même si les mots sont trois.</p>
+        <p>Une fois ce mécanisme compris, tu l’as compris pour les trois : c’est le même
+        <code>for</code>, le même <code>if</code> facultatif, et seule l’enveloppe change.</p>
+      `,
+      en: `
+        <p>The same mechanism also builds dictionaries and sets. The only thing that changes is
+        <strong>what you wrap around it</strong>:</p>
+        <ul>
+          <li>square brackets <code>[ ]</code> → a <strong>list</strong>;</li>
+          <li>curly braces with <code>key: value</code> → a <strong>dictionary</strong>;</li>
+          <li>curly braces with a single value → a <strong>set</strong>.</li>
+        </ul>
+        <pre>{m: len(m) for m in mots}      # {'chat': 4, 'chien': 5}
+{len(m) for m in mots}         # {4, 5}</pre>
+        <p>Dictionary comprehensions are especially useful to <strong>index</strong>: start from
+        a list and build a record where you find each thing by its name.</p>
+        <p>Set comprehensions remove duplicates along the way: the second line above gives back
+        only two lengths, even though there are three words.</p>
+        <p>Once you understand this mechanism you understand all three: the same
+        <code>for</code>, the same optional <code>if</code>, and only the wrapper changes.</p>
+      `,
+    },
+    exemple: {
+      code:
+        'mots = ["chat", "chien", "souris"]\n\nlongueurs = {m: len(m) for m in mots}\nprint(longueurs)\nprint(longueurs["chien"])\n\ntailles_uniques = {len(m) for m in mots}\nprint(sorted(tailles_uniques))\n\ncarres = {n: n * n for n in range(1, 5)}\nprint(carres)',
+    },
+    defi: {
+      consigne: {
+        fr: `<p>À partir de la liste de prénoms, fabrique <strong>en une ligne</strong> un
+             dictionnaire qui associe chaque prénom à sa longueur, puis affiche-le et interroge-le :</p>
+             <pre>{'Louis': 5, 'Léa': 3, 'Alexandre': 9}
+Alexandre a 9 lettres</pre>`,
+        en: `<p>From the list of first names, build <strong>in one line</strong> a dictionary
+             mapping each name to its length, then display it and query it:</p>
+             <pre>{'Louis': 5, 'Léa': 3, 'Alexandre': 9}
+Alexandre a 9 lettres</pre>`,
+      },
+      depart: 'prenoms = ["Louis", "Léa", "Alexandre"]\n\n# Fabrique le dictionnaire longueurs en une ligne\n',
+      verifications: [
+        {
+          type: 'codeContient',
+          motif: '\\{[^}]*:[^}]*\\bfor\\b[^}]*\\}',
+          message: {
+            fr: 'Une compréhension de dictionnaire : <code>{clé: valeur for … in …}</code>.',
+            en: 'A dictionary comprehension: <code>{key: value for … in …}</code>.',
+          },
+        },
+        {
+          type: 'codeNeContientPas',
+          motif: '\\.append\\s*\\(',
+          message: {
+            fr: 'Tout tient dans la compréhension : pas de construction ligne à ligne.',
+            en: 'Everything fits in the comprehension: no line-by-line building.',
+          },
+        },
+        {
+          type: 'sortieContient',
+          valeur: { fr: "{'Louis': 5, 'Léa': 3, 'Alexandre': 9}", en: "{'Louis': 5, 'Léa': 3, 'Alexandre': 9}" },
+        },
+        { type: 'sortieContient', valeur: { fr: 'Alexandre a 9 lettres', en: 'Alexandre a 9 lettres' } },
+      ],
+      indices: [
+        {
+          fr: 'La forme : <code>{p: len(p) for p in prenoms}</code>.',
+          en: 'The shape: <code>{p: len(p) for p in prenoms}</code>.',
+        },
+        {
+          fr: 'Avant les deux points va la clé, après va la valeur.',
+          en: 'The key goes before the colon, the value after.',
+        },
+        {
+          fr: 'Pour la seconde ligne, lis le dictionnaire : <code>longueurs["Alexandre"]</code>.',
+          en: 'For the second line, read the dictionary: <code>longueurs["Alexandre"]</code>.',
+        },
+      ],
+      solution:
+        'prenoms = ["Louis", "Léa", "Alexandre"]\n\nlongueurs = {p: len(p) for p in prenoms}\n\nprint(longueurs)\nprint(f"Alexandre a {longueurs[\'Alexandre\']} lettres")',
+    },
+  },
 };

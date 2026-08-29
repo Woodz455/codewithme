@@ -135,6 +135,26 @@ export const PARCOURS = [
           L('py-5-4', 'Projet : le générateur de mots de passe', 'Project: password generator'),
         ],
       },
+      {
+        id: 'py-mod',
+        titre: { fr: 'Les modules', en: 'Modules' },
+        icone: 'code',
+        lecons: [
+          L('py-mod-1', 'Les outils déjà livrés', 'The tools already shipped'),
+          L('py-mod-2', 'Trois façons d’importer', 'Three ways to import'),
+          L('py-mod-3', 'Écrire son propre module', 'Writing your own module'),
+        ],
+      },
+      {
+        id: 'py-comp',
+        titre: { fr: 'Les compréhensions', en: 'Comprehensions' },
+        icone: 'etincelles',
+        lecons: [
+          L('py-comp-1', 'Une liste en une ligne', 'A list in one line'),
+          L('py-comp-2', 'Filtrer en même temps', 'Filtering at the same time'),
+          L('py-comp-3', 'Dictionnaires et ensembles', 'Dictionaries and sets'),
+        ],
+      },
     ],
   },
 
