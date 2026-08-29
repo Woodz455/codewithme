@@ -2,7 +2,7 @@ name: Construire l'application Windows
 
 # Deux facons de declencher :
 #   - a la main, depuis l'onglet Actions ;
-#   - en poussant une etiquette de version (v1.0.0), ce qui publie en plus
+#   - en poussant une etiquette de version (v1.1.0), ce qui publie en plus
 #     une Release avec les fichiers a telecharger.
 on:
   workflow_dispatch:
@@ -81,6 +81,11 @@ jobs:
           files: |
             dist/*.exe
             dist/*.blockmap
+          # GitHub ajoute la liste des changements sous ce texte. Le corps
+          # ci-dessous reste donc volontairement general : il explique comment
+          # installer, ce qui ne change pas d'une version a l'autre, tandis que
+          # « ce qui est nouveau » est genere et ne peut pas devenir faux.
+          generate_release_notes: true
           body: |
             ## CodeWithMe — apprendre a coder
 
