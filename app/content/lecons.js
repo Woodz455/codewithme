@@ -6,6 +6,7 @@
  * declares dans `parcours.js`.
  */
 import { LECONS_PYTHON } from './lecons-python.js';
+import { LECONS_PYTHON_AVANCE } from './lecons-python-avance.js';
 import { LECONS_HTML } from './lecons-html.js';
 import { LECONS_CSS } from './lecons-css.js';
 import { LECONS_JAVASCRIPT } from './lecons-javascript.js';
@@ -14,6 +15,7 @@ import { LECONS_PROJET } from './lecons-projet.js';
 
 export const LECONS = {
   ...LECONS_PYTHON,
+  ...LECONS_PYTHON_AVANCE,
   ...LECONS_HTML,
   ...LECONS_CSS,
   ...LECONS_JAVASCRIPT,

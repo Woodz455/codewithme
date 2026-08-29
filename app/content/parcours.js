@@ -50,6 +50,16 @@ export const PARCOURS = [
         ],
       },
       {
+        id: 'py-op',
+        titre: { fr: 'Les opérateurs', en: 'Operators' },
+        icone: 'regle',
+        lecons: [
+          L('py-op-1', 'Diviser, et ce qui reste', 'Dividing, and what is left'),
+          L('py-op-2', 'Comparer : vrai ou faux', 'Comparing: true or false'),
+          L('py-op-3', 'Combiner : et, ou, non', 'Combining: and, or, not'),
+        ],
+      },
+      {
         id: 'py-3',
         titre: { fr: 'Décisions et boucles', en: 'Decisions and loops' },
         icone: 'decision',
@@ -73,12 +83,30 @@ export const PARCOURS = [
         ],
       },
       {
+        id: 'py-txt',
+        titre: { fr: 'Le texte', en: 'Text' },
+        icone: 'livre',
+        lecons: [
+          L('py-txt-1', 'Mesurer et découper un texte', 'Measuring and slicing text'),
+          L('py-txt-2', 'Nettoyer et transformer', 'Cleaning up and transforming'),
+          L('py-txt-3', 'Découper en mots, recoller', 'Splitting into words, gluing back'),
+          L('py-txt-4', 'Chercher dans un texte', 'Searching inside text'),
+        ],
+      },
+      {
         id: 'py-5',
-        titre: { fr: 'Listes et fonctions', en: 'Lists and functions' },
+        titre: { fr: 'Les listes', en: 'Lists' },
         icone: 'boite',
         lecons: [
           L('py-5-1', 'Ranger plusieurs valeurs : la liste', 'Storing several values: the list'),
           L('py-5-2', 'Parcourir une liste', 'Going through a list'),
+        ],
+      },
+      {
+        id: 'py-fn',
+        titre: { fr: 'Les fonctions', en: 'Functions' },
+        icone: 'engrenage',
+        lecons: [
           L('py-5-3', 'Créer ta propre fonction', 'Creating your own function'),
           L('py-5-4', 'Projet : le générateur de mots de passe', 'Project: password generator'),
         ],
