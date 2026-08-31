@@ -216,7 +216,7 @@ export function ecranParcours(identifiant) {
     noeuds.map((noeud) => noeudLecon(noeud, parcours, prochaine && noeud.fiche.id === prochaine.id))
   );
 
-  return h(
+  const racine = h(
     'div.ecran-parcours',
     h(
       'header.parcours-entete.carte',
@@ -254,4 +254,37 @@ export function ecranParcours(identifiant) {
     ),
     h('div.carte-hote', plan)
   );
+
+  amenerALaProchaine(racine, faites);
+  return racine;
+}
+
+/**
+ * Ouvre la carte a l'endroit ou l'eleve en est.
+ *
+ * Mesure : le parcours Python fait 9 123 px de haut, soit onze ecrans, contre
+ * trois pour tous les autres. Ouvrir la page tout en haut obligerait un eleve
+ * arrive a la lecon 40 a faire defiler la moitie du chemin pour se retrouver,
+ * a chaque visite. On amene donc la prochaine lecon sous ses yeux.
+ *
+ * Deux cas ou l'on ne touche a rien, volontairement :
+ *   - aucune lecon terminee : le debut EST la prochaine etape, et garder
+ *     l'en-tete visible vaut mieux ;
+ *   - parcours acheve : il n'y a plus de prochaine lecon.
+ */
+function amenerALaProchaine(racine, faites) {
+  if (faites <= 0) return;
+
+  // Le noeud n'est pas encore dans le document quand l'ecran est construit :
+  // on attend l'image suivante, une seule fois.
+  requestAnimationFrame(() => {
+    const cible = racine.querySelector('.noeud[data-etat="suivante"]');
+    const scene = racine.closest('.scene');
+    if (!cible || !scene || !racine.isConnected) return;
+
+    // On vise le premier tiers de l'ecran plutot que le centre : la lecon
+    // suivante se lit mieux avec le chemin deja parcouru au-dessus d'elle.
+    const decalage = cible.getBoundingClientRect().top - scene.getBoundingClientRect().top;
+    scene.scrollTop += decalage - scene.clientHeight / 3;
+  });
 }

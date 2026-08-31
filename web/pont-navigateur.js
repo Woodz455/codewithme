@@ -136,13 +136,42 @@ const profilVierge = () => ({
   bacASable: {},
 });
 
+/**
+ * Jette toutes les vignettes pour recuperer de la place.
+ *
+ * C'est la donnee la moins precieuse du stockage : purement decorative, et
+ * refabriquee au prochain enregistrement du projet. La galerie retombe
+ * proprement sur le logo du langage.
+ *
+ * @returns {boolean} vrai si quelque chose a ete libere
+ */
+function libererDesVignettes() {
+  const cles = Object.keys(localStorage).filter((cle) => cle.startsWith(CLE_APERCU));
+  for (const cle of cles) localStorage.removeItem(cle);
+  return cles.length > 0;
+}
+
 const profil = {
   async lire() {
     return lireJson(CLE_PROFIL, null) || profilVierge();
   },
 
+  /**
+   * Derniere marche de l'ordre de sacrifice.
+   *
+   * Ranger le profil dans sa propre cle le protege d'un projet trop gros, mais
+   * ne le protege pas d'un stockage integralement plein — aucune cle separee
+   * ne le pourrait. Alors quand l'ecriture echoue, on jette les vignettes et on
+   * reessaie : la progression de l'eleve vaut plus que toutes les images de la
+   * galerie reunies.
+   *
+   * Sans cela, la garantie n'etait pas fausse, elle etait seulement probable —
+   * et le test qui l'eprouvait passait une fois sur deux.
+   */
   async ecrire(donnees) {
-    return ecrireJson(CLE_PROFIL, donnees);
+    if (ecrireJson(CLE_PROFIL, donnees)) return true;
+    if (libererDesVignettes()) return ecrireJson(CLE_PROFIL, donnees);
+    return false;
   },
 
   async exporter() {

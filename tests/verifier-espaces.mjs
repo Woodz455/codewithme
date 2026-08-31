@@ -199,6 +199,55 @@ await page.click('.verrou .bouton--principal');
 await page.waitForSelector('.tuteur-vignettes', { timeout: 5000 });
 verifier('le bon code donne acces', await page.isVisible('.tuteur-vignettes'));
 
+/* ================================================ CARTE D UN PARCOURS ==== */
+
+// Le parcours Python fait 9 123 px de haut, onze ecrans, contre trois pour
+// tous les autres : c'est le prix de ses 71 lecons. S'il s'ouvrait tout en
+// haut, un eleve avance devrait retrouver sa place a la main a chaque visite.
+process.stdout.write('\nCarte du parcours\n\n');
+
+await page.evaluate(async () => {
+  const store = await import('app://app/js/core/store.js');
+  const { leconsDuParcours } = await import('app://app/content/parcours.js');
+  // Trente lecons terminees : bien au-dela du premier ecran.
+  for (const fiche of leconsDuParcours('python').slice(0, 30)) {
+    store.terminerLecon(fiche.id, { xp: 10 });
+  }
+});
+await page.waitForTimeout(400);
+await aller('#/parcours/python', '.carte-plan');
+
+const carte = await page.evaluate(() => {
+  const scene = document.querySelector('.scene');
+  const suivante = document.querySelector('.noeud[data-etat="suivante"]');
+  if (!suivante) return { erreur: 'aucun noeud suivant' };
+  const r = suivante.getBoundingClientRect();
+  const s = scene.getBoundingClientRect();
+  return {
+    defilement: Math.round(scene.scrollTop),
+    hauteurTotale: scene.scrollHeight,
+    visible: r.top >= s.top && r.bottom <= s.bottom,
+    titre: suivante.querySelector('.noeud__titre')?.textContent || '',
+  };
+});
+
+verifier(
+  'la carte s ouvre a l endroit ou l eleve en est',
+  carte.defilement > 0,
+  `defilement ${carte.defilement} px sur ${carte.hauteurTotale}`
+);
+verifier(
+  'la prochaine lecon est reellement a l ecran',
+  carte.visible === true,
+  `« ${carte.titre} » hors du cadre`
+);
+
+// Sur un parcours jamais commence, en revanche, on ne bouge pas : le debut EST
+// la prochaine etape, et l'en-tete merite d'etre vu.
+await aller('#/parcours/cpp', '.carte-plan');
+const neuf = await page.evaluate(() => Math.round(document.querySelector('.scene').scrollTop));
+verifier('un parcours jamais commence s ouvre en haut', neuf === 0, `defilement ${neuf} px`);
+
 /* ------------------------------------------------------------------------- */
 
 verifier('aucune erreur JavaScript', erreursPage.length === 0, erreursPage.join(' | '));
