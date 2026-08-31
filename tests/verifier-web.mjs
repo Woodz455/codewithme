@@ -389,10 +389,13 @@ const sature = await page.evaluate(async () => {
   }
 
   // Le profil doit survivre a un stockage sature : c'est la progression de
-  // l'eleve, la chose la moins remplacable de toutes.
+  // l'eleve, la chose la moins remplacable de toutes. Le pont y parvient en
+  // jetant les vignettes — on verifie donc l'ecriture ET la relecture, car
+  // « ecrireJson a rendu true » ne prouve pas que la valeur est vraiment la.
   const profil = await window.cwm.profil.lire();
   profil.xp = 4242;
   const profilEcrit = await window.cwm.profil.ecrire(profil);
+  const profilRelu = (await window.cwm.profil.lire()).xp;
 
   const vignette = liste.find((p) => p.apercu)?.apercu ?? '';
   // La largeur reelle de ce qui a ete range : c'est l'enonce direct de
@@ -413,6 +416,7 @@ const sature = await page.evaluate(async () => {
     orphelins,
     erreur,
     profilEcrit,
+    profilRelu,
     tailleVignette: vignette.length,
     tailleOrigine: image.length,
     largeur,
@@ -436,8 +440,8 @@ verifier(
 );
 verifier(
   'le profil reste enregistrable malgre le stockage sature',
-  sature.profilEcrit === true,
-  String(sature.profilEcrit)
+  sature.profilEcrit === true && sature.profilRelu === 4242,
+  `ecrit=${sature.profilEcrit} relu=${sature.profilRelu}`
 );
 verifier(
   'les vignettes sont ramenees a 320 px avant d etre rangees',

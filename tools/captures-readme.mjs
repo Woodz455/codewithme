@@ -99,11 +99,18 @@ await page.waitForSelector('#application:not([hidden])', { timeout: 25000 });
 // bulle recouvre le texte des cartes sur la capture.
 await page.waitForTimeout(5200);
 
-async function capturer(nom, route, attente = 1400) {
+async function capturer(nom, route, attente = 1400, { hautDePage = false } = {}) {
   await page.evaluate((cible) => {
     window.location.hash = cible;
   }, route);
   await page.waitForTimeout(attente);
+  if (hautDePage) {
+    await page.evaluate(() => {
+      const scene = document.querySelector('.scene');
+      if (scene) scene.scrollTop = 0;
+    });
+    await page.waitForTimeout(250);
+  }
   await page.screenshot({ path: join(SORTIE, `${nom}.png`) });
   process.stdout.write(`  docs/images/${nom}.png\n`);
 }
@@ -111,7 +118,12 @@ async function capturer(nom, route, attente = 1400) {
 process.stdout.write('\nCaptures du README\n\n');
 
 await capturer('accueil', '#/accueil', 2200);
-await capturer('parcours', '#/parcours/python', 1900);
+// La carte d'un parcours s'ouvre desormais la ou l'eleve en est. Le profil de
+// demonstration a 17 lecons faites, la page s'ouvrirait donc au milieu du
+// chemin, sans son en-tete. On remonte pour montrer ce que voit quelqu'un qui
+// decouvre le parcours — c'est ce que le lecteur du README est en train de
+// faire, lui aussi.
+await capturer('parcours', '#/parcours/python', 1900, { hautDePage: true });
 
 /* --- L'atelier Python, avec un vrai dessin de tortue --------------------- */
 
