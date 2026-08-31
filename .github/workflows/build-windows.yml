@@ -2,8 +2,10 @@ name: Construire l'application Windows
 
 # Deux facons de declencher :
 #   - a la main, depuis l'onglet Actions ;
-#   - en poussant une etiquette de version (v1.1.0), ce qui publie en plus
-#     une Release avec les fichiers a telecharger.
+#   - en poussant une etiquette commencant par « v » — c'est exactement le
+#     declencheur declare ci-dessous —, ce qui publie en plus une Release avec
+#     les fichiers a telecharger. Enoncer la regle plutot qu'un exemple evite
+#     d'avoir a corriger ce commentaire a chaque version.
 on:
   workflow_dispatch:
   push:
