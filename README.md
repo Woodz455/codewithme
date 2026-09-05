@@ -156,6 +156,8 @@ concrètement. Protégeable par un code à 4 chiffres, et exportable en bilan PD
 - Un **bac à sable** par langage, sans consigne ni note, pour essayer sans être jugé.
 - **Bit**, un petit robot qui réagit à son code — et qui se masque en un clic quand il en a
   assez.
+- De **petits sons** de réussite, d'erreur et de fête, synthétisés — aucun fichier audio, donc
+  rien de plus à télécharger. Coupables en un clic dans les Réglages.
 
 ---
 

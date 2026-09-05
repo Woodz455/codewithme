@@ -11,6 +11,7 @@ import { t, texte } from '../core/i18n.js';
 import * as store from '../core/store.js';
 import { icone } from '../icones.js';
 import * as bit from '../mascotte.js';
+import { jouerSon } from '../core/sons.js';
 
 /** Ligne de reglage : un libelle, une explication, un controle. */
 function ligne(titre, note, controle) {
@@ -173,7 +174,13 @@ export function ecranReglages() {
       ligne(
         t('reglages.sons'),
         texte({ fr: 'Petits sons de réussite et d’erreur.', en: 'Small success and error sounds.' }),
-        interrupteur(reglages.sons === true, (actif) => store.definirReglage('sons', actif))
+        interrupteur(reglages.sons === true, (actif) => {
+          store.definirReglage('sons', actif);
+          // Repondre tout de suite a la question que l'eleve se pose a cet
+          // instant : « est-ce que ca marche ? ». Sans ce retour, il resterait
+          // devant un interrupteur muet — exactement le defaut corrige ici.
+          if (actif) jouerSon('reussite');
+        })
       ),
       ligne(t('reglages.taillePolice'), null, selecteurTaille)
     ),

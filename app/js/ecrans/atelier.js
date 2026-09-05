@@ -20,6 +20,7 @@ import { corriger } from '../validateur.js';
 import * as bit from '../mascotte.js';
 import { icone } from '../icones.js';
 import { celebrer } from '../gamification.js';
+import { jouerSon } from '../core/sons.js';
 
 /** Parcours dont le resultat est une page web plutot qu'une console. */
 const PARCOURS_WEB = new Set(['html', 'css', 'javascript']);
@@ -533,6 +534,7 @@ function construireAtelier(situation, lecon) {
       store.noterTentative(lecon.id);
       afficherVerdict({ reussi: false, message: resultat.message });
       bit.reagirErreur();
+      jouerSon('erreur');
       return;
     }
 
@@ -545,6 +547,7 @@ function construireAtelier(situation, lecon) {
 
     afficherVerdict({ reussi: true, message: null, xpGagne });
     bit.reagirReussite();
+    jouerSon('reussite');
     await enregistrerProjet();
     celebrer({ xpGagne, nouveauNiveau, lecon });
   }

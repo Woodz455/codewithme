@@ -9,6 +9,7 @@ import { t, texte } from './core/i18n.js';
 import * as store from './core/store.js';
 import * as bit from './mascotte.js';
 import { icone } from './icones.js';
+import { jouerSon, dureeSon } from './core/sons.js';
 import { PARCOURS, leconsDuParcours, nombreLeconsTotal } from '../content/parcours.js';
 
 /* --------------------------------------------------------------- badges -- */
@@ -265,6 +266,14 @@ export function celebrer({ xpGagne = 0, nouveauNiveau = null, lecon = null } = {
   hote.hidden = false;
   if (xpGagne) compter(valeurXp, 0, xpGagne, 1000, (n) => `+${Math.round(n)} XP`);
   lancerConfettis(hote);
+
+  // La fanfare ne sonne QUE pour un niveau ou un badge. Une reussite simple a
+  // deja joue son propre son une fraction de seconde plus tot : l'ajouter ici
+  // ferait se cogner les deux. Le retard laisse entendre une suite, pas une
+  // collision.
+  if (nouveauNiveau || nouveauxBadges.length) {
+    setTimeout(() => jouerSon('fete'), dureeSon('reussite') * 1000 + 220);
+  }
 
   if (nouveauxBadges.length) bit.reagirBadge(nouveauxBadges[0].nom);
   else bit.definirEtat('fete', 2600);

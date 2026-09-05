@@ -122,7 +122,7 @@ const profilVierge = () => ({
   reglages: {
     theme: 'sombre',
     animations: true,
-    sons: false,
+    sons: true,
     mascotte: true,
     taillePolice: 'normale',
     codeTuteur: null,
