@@ -177,7 +177,8 @@ Rien n'est déclaré fonctionnel sans avoir été exécuté.
 | Commande | Ce qu'elle vérifie |
 |---|---|
 | `npm run check:content` | Les 135 leçons, dans les vrais moteurs : structure bilingue complète, solution de référence qui passe, code de départ qui **ne** passe pas, exemple qui s'exécute |
-| `npm test` | 168 vérifications : moteurs, atelier, correction, XP, galerie, espace tuteur, projet final, certificat, le script qui contrôle les `.exe` produits, et la version web dans un vrai navigateur |
+| `npm test` | 186 vérifications : moteurs, atelier, correction, XP, galerie, espace tuteur, projet final, certificat, effets sonores, le script qui contrôle les `.exe` produits, et la version web dans un vrai navigateur |
+| `npm run test:sons` | Les sons sont **rendus hors ligne et mesurés** : signal non silencieux, durée sous 400 ms, crête discrète, réussite qui monte et erreur qui descend, et le réglage réellement respecté |
 | `npm run test:web` | Le site **construit** est servi puis ouvert dans un Chromium ordinaire : démarrage, isolation d'origine, `input()` bloquant, tortue, aperçu, C++, octets exacts d'un fichier téléchargé, comportement quand le stockage est **saturé**, et fonctionnement **réseau coupé** |
 | `npm run test:paquet` | L'application **empaquetée** se lance et fonctionne — c'est là qu'on découvre un fichier manquant |
 | `npm run check:contrast` | Contrastes WCAG AA mesurés, et palette des graphiques contrôlée en simulant le daltonisme |
