@@ -57,6 +57,34 @@ const problemes = [];
 
 process.stdout.write('\nControle de l empaquetage\n\n');
 
+/* --- 0. L etiquette dit-elle la verite sur la version ? ------------------ */
+
+// Defaut reellement survenu : l'etiquette v1.1.2 a ete posee sur le commit
+// PRECEDENT la montee de version, qui declarait encore 1.1.1. La construction
+// a donc publie `CodeWithMe-1.1.1-Setup.exe` sous une Release nommee v1.1.2 —
+// deux binaires differents portant desormais le meme nom, sans rien pour les
+// distinguer.
+//
+// Le controle ne vaut que pour une etiquette : `check:empaquetage` tourne
+// aussi sur chaque poussee de branche, ou GITHUB_REF_NAME est un nom de
+// branche et ne veut rien dire ici.
+if (process.env.GITHUB_REF_TYPE === 'tag') {
+  const etiquette = process.env.GITHUB_REF_NAME ?? '';
+  const attendue = etiquette.replace(/^v/, '');
+  const concordent = attendue === paquet.version;
+
+  process.stdout.write(
+    `  ${concordent ? 'ok   ' : 'ECHEC'} l etiquette ${etiquette} correspond a la version ${paquet.version}\n`
+  );
+  if (!concordent) {
+    problemes.push(
+      `l etiquette ${etiquette} ne correspond pas a la version declaree (${paquet.version}) : ` +
+        `les fichiers produits s appelleraient CodeWithMe-${paquet.version}-Setup.exe. ` +
+        `Poser l etiquette sur le commit qui porte la bonne version.`
+    );
+  }
+}
+
 /* --- 1. Les cibles Windows sont bien declarees --------------------------- */
 
 const cibles = (build.win?.target ?? []).map((c) => (typeof c === 'string' ? c : c.target));
