@@ -17,6 +17,7 @@ import { ecranBadges } from './ecrans/badges.js';
 import { ecranBacASable } from './ecrans/bac-a-sable.js';
 import { ecranReglages } from './ecrans/reglages.js';
 import { ecranTuteur } from './ecrans/tuteur.js';
+import { ouvrirBienvenue } from './ecrans/bienvenue.js';
 
 /* ------------------------------------------------------------------- rail -- */
 
@@ -267,10 +268,32 @@ async function demarrerApplication() {
   const application = document.getElementById('application');
   const delai = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1400;
 
-  setTimeout(() => {
+  setTimeout(async () => {
     application.hidden = false;
     demarrage.classList.add('demarrage--sortie');
     setTimeout(() => demarrage.remove(), 460);
+
+    // Premiere ouverture : la presentation prend la parole a la place de Bit.
+    // L'interface est deja construite derriere elle, donc sa sortie est un
+    // simple fondu — l'eleve n'attend rien deux fois.
+    if (store.bienvenueANeuf()) {
+      const panneau = document.getElementById('bienvenue');
+      // Une presentation qui echoue laisserait un panneau opaque devant une
+      // application parfaitement fonctionnelle. On la retire et on marque le
+      // drapeau : mieux vaut perdre l'accueil que l'acces au logiciel.
+      const cible = await ouvrirBienvenue(panneau).catch((erreur) => {
+        console.error('Accueil du premier lancement :', erreur);
+        panneau.hidden = true;
+        store.marquerBienvenueVue();
+        return '/accueil';
+      });
+      bit.monter(document.getElementById('mascotte'));
+      bit.definirVisibilite(store.reglages().mascotte !== false);
+      construireRail();
+      construireBandeau();
+      naviguer(cible);
+      return;
+    }
 
     const prenom = store.etat().prenom;
     bit.parler(

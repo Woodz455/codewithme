@@ -16,8 +16,7 @@
  * Lancer : npm run test:sons
  */
 import { _electron as electron } from 'playwright';
-import os from 'node:os';
-import { join } from 'node:path';
+import { preparerProfil } from './profil-de-test.mjs';
 
 const cas = [];
 const echecs = [];
@@ -32,7 +31,7 @@ function verifier(nom, condition, detail = '') {
 }
 
 const application = await electron.launch({
-  args: [process.cwd(), '--no-sandbox', `--user-data-dir=${join(os.tmpdir(), `cwm-sons-${Date.now()}`)}`],
+  args: [process.cwd(), '--no-sandbox', `--user-data-dir=${preparerProfil('sons')}`],
 });
 const page = await application.firstWindow();
 await page.waitForSelector('#application:not([hidden])', { timeout: 25000 });

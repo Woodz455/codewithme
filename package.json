@@ -1,6 +1,6 @@
 {
   "name": "codewithme",
-  "version": "1.1.3",
+  "version": "1.2.0",
   "description": "CodeWithMe — apprends a coder en Python, HTML, CSS, JavaScript et C++ / Learn to code in Python, HTML, CSS, JavaScript and C++",
   "author": "CodeWithMe",
   "license": "MIT",
@@ -12,7 +12,7 @@
     "dev": "electron . --dev",
     "check:content": "xvfb-run -a node tools/check-content.mjs",
     "check:contrast": "node tools/check-contrast.mjs",
-    "test": "npm run check:icones && npm run check:contrast && npm run check:empaquetage && npm run test:script-paquet && npm run test:etiquette && npm run test:python && npm run test:moteurs && npm run test:apercu && npm run test:atelier && npm run test:espaces && npm run test:projet && npm run test:certificat && npm run test:sons && npm run test:web",
+    "test": "npm run check:icones && npm run check:contrast && npm run check:empaquetage && npm run test:script-paquet && npm run test:etiquette && npm run test:python && npm run test:moteurs && npm run test:apercu && npm run test:atelier && npm run test:espaces && npm run test:projet && npm run test:certificat && npm run test:bienvenue && npm run test:sons && npm run test:web",
     "test:python": "xvfb-run -a node tests/verifier-python.mjs",
     "test:moteurs": "xvfb-run -a node tests/verifier-moteurs-web-cpp.mjs",
     "test:atelier": "xvfb-run -a node tests/verifier-atelier.mjs",
@@ -31,7 +31,8 @@
     "serveur:web": "node tools/serveur-web.mjs",
     "test:web": "node tests/verifier-web.mjs",
     "test:sons": "xvfb-run -a node tests/verifier-sons.mjs",
-    "test:etiquette": "node tests/verifier-etiquette-version.mjs"
+    "test:etiquette": "node tests/verifier-etiquette-version.mjs",
+    "test:bienvenue": "xvfb-run -a node tests/verifier-bienvenue.mjs"
   },
   "devDependencies": {
     "@fontsource/inter": "5.3.0",

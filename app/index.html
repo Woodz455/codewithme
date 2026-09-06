@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="./styles/theme.css" />
     <link rel="stylesheet" href="./styles/composants.css" />
     <link rel="stylesheet" href="./styles/ecrans.css" />
+    <link rel="stylesheet" href="./styles/bienvenue.css" />
     <link rel="stylesheet" href="./styles/editeur.css" />
     <link rel="stylesheet" href="./styles/espaces.css" />
   </head>
@@ -52,6 +53,10 @@
       <div class="demarrage__nom">CodeWithMe</div>
       <div class="demarrage__sous">Ton atelier de code</div>
     </div>
+
+    <!-- Accueil du premier lancement. Rempli par js/ecrans/bienvenue.js, et
+         seulement si le profil est vierge. -->
+    <div id="bienvenue" class="bienvenue" hidden></div>
 
     <div id="application" class="application" hidden>
       <!-- Rail de navigation -->

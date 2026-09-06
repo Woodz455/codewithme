@@ -5,8 +5,7 @@
  * dessin de la tortue, et arret d'une boucle infinie.
  */
 import { _electron as electron } from 'playwright';
-import os from 'node:os';
-import { join } from 'node:path';
+import { preparerProfil } from './profil-de-test.mjs';
 
 const cas = [];
 const echecs = [];
@@ -22,7 +21,7 @@ function verifier(nom, condition, detail = '') {
 }
 
 const application = await electron.launch({
-  args: [process.cwd(), '--no-sandbox', `--user-data-dir=${join(os.tmpdir(), `cwm-py-${Date.now()}`)}`],
+  args: [process.cwd(), '--no-sandbox', `--user-data-dir=${preparerProfil('py')}`],
 });
 const page = await application.firstWindow();
 await page.waitForSelector('#application:not([hidden])', { timeout: 25000 });

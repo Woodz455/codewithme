@@ -104,6 +104,31 @@ try {
 }
 verifier("l application demarre a l adresse racine", demarre, erreursPage.join(' | '));
 
+/* --- L accueil du premier lancement, dans un vrai navigateur ------------- */
+
+// Le contexte est neuf : le localStorage est vide, donc le profil est vierge.
+// C'est exactement la premiere visite d'un eleve. Le panneau vit dans `app/`,
+// que build-web.mjs copie tel quel — mais « ca devrait marcher » n'est pas une
+// verification.
+let bienvenueOuverte = true;
+try {
+  await page.waitForSelector('#bienvenue:not([hidden])', { timeout: 10000 });
+} catch {
+  bienvenueOuverte = false;
+}
+verifier('la presentation s ouvre a la premiere visite', bienvenueOuverte);
+
+await page.click('.bienvenue__passer');
+await page.waitForTimeout(700);
+verifier('elle se ferme quand on la passe', await page.isHidden('#bienvenue'));
+
+// Le drapeau vit dans le localStorage du navigateur : c'est lui qui doit
+// survivre au rechargement, pas une variable de la page.
+await page.reload({ waitUntil: 'domcontentloaded' });
+await page.waitForSelector('#application:not([hidden])', { timeout: 30000 });
+await page.waitForTimeout(2600); // au-dela du delai d'ouverture de la presentation
+verifier('elle ne revient pas au rechargement suivant', await page.isHidden('#bienvenue'));
+
 const isolation = await page.evaluate(() => ({
   isole: window.crossOriginIsolated,
   memoirePartagee: typeof SharedArrayBuffer === 'function',
