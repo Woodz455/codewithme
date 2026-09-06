@@ -8,6 +8,7 @@
  * promesse centrale faite a l'eleve.
  */
 import { _electron as electron } from 'playwright';
+import { preparerProfil } from './profil-de-test.mjs';
 import { existsSync, readFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import os from 'node:os';
@@ -24,7 +25,7 @@ function verifier(nom, condition, detail = '') {
   }
 }
 
-const dossierProfil = join(os.tmpdir(), `cwm-espaces-${Date.now()}`);
+const dossierProfil = preparerProfil('espaces');
 const dossierProjets = join(os.tmpdir(), `cwm-projets-${Date.now()}`);
 const application = await electron.launch({
   args: [process.cwd(), '--no-sandbox', `--user-data-dir=${dossierProfil}`],

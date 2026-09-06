@@ -28,6 +28,10 @@ function profilVierge() {
     creeLe: new Date().toISOString(),
     prenom: '',
     langue: 'fr',
+    // L'accueil du premier lancement ne se montre qu'une fois. Le drapeau est
+    // pose des qu'il est vu, meme s'il est passe : sans cela, un eleve qui
+    // l'ecarte le retrouverait a chaque ouverture.
+    bienvenueVue: false,
     reglages: {
       theme: 'sombre',
       animations: true,

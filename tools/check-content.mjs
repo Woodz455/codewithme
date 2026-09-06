@@ -15,6 +15,7 @@
  * Lancer : npm run check:content [-- --parcours python]
  */
 import { _electron as electron } from 'playwright';
+import { preparerProfil } from '../tests/profil-de-test.mjs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { rmSync } from 'node:fs';
@@ -127,7 +128,7 @@ if (!aVerifier.length) {
 
 /* ============================================================== EXECUTION == */
 
-const dossierProfil = join(os.tmpdir(), `cwm-contenu-${Date.now()}`);
+const dossierProfil = preparerProfil('contenu');
 const application = await electron.launch({
   args: [RACINE, '--no-sandbox', `--user-data-dir=${dossierProfil}`],
   env: { ...process.env, CWM_DOSSIER_PROJETS: join(os.tmpdir(), `cwm-contenu-projets-${Date.now()}`) },

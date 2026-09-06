@@ -119,6 +119,7 @@ const profilVierge = () => ({
   creeLe: new Date().toISOString(),
   prenom: '',
   langue: 'fr',
+  bienvenueVue: false,
   reglages: {
     theme: 'sombre',
     animations: true,

@@ -8,6 +8,7 @@
  * il s'ouvrira chez lui » — et elle ne vaut que si elle est verifiee dehors.
  */
 import { _electron as electron } from 'playwright';
+import { preparerProfil } from './profil-de-test.mjs';
 import { readdirSync, readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import os from 'node:os';
@@ -31,7 +32,7 @@ const dossierProjets = join(os.tmpdir(), `cwm-final-projets-${Date.now()}`);
 process.stdout.write('\nGrand projet final\n\n');
 
 const application = await electron.launch({
-  args: [process.cwd(), '--no-sandbox', `--user-data-dir=${join(os.tmpdir(), `cwm-final-${Date.now()}`)}`],
+  args: [process.cwd(), '--no-sandbox', `--user-data-dir=${preparerProfil('final')}`],
   env: { ...process.env, CWM_DOSSIER_PROJETS: dossierProjets },
 });
 const page = await application.firstWindow();

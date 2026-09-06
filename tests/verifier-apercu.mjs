@@ -11,6 +11,7 @@
  * rien : on mesure donc la largeur reelle et on lit les pixels reels.
  */
 import { _electron as electron } from 'playwright';
+import { preparerProfil } from './profil-de-test.mjs';
 import os from 'node:os';
 import { join } from 'node:path';
 
@@ -27,7 +28,7 @@ function verifier(nom, condition, detail = '') {
 }
 
 const application = await electron.launch({
-  args: [process.cwd(), '--no-sandbox', `--user-data-dir=${join(os.tmpdir(), `cwm-apercu-${Date.now()}`)}`],
+  args: [process.cwd(), '--no-sandbox', `--user-data-dir=${preparerProfil('apercu')}`],
   env: { ...process.env, CWM_DOSSIER_PROJETS: join(os.tmpdir(), `cwm-apercu-projets-${Date.now()}`) },
 });
 const page = await application.firstWindow();

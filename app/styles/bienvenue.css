@@ -1,0 +1,387 @@
+/* ==========================================================================
+   CodeWithMe — L'accueil du premier lancement
+   ==========================================================================
+
+   Un panneau plein ecran, frere de #demarrage et de #application. Il se
+   superpose a l'interface, qui est deja construite derriere lui : la sortie
+   n'est donc qu'un fondu, sans temps de chargement.
+
+   Toutes les couleurs viennent des jetons deja mesures par check:contrast.
+   Aucune surface nouvelle n'est introduite ici.
+   ========================================================================== */
+
+.bienvenue {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--fond-profond);
+  transition: opacity 420ms var(--courbe);
+}
+
+.bienvenue--sortie {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* --- Le fond : trois halos qui derivent lentement ------------------------ */
+
+/* Ils sont purement decoratifs et tres flous : la carte reste lisible meme
+   immobile, ce qui est le cas des que les animations sont reduites. */
+.bienvenue__aurore {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  filter: blur(90px);
+  opacity: 0.5;
+}
+
+.bienvenue__aurore i {
+  position: absolute;
+  display: block;
+  width: 46vmax;
+  height: 46vmax;
+  border-radius: 50%;
+  will-change: transform;
+}
+
+.bienvenue__aurore i:nth-child(1) {
+  top: -18vmax;
+  left: -12vmax;
+  background: radial-gradient(circle, rgb(0 229 255 / 55%), transparent 68%);
+  animation: aurore-a 22s ease-in-out infinite alternate;
+}
+
+.bienvenue__aurore i:nth-child(2) {
+  right: -16vmax;
+  bottom: -20vmax;
+  background: radial-gradient(circle, rgb(177 75 255 / 50%), transparent 68%);
+  animation: aurore-b 26s ease-in-out infinite alternate;
+}
+
+.bienvenue__aurore i:nth-child(3) {
+  right: 6vmax;
+  top: -22vmax;
+  background: radial-gradient(circle, rgb(255 61 139 / 38%), transparent 68%);
+  animation: aurore-c 30s ease-in-out infinite alternate;
+}
+
+@keyframes aurore-a {
+  to {
+    transform: translate3d(10vmax, 8vmax, 0) scale(1.15);
+  }
+}
+@keyframes aurore-b {
+  to {
+    transform: translate3d(-12vmax, -6vmax, 0) scale(1.12);
+  }
+}
+@keyframes aurore-c {
+  to {
+    transform: translate3d(-8vmax, 12vmax, 0) scale(1.2);
+  }
+}
+
+/* --- La colonne centrale ------------------------------------------------- */
+
+.bienvenue__scene {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--e6);
+  width: min(760px, calc(100vw - var(--e7)));
+  max-height: 100vh;
+  padding: var(--e6) var(--e5);
+  overflow-y: auto;
+  text-align: center;
+}
+
+.bienvenue__carte {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--e4);
+  width: 100%;
+  padding: var(--e7) var(--e6);
+  border-radius: var(--r-xl);
+  background: rgb(22 29 56 / 82%); /* --fond-2, laisse deviner l'aurore */
+  border: 1px solid var(--trait-fort);
+  box-shadow: var(--ombre-flottante);
+  backdrop-filter: blur(14px);
+  animation: bienvenue-entre 460ms var(--courbe) both;
+}
+
+/* La cle change a chaque etape : l'animation d'entree se rejoue donc a chaque
+   fois, sans avoir a la redemarrer a la main depuis le JavaScript. */
+.bienvenue__carte[data-etape='2'],
+.bienvenue__carte[data-etape='3'],
+.bienvenue__carte[data-etape='4'] {
+  animation-name: bienvenue-glisse;
+}
+
+@keyframes bienvenue-entre {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.985);
+  }
+}
+
+@keyframes bienvenue-glisse {
+  from {
+    opacity: 0;
+    transform: translateX(22px);
+  }
+}
+
+.bienvenue__etape--large {
+  width: 100%;
+}
+
+/* --- Etape 1 : le logo et le nom ---------------------------------------- */
+
+.bienvenue__logo svg {
+  width: 116px;
+  height: 116px;
+  filter: drop-shadow(0 0 26px rgb(0 229 255 / 40%));
+}
+
+/* Les trois traits du symbole </> se dessinent l'un apres l'autre, comme sur
+   l'ecran de demarrage : c'est la meme marque qui continue. */
+.bienvenue__trait {
+  stroke-dasharray: 120;
+  stroke-dashoffset: 120;
+  animation: tracer 700ms var(--courbe) forwards;
+}
+.bienvenue__trait:nth-child(2) {
+  animation-delay: 130ms;
+}
+.bienvenue__trait:nth-child(3) {
+  animation-delay: 260ms;
+}
+
+.bienvenue__nom {
+  margin: 0;
+  font-family: var(--titre);
+  font-size: clamp(2.2rem, 5vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  background: linear-gradient(100deg, var(--cyan), var(--violet), var(--rose));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.bienvenue__accroche {
+  margin: 0;
+  color: var(--texte);
+  font-family: var(--titre);
+  font-size: 1.12rem;
+}
+
+.bienvenue__titre {
+  margin: 0;
+  font-family: var(--titre);
+  font-size: clamp(1.5rem, 3.4vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.bienvenue__note {
+  max-width: 46ch;
+  margin: 0;
+  color: var(--texte-doux);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.bienvenue__langue {
+  margin-top: var(--e3);
+}
+
+/* --- Etape 2 : le prenom ------------------------------------------------- */
+
+.bienvenue__champ {
+  width: min(340px, 100%);
+  margin-top: var(--e3);
+  padding: var(--e4) var(--e5);
+  font-family: var(--titre);
+  font-size: 1.25rem;
+  text-align: center;
+}
+
+/* --- Etape 3 : les parcours ---------------------------------------------- */
+
+.bienvenue__parcours {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: var(--e3);
+  width: 100%;
+  margin-top: var(--e3);
+  text-align: left;
+}
+
+.bienvenue__parcoursCarte {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e2);
+  padding: var(--e4);
+  border-radius: var(--r-m);
+  background: rgb(255 255 255 / 4%);
+  border: 1px solid var(--trait);
+  border-left: 3px solid var(--teinte);
+  /* Les cartes arrivent en cascade : le rang vient du JavaScript. */
+  animation: monter 420ms var(--courbe) both;
+  animation-delay: calc(var(--rang) * 70ms + 120ms);
+}
+
+.bienvenue__parcoursHaut {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+}
+
+.bienvenue__parcoursNom {
+  font-family: var(--titre);
+  font-weight: 700;
+}
+
+.bienvenue__parcoursBut {
+  margin: 0;
+  color: var(--texte-doux);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+/* --- Etape 4 : les deux reglages ----------------------------------------- */
+
+.bienvenue__reglages {
+  width: min(480px, 100%);
+  margin-top: var(--e3);
+  padding: var(--e4) var(--e5);
+  border-radius: var(--r-m);
+  background: rgb(255 255 255 / 4%);
+  border: 1px solid var(--trait);
+  text-align: left;
+}
+
+.bienvenue__premiere {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--e1);
+  margin-top: var(--e2);
+}
+
+.bienvenue__premiereTitre {
+  font-family: var(--titre);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--cyan);
+}
+
+/* --- Le pied : points de progression et boutons -------------------------- */
+
+.bienvenue__pied {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--e5);
+}
+
+.bienvenue__points {
+  display: flex;
+  gap: var(--e2);
+}
+
+.bienvenue__point {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-rond);
+  background: var(--trait-fort);
+  transition:
+    width var(--temps-moyen) var(--courbe),
+    background var(--temps-moyen) var(--courbe);
+}
+
+.bienvenue__point[data-etat='fait'] {
+  background: var(--texte-faible);
+}
+
+.bienvenue__point[data-etat='courant'] {
+  width: 26px;
+  background: linear-gradient(90deg, var(--cyan), var(--violet));
+}
+
+.bienvenue__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.bienvenue__principal {
+  min-width: 180px;
+  justify-content: center;
+}
+
+.bienvenue__passer {
+  padding: var(--e2) var(--e3);
+  border: 0;
+  border-radius: var(--r-s);
+  background: none;
+  color: var(--texte-faible);
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.bienvenue__passer:hover {
+  color: var(--texte-doux);
+}
+
+/* --- Animations reduites -------------------------------------------------- */
+
+/* La regle globale de theme.css ramene les DUREES a 1 ms, mais pas les
+   DELAIS : sans ces lignes, une carte du rang 5 resterait invisible un demi
+   seconde avant d'apparaitre d'un coup — exactement ce que le reglage
+   « animations reduites » cherche a eviter. */
+:root[data-animations='reduites'] .bienvenue__parcoursCarte,
+:root[data-animations='reduites'] .bienvenue__trait {
+  animation-delay: 0s !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bienvenue__parcoursCarte,
+  .bienvenue__trait {
+    animation-delay: 0s !important;
+  }
+}
+
+/* --- Bit, le temps de la presentation ------------------------------------ */
+
+/* Meme coin que dans l'application : quand le panneau s'efface, il ne bouge
+   pas d'un pixel. La presentation se termine sans rupture. */
+.bienvenue__mascotte {
+  position: fixed;
+  right: var(--e6);
+  bottom: var(--e5);
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  gap: var(--e3);
+  pointer-events: none;
+}
+
+/* Sur un ecran court, Bit passerait par-dessus les boutons. */
+@media (max-height: 720px), (max-width: 900px) {
+  .bienvenue__mascotte {
+    display: none;
+  }
+}

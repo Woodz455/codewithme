@@ -10,10 +10,10 @@
  * l'application relit normalement.
  */
 import { _electron as electron } from 'playwright';
+import { preparerProfil } from './profil-de-test.mjs';
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import os from 'node:os';
 
 const RACINE = dirname(dirname(fileURLToPath(import.meta.url)));
 const SORTIE = process.argv[2] || join(RACINE, 'captures');
@@ -84,7 +84,10 @@ const ECRANS = [
 ];
 
 async function serie({ nom, profil, langue, viewport }) {
-  const dossierProfil = join(os.tmpdir(), `cwm-captures-${nom}-${Date.now()}`);
+  // Meme quand la serie represente « un nouvel arrivant », le profil est
+  // marque comme ayant deja vu la presentation : sinon le panneau plein ecran
+  // recouvrirait les captures des ecrans qu'on vient photographier.
+  const dossierProfil = preparerProfil(`captures-${nom}`);
 
   const application = await electron.launch({
     args: [RACINE, '--no-sandbox', `--user-data-dir=${dossierProfil}`],

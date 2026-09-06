@@ -150,6 +150,9 @@ concrètement. Protégeable par un code à 4 chiffres, et exportable en bilan PD
 
 ## Pour l'élève
 
+- **Un accueil au premier lancement** : le logiciel demande son prénom, lui fait entendre un
+  son, lui montre les six choses qu'il va construire, puis l'emmène directement à sa première
+  leçon. Il ne s'affiche qu'une fois, et se passe à tout moment.
 - **Bilingue** français / anglais, avec un bouton dans l'en-tête.
 - **Parcours guidé recommandé**, mais aucun verrou : il peut aller où il veut.
 - **XP, niveaux, badges, série de jours** et une carte de progression.
@@ -177,8 +180,9 @@ Rien n'est déclaré fonctionnel sans avoir été exécuté.
 | Commande | Ce qu'elle vérifie |
 |---|---|
 | `npm run check:content` | Les 135 leçons, dans les vrais moteurs : structure bilingue complète, solution de référence qui passe, code de départ qui **ne** passe pas, exemple qui s'exécute |
-| `npm test` | 194 vérifications : moteurs, atelier, correction, XP, galerie, espace tuteur, projet final, certificat, effets sonores, le script qui contrôle les `.exe` produits, et la version web dans un vrai navigateur |
+| `npm test` | 229 vérifications : moteurs, atelier, correction, XP, galerie, espace tuteur, projet final, certificat, effets sonores, le script qui contrôle les `.exe` produits, et la version web dans un vrai navigateur |
 | `npm run test:sons` | Les sons sont **rendus hors ligne et mesurés** : signal non silencieux, durée sous 400 ms, crête discrète, réussite qui monte et erreur qui descend, et le réglage réellement respecté |
+| `npm run test:bienvenue` | L'accueil du premier lancement, sur un profil réellement vierge : les quatre étapes, le prénom écrit dans le profil, la bascule FR/EN, la sortie vers la première leçon — et surtout qu'il **ne revienne jamais**, ni au relancement, ni pour un élève qui met à jour avec de la progression derrière lui |
 | `npm run test:web` | Le site **construit** est servi puis ouvert dans un Chromium ordinaire : démarrage, isolation d'origine, `input()` bloquant, tortue, aperçu, C++, octets exacts d'un fichier téléchargé, comportement quand le stockage est **saturé**, et fonctionnement **réseau coupé** |
 | `npm run test:paquet` | L'application **empaquetée** se lance et fonctionne — c'est là qu'on découvre un fichier manquant |
 | `npm run check:contrast` | Contrastes WCAG AA mesurés, et palette des graphiques contrôlée en simulant le daltonisme |

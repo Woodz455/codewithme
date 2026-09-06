@@ -219,6 +219,32 @@ export function definirPrenom(prenom) {
   });
 }
 
+/**
+ * L'accueil du premier lancement a ete vu (termine OU passe).
+ *
+ * Les deux cas posent le meme drapeau : l'ecarter est une reponse, pas un
+ * report. Le seul moyen de le revoir est de repartir d'un profil vierge.
+ */
+export function marquerBienvenueVue() {
+  modifier((p) => {
+    p.bienvenueVue = true;
+  });
+}
+
+/**
+ * Faut-il montrer l'accueil du premier lancement ?
+ *
+ * Deux conditions, et chacune corrige un defaut precis :
+ *   - `bienvenueVue` evite qu'il revienne a chaque ouverture pour qui l'a passe ;
+ *   - `nombreLeconsTerminees() === 0` evite de l'infliger a un eleve qui a deja
+ *     de la progression. Une mise a jour complete son profil avec les champs
+ *     manquants — dont `bienvenueVue: false` — et sans cette seconde condition
+ *     elle lui ouvrirait une bienvenue en plein milieu de son parcours.
+ */
+export function bienvenueANeuf() {
+  return !profil.bienvenueVue && nombreLeconsTerminees() === 0;
+}
+
 export function definirLangueProfil(langue) {
   modifier((p) => {
     p.langue = langue;

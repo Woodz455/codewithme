@@ -24,6 +24,44 @@ const DICTIONNAIRE = {
   'bandeau.langue': { fr: 'English', en: 'Français' },
   'bandeau.langueTitre': { fr: 'Switch to English', en: 'Passer en français' },
 
+  /* --- Bienvenue (premier lancement) ---------------------------------- */
+  'bienvenue.accroche': { fr: 'Ton atelier de code', en: 'Your code workshop' },
+  'bienvenue.horsLigne': {
+    fr: 'Cinq langages, 135 leçons, et tout marche sans internet.',
+    en: 'Five languages, 135 lessons, and everything works offline.',
+  },
+  'bienvenue.commencer': { fr: 'Commencer', en: 'Get started' },
+  'bienvenue.continuer': { fr: 'Continuer', en: 'Continue' },
+  'bienvenue.retour': { fr: 'Retour', en: 'Back' },
+  'bienvenue.passer': { fr: 'Passer', en: 'Skip' },
+  'bienvenue.passerIntro': { fr: 'Passer la présentation', en: 'Skip the intro' },
+  'bienvenue.etape': { fr: 'Étape {n} sur {total}', en: 'Step {n} of {total}' },
+
+  'bienvenue.prenomTitre': { fr: 'Comment tu t’appelles ?', en: 'What is your name?' },
+  'bienvenue.prenomNote': {
+    fr: 'Ton prénom apparaîtra sur ton accueil et sur tes certificats. Tu pourras le changer plus tard.',
+    en: 'Your first name appears on your home screen and on your certificates. You can change it later.',
+  },
+  'bienvenue.enchante': { fr: 'Enchanté, {prenom} !', en: 'Nice to meet you, {prenom}!' },
+
+  'bienvenue.construireTitre': { fr: 'Ce que tu vas construire', en: 'What you will build' },
+  'bienvenue.construireNote': {
+    fr: 'Chaque parcours se termine par un vrai programme, enregistré sur ton ordinateur.',
+    en: 'Every track ends with a real program, saved on your computer.',
+  },
+
+  'bienvenue.pretTitre': { fr: 'Encore deux réglages', en: 'Two last settings' },
+  'bienvenue.pretNote': {
+    fr: 'Tu pourras les changer quand tu veux dans les Réglages.',
+    en: 'You can change them any time in Settings.',
+  },
+  'bienvenue.sonsNote': {
+    fr: 'Petits sons de réussite et d’erreur. Coupe-les si tu préfères le silence.',
+    en: 'Small success and error sounds. Turn them off if you prefer silence.',
+  },
+  'bienvenue.premiereLecon': { fr: 'Première leçon', en: 'First lesson' },
+  'bienvenue.cestParti': { fr: 'C’est parti', en: 'Let’s go' },
+
   /* --- Accueil -------------------------------------------------------- */
   'accueil.salutMatin': { fr: 'Bonjour', en: 'Good morning' },
   'accueil.salutApresMidi': { fr: 'Salut', en: 'Hi' },

@@ -13,6 +13,7 @@
  * Lancer : npm run test:paquet
  */
 import { _electron as electron } from 'playwright';
+import { preparerProfil } from './profil-de-test.mjs';
 import { execFileSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import os from 'node:os';
@@ -42,7 +43,7 @@ verifier('le paquet est produit', existsSync(binaire), binaire);
 
 const application = await electron.launch({
   executablePath: binaire,
-  args: ['--no-sandbox', `--user-data-dir=${join(os.tmpdir(), `cwm-paquet-${Date.now()}`)}`],
+  args: ['--no-sandbox', `--user-data-dir=${preparerProfil('paquet')}`],
   env: { ...process.env, CWM_DOSSIER_PROJETS: join(os.tmpdir(), `cwm-paquet-projets-${Date.now()}`) },
 });
 const page = await application.firstWindow();

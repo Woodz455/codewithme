@@ -5,8 +5,7 @@
  * redemarrage de l'application.
  */
 import { _electron as electron } from 'playwright';
-import os from 'node:os';
-import { join } from 'node:path';
+import { preparerProfil } from './profil-de-test.mjs';
 import { rmSync } from 'node:fs';
 
 const cas = [];
@@ -21,7 +20,7 @@ function verifier(nom, condition, detail = '') {
   }
 }
 
-const dossierProfil = join(os.tmpdir(), `cwm-atelier-${Date.now()}`);
+const dossierProfil = preparerProfil('atelier');
 const lancer = () =>
   electron.launch({ args: [process.cwd(), '--no-sandbox', `--user-data-dir=${dossierProfil}`] });
 

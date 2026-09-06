@@ -5,8 +5,7 @@
  * isolation du bac a sable, execution et saisie en C++.
  */
 import { _electron as electron } from 'playwright';
-import os from 'node:os';
-import { join } from 'node:path';
+import { preparerProfil } from './profil-de-test.mjs';
 
 const cas = [];
 const echecs = [];
@@ -21,7 +20,7 @@ function verifier(nom, condition, detail = '') {
 }
 
 const application = await electron.launch({
-  args: [process.cwd(), '--no-sandbox', `--user-data-dir=${join(os.tmpdir(), `cwm-mw-${Date.now()}`)}`],
+  args: [process.cwd(), '--no-sandbox', `--user-data-dir=${preparerProfil('moteurs')}`],
 });
 const page = await application.firstWindow();
 await page.waitForSelector('#application:not([hidden])', { timeout: 25000 });

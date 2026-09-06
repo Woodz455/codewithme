@@ -10,6 +10,7 @@
  * Lancer : npm run captures:readme
  */
 import { _electron as electron } from 'playwright';
+import { preparerProfil } from '../tests/profil-de-test.mjs';
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -81,7 +82,7 @@ function profilDemo() {
 rmSync(SORTIE, { recursive: true, force: true });
 mkdirSync(SORTIE, { recursive: true });
 
-const dossierProfil = join(os.tmpdir(), `cwm-readme-${Date.now()}`);
+const dossierProfil = preparerProfil('readme');
 const application = await electron.launch({
   args: [RACINE, '--no-sandbox', `--user-data-dir=${dossierProfil}`],
   env: { ...process.env, CWM_DOSSIER_PROJETS: join(os.tmpdir(), `cwm-readme-projets-${Date.now()}`) },

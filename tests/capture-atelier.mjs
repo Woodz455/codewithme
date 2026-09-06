@@ -5,15 +5,15 @@
  * visuelles.
  */
 import { _electron as electron } from 'playwright';
+import { preparerProfil } from './profil-de-test.mjs';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
-import os from 'node:os';
 
 const SORTIE = join(process.cwd(), 'captures');
 mkdirSync(SORTIE, { recursive: true });
 
 const application = await electron.launch({
-  args: [process.cwd(), '--no-sandbox', `--user-data-dir=${join(os.tmpdir(), `cwm-cap-${Date.now()}`)}`],
+  args: [process.cwd(), '--no-sandbox', `--user-data-dir=${preparerProfil('cap-atelier')}`],
 });
 const page = await application.firstWindow();
 page.on('pageerror', (erreur) => console.log('[erreur page]', String(erreur).split('\n')[0]));

@@ -11,6 +11,7 @@
  *      l'execution.
  */
 import { _electron as electron } from 'playwright';
+import { preparerProfil } from './profil-de-test.mjs';
 import { readFileSync } from 'node:fs';
 import os from 'node:os';
 import { join } from 'node:path';
@@ -30,7 +31,7 @@ function verifier(nom, condition, detail = '') {
 process.stdout.write('\nCertificat\n\n');
 
 const application = await electron.launch({
-  args: [process.cwd(), '--no-sandbox', `--user-data-dir=${join(os.tmpdir(), `cwm-certif-${Date.now()}`)}`],
+  args: [process.cwd(), '--no-sandbox', `--user-data-dir=${preparerProfil('certif')}`],
   env: { ...process.env, CWM_DOSSIER_PROJETS: join(os.tmpdir(), `cwm-certif-projets-${Date.now()}`) },
 });
 const page = await application.firstWindow();
