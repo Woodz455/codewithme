@@ -6,9 +6,11 @@
  * le comportement qu'on apprend ici, pas la structure.
  *
  * Rappel important pour les lecons animees : le correcteur photographie la
- * page environ 350 ms apres l'execution. Tout ce qui doit etre verifie doit
- * donc etre visible tout de suite, et pas seulement au bout de plusieurs tours
- * de `setInterval`.
+ * page 700 ms apres l'execution — la meme valeur dans l'atelier
+ * (`ecrans/atelier.js`) et dans `check:content`, pour qu'une lecon ne puisse
+ * pas passer ici et echouer sous les yeux de l'eleve. Tout ce qui doit etre
+ * verifie doit donc etre atteint bien avant, et pas seulement au bout de
+ * plusieurs tours de `setInterval`.
  */
 
 export const LECONS_JAVASCRIPT = {

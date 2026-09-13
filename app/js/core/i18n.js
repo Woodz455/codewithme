@@ -26,9 +26,11 @@ const DICTIONNAIRE = {
 
   /* --- Bienvenue (premier lancement) ---------------------------------- */
   'bienvenue.accroche': { fr: 'Ton atelier de code', en: 'Your code workshop' },
+  // Le nombre de lecons est interpole a l'affichage, jamais ecrit ici : un
+  // compteur fige vieillit a la premiere lecon ajoutee.
   'bienvenue.horsLigne': {
-    fr: 'Cinq langages, 135 leçons, et tout marche sans internet.',
-    en: 'Five languages, 135 lessons, and everything works offline.',
+    fr: 'Cinq langages, {n} leçons, et tout marche sans internet.',
+    en: 'Five languages, {n} lessons, and everything works offline.',
   },
   'bienvenue.commencer': { fr: 'Commencer', en: 'Get started' },
   'bienvenue.continuer': { fr: 'Continuer', en: 'Continue' },

@@ -61,7 +61,10 @@ Elles sont **vérifiées automatiquement** par `npm run check:content` :
 
 `dom`, `style` et `canvasDessine` acceptent deux actions préalables, qui agissent sur la page
 **avant** de l'interroger : `clic: '#bouton'` clique, `touche: 'ArrowRight'` (ou un tableau de
-touches) appuie au clavier. C'est ce qui permet de corriger « que se passe-t-il quand on clique »
+touches) appuie au clavier. **`clic` clique TOUS les éléments que le sélecteur trouve**, pas
+seulement le premier : `clic: '.tache'` sur trois tâches en clique trois. C'est souvent ce qu'on
+veut — cela vérifie que l'élève les a toutes branchées, et non la première seulement — mais la
+vérification qui suit doit compter en conséquence. C'est ce qui permet de corriger « que se passe-t-il quand on clique »
 autrement qu'en cherchant `addEventListener` dans le texte du code — un contrôle qui
 laisserait passer un gestionnaire vide.
 
@@ -104,6 +107,36 @@ L'aperçu se partage alors en deux : la référence en haut (repliable), le rés
 dessous. C'est fait pour les défis « reproduis ce visuel » : viser une image motive bien plus que
 lire une consigne. La référence n'est jamais interrogée par le correcteur — seul le résultat de
 l'élève est jugé.
+
+## Ce qui fonctionne réellement en JavaScript
+
+L'aperçu est une iframe **sans `allow-same-origin`** (`app/js/runners/web.js`). Ce n'est pas une
+gêne à contourner : c'est ce qui empêche le code écrit par l'élève d'atteindre l'origine de
+l'application. **Il ne faut jamais ajouter ce drapeau.** Mesuré, pas supposé :
+
+**Utilisable** — gabarits `` `${…}` `` · fonctions fléchées · `for…of`, y compris sur une
+`NodeList` · `map` `filter` `find` `reduce` `forEach` · objets et tableaux d'objets ·
+`JSON.stringify` / `parse` · destructuration et *spread* · méthodes de chaîne · `Number()`
+`parseInt` · `try`/`catch`/`throw` · classes · `createElement` `append` `classList` `dataset`
+`textContent` `innerHTML` · `.value` · `submit` avec `preventDefault` · `setTimeout`.
+
+**Impossible ici** — `localStorage` et `sessionStorage` lèvent une `SecurityError` (origine
+opaque) · `fetch` rejette avec « Failed to fetch », l'application étant hors ligne par
+construction · `import` / `export` au niveau supérieur sont une **erreur de syntaxe** : le code
+de l'élève est injecté en `<script>` classique, pas en module.
+
+`alert` n'interrompt pas le rendu ici, mais **bloquerait l'élève** dans l'application : aucune
+leçon ne doit en employer. `prompt` est à proscrire pour la même raison, en pire — il figerait
+le correcteur.
+
+### Deux mesures qui font de bonnes leçons
+
+`document.querySelector("#f").requestSubmit()` **sans** `preventDefault` recharge l'iframe : tout
+`setTimeout` en attente est détruit, et la page repart de zéro. C'est la démonstration exacte de
+ce que `preventDefault` empêche — vérifiable, pas seulement racontable.
+
+`[10, 9, 100, 2].sort()` rend `10,100,2,9`, et `.sort((a, b) => a - b)` rend `2,9,10,100`. Le
+piège lexicographique du tri par défaut se montre donc dans la console de l'élève.
 
 ## Ce qui fonctionne réellement en C++
 
