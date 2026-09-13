@@ -249,8 +249,35 @@ npm run serveur:web -- --dist   # sert exactement ce qui sera publie
 ```
 
 `dist-web/` est un site **entièrement statique** : il suffit de le déposer chez un hébergeur.
-`netlify.toml` configure Netlify ; Cloudflare Pages lit les mêmes réglages (commande
-`npm run vendor && npm run build:web`, dossier `dist-web`).
+
+#### Cloudflare Pages, champ par champ
+
+Cloudflare lit `dist-web/_headers`, mais **pas** `netlify.toml` : ces valeurs se saisissent
+dans son interface, à la création du projet.
+
+| Champ | Valeur |
+|---|---|
+| Production branch | `master` |
+| Framework preset | **None** |
+| Build command | `npm run vendor && npm run build:web` |
+| Build output directory | `dist-web` |
+| Root directory | laisser vide |
+
+Et deux variables d'environnement, à poser pour **Production et Preview** :
+
+| Variable | Valeur | Pourquoi |
+|---|---|---|
+| `NODE_VERSION` | `22` | la construction emploie des API récentes |
+| `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD` | `1` | près d'un gigaoctet de navigateurs de test, inutiles ici |
+
+Le binaire d'Electron (~100 Mo) se téléchargera quand même : son installeur ne lit aucune
+variable d'arrêt. C'est du temps perdu, pas une panne — inutile de chercher à l'éviter.
+
+**Mesuré sur la construction réelle** : 95 fichiers, 16 Mo, plus gros fichier 9,2 Mo
+(`pyodide.asm.wasm`). Cloudflare Pages autorise 20 000 fichiers et 25 Mo par fichier : on tient
+largement. Et en déplaçant les navigateurs Playwright **et** le binaire Electron hors de
+portée, `npm run vendor && npm run build:web` passe toujours — la construction du site ne
+dépend d'aucun des deux.
 
 **Un hébergeur ne convient que s'il sait poser des en-têtes.** La construction écrit
 `dist-web/_headers` avec `Cross-Origin-Opener-Policy: same-origin` et

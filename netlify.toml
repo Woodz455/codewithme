@@ -9,8 +9,9 @@
 # console Python cesse de bloquer. C'est aussi pourquoi GitHub Pages, qui ne
 # sait pas poser d'en-tetes, ne convient pas.
 #
-# Cloudflare Pages lit le meme fichier `_headers` : la commande de construction
-# et le dossier a publier y sont les memes que ci-dessous.
+# Cloudflare Pages lit le meme fichier `_headers`, mais PAS ce fichier-ci : la
+# commande et le dossier ci-dessous doivent y etre saisis dans l'interface. Les
+# valeurs sont les memes. Voir le README, section « Publier la version web ».
 
 [build]
   command = "npm run vendor && npm run build:web"
@@ -18,5 +19,15 @@
 
 [build.environment]
   NODE_VERSION = "22"
-  # Netlify n'a pas besoin des navigateurs de test.
+  # Les navigateurs de Playwright pesent pres d'un gigaoctet et ne servent
+  # qu'aux tests : la construction du site n'en a aucun besoin. Mesure : en
+  # deplacant /opt/pw-browsers et node_modules/electron/dist hors de portee,
+  # `npm run vendor && npm run build:web` passe toujours.
   PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1"
+
+  # Pas d'equivalent pour Electron : son `install.js` (v44) ne lit AUCUNE
+  # variable d'arret — verifie ligne par ligne, il appelle downloadArtifact
+  # sans condition. Le binaire (~100 Mo compresses) se telechargera donc a
+  # chaque construction, pour rien mais sans dommage. Inutile d'ajouter ici un
+  # ELECTRON_SKIP_BINARY_DOWNLOAD : il serait ignore en silence, et donnerait
+  # l'illusion d'un probleme regle.
