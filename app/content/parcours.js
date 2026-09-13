@@ -406,6 +406,17 @@ export const PARCOURS = [
         ],
       },
       {
+        id: 'js-txt',
+        titre: { fr: 'Le texte, pour de vrai', en: 'Text, for real' },
+        icone: 'livre',
+        lecons: [
+          L('js-txt-1', 'Assembler avec un gabarit', 'Joining with a template'),
+          L('js-txt-2', 'Mesurer, fouiller, découper', 'Measure, search, slice'),
+          L('js-txt-3', 'D’une phrase à une liste de mots', 'From a sentence to a word list'),
+          L('js-txt-4', 'Pourquoi « 2 » + 2 fait 22', 'Why "2" + 2 gives 22'),
+        ],
+      },
+      {
         id: 'js-3',
         titre: { fr: 'Boucles et fonctions', en: 'Loops and functions' },
         icone: 'boucle',
@@ -414,6 +425,72 @@ export const PARCOURS = [
           L('js-3-2', 'Les tableaux', 'Arrays'),
           L('js-3-3', 'Créer une fonction', 'Creating a function'),
           L('js-3-4', 'Projet : le quiz interactif', 'Project: interactive quiz'),
+        ],
+      },
+      {
+        id: 'js-tab',
+        titre: { fr: 'Les tableaux au travail', en: 'Arrays at work' },
+        icone: 'liste',
+        lecons: [
+          L('js-tab-1', 'Ajouter et retirer', 'Adding and removing'),
+          L('js-tab-2', 'Chercher dans un tableau', 'Searching an array'),
+          L('js-tab-3', 'Parcourir avec for…of', 'Walking through with for…of'),
+          L('js-tab-4', 'Trier, et le piège de sort()', 'Sorting, and the sort() trap'),
+        ],
+      },
+      {
+        id: 'js-obj',
+        titre: { fr: 'Les objets', en: 'Objects' },
+        icone: 'boite',
+        lecons: [
+          L('js-obj-1', 'Ranger sous des noms', 'Storing under names'),
+          L('js-obj-2', 'Modifier, ajouter, vérifier', 'Change, add, check'),
+          L('js-obj-3', 'Un tableau d’objets', 'An array of objects'),
+          L('js-obj-4', 'JSON, le format universel', 'JSON, the universal format'),
+        ],
+      },
+      {
+        id: 'js-hof',
+        titre: { fr: 'Parcourir sans boucle', en: 'Looping without a loop' },
+        icone: 'aimant',
+        lecons: [
+          L('js-hof-1', 'La fonction fléchée', 'The arrow function'),
+          L('js-hof-2', 'forEach : agir sur chacun', 'forEach: act on each one'),
+          L('js-hof-3', 'map : fabriquer une liste', 'map: build a list'),
+          L('js-hof-4', 'Projet : le classement de la classe', 'Project: the class ranking'),
+        ],
+      },
+      {
+        id: 'js-dom',
+        titre: { fr: 'Construire la page depuis le code', en: 'Building the page from code' },
+        icone: 'page',
+        lecons: [
+          L('js-dom-1', 'Attraper tout un groupe', 'Grabbing a whole group'),
+          L('js-dom-2', 'Allumer un style avec classList', 'Switching a style with classList'),
+          L('js-dom-3', 'Fabriquer un élément', 'Building an element'),
+          L('js-dom-4', 'textContent ou innerHTML ?', 'textContent or innerHTML?'),
+          L('js-dom-5', 'Plus tard, avec setTimeout', 'Later, with setTimeout'),
+        ],
+      },
+      {
+        id: 'js-form',
+        titre: { fr: 'Les formulaires', en: 'Forms' },
+        icone: 'formulaire',
+        lecons: [
+          L('js-form-1', 'Lire ce qui a été tapé', 'Reading what was typed'),
+          L('js-form-2', 'Intercepter l’envoi', 'Intercepting the submission'),
+          L('js-form-3', 'Vérifier avant d’accepter', 'Checking before accepting'),
+          L('js-form-4', 'Projet : la liste de tâches', 'Project: the to-do list'),
+        ],
+      },
+      {
+        id: 'js-err',
+        titre: { fr: 'Quand ça casse', en: 'When it breaks' },
+        icone: 'bug',
+        lecons: [
+          L('js-err-1', 'Lire un message d’erreur', 'Reading an error message'),
+          L('js-err-2', 'undefined et null', 'undefined and null'),
+          L('js-err-3', 'Attraper avec try/catch', 'Catching with try/catch'),
         ],
       },
       {
@@ -427,6 +504,15 @@ export const PARCOURS = [
           L('js-4-4', 'Faire bouger une balle', 'Making a ball move'),
           L('js-4-5', 'Détecter les collisions', 'Detecting collisions'),
           L('js-4-6', 'Projet : ton premier jeu', 'Project: your first game'),
+        ],
+      },
+      {
+        id: 'js-suite',
+        titre: { fr: 'La suite du voyage', en: 'The road ahead' },
+        icone: 'fusee',
+        lecons: [
+          L('js-suite-1', 'Ce qui ne marche pas ici, et pourquoi', 'What does not work here, and why'),
+          L('js-suite-2', 'Ce qu’il te faut pour la suite', 'What you need next'),
         ],
       },
     ],

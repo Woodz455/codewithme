@@ -25,7 +25,7 @@ import * as store from '../core/store.js';
 import { icone, medaillonLogo } from '../icones.js';
 import { jouerSon } from '../core/sons.js';
 import * as bit from '../mascotte.js';
-import { PARCOURS } from '../../content/parcours.js';
+import { PARCOURS, nombreLeconsTotal } from '../../content/parcours.js';
 import { prochaineLecon } from './accueil.js';
 
 const NOMBRE_ETAPES = 4;
@@ -113,7 +113,7 @@ const ETAPES = [
       logo(),
       h('h1.bienvenue__nom', 'CodeWithMe'),
       h('p.bienvenue__accroche', t('bienvenue.accroche')),
-      h('p.bienvenue__note', t('bienvenue.horsLigne')),
+      h('p.bienvenue__note', t('bienvenue.horsLigne', { n: nombreLeconsTotal() })),
       h('div.bienvenue__langue', selecteurLangue(redessiner)),
     ],
     principal: t('bienvenue.commencer'),

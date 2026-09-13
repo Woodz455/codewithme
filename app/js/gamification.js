@@ -118,7 +118,13 @@ export const BADGES = [
     icone: 'couronne',
     couleur: 'var(--ambre)',
     nom: { fr: 'Tout terminé', en: 'All done' },
-    note: { fr: 'Les 85 leçons. Chapeau.', en: 'All 85 lessons. Hats off.' },
+    // Le compte est CALCULE, pas ecrit : cette note annoncait « 85 lecons »
+    // alors qu'il y en avait 135. Un badge qui ment sur son propre exploit
+    // abime la seule chose qu'il apporte.
+    note: {
+      fr: `Les ${nombreLeconsTotal()} leçons. Chapeau.`,
+      en: `All ${nombreLeconsTotal()} lessons. Hats off.`,
+    },
     obtenu: () => store.nombreLeconsTerminees() >= nombreLeconsTotal(),
   },
 ];

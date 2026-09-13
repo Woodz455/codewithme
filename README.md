@@ -3,7 +3,7 @@
 **Apprendre à coder pour de vrai, et voir tout de suite ce que ça donne.**
 
 Un logiciel qui enseigne **Python, HTML, CSS, JavaScript et C++** à un grand débutant —
-135 leçons, 18 projets, et un certificat à la fin.
+165 leçons, 20 projets, et un certificat à la fin.
 
 Il existe en **application Windows** et en **site web**, avec exactement le même contenu et le
 même atelier. Aucune donnée ne quitte la machine dans un cas comme dans l'autre : il n'y a pas
@@ -23,10 +23,10 @@ de serveur, pas de compte, pas de suivi.
 | **Compilateur C++ de la machine** | utilisé s'il est installé | indisponible — le C++ tourne quand même, avec le moteur intégré |
 | **Sur une tablette, un Mac, un Linux** | non | oui |
 
-Tout le reste est identique : les 135 leçons, l'`input()` qui bloque vraiment, la tortue qui
+Tout le reste est identique : les 165 leçons, l'`input()` qui bloque vraiment, la tortue qui
 dessine, l'aperçu qui suit la frappe, les badges, l'espace tuteur et le certificat.
 
-Le site se met lui-même en cache : l'application, les 135 leçons, les polices, l'éditeur et le
+Le site se met lui-même en cache : l'application, les 165 leçons, les polices, l'éditeur et le
 moteur C++ (2,4 Mo) dès la première visite, puis Pyodide (13 Mo) au premier lancement de
 Python. Après ça, le wifi peut lâcher — ça continue de marcher.
 
@@ -67,14 +67,14 @@ Cela n'est demandé qu'une seule fois.
 
 ## Ce qu'il y a dedans
 
-### 135 leçons, six parcours
+### 165 leçons, six parcours
 
 | Parcours | Leçons | Ce qu'il sait faire à la fin |
 |---|---:|---|
 | **Python** | 71 | Une rosace dessinée par son code, un jeu « devine le nombre », un bulletin scolaire, un tableau des scores enregistré sur disque |
 | **HTML** | 14 | Sa page de présentation, avec images, liens et tableaux |
 | **CSS** | 16 | La même page transformée en vrai site, animations et affichage mobile compris |
-| **JavaScript** | 18 | Un quiz interactif, puis un petit jeu jouable au clavier |
+| **JavaScript** | 48 | Un quiz, un petit jeu au clavier, un classement de classe et une liste de tâches — et la page se construit depuis son code |
 | **C++** | 15 | Un jeu de devinette en console, avec compteur de coups |
 | **Grand projet** | 1 | Son site personnel, où les trois langages du web tiennent ensemble |
 
@@ -100,6 +100,26 @@ les grosses bibliothèques (`pandas`, `flask`, `pymongo`). Toutes demandent un r
 installation, que Python-dans-une-page n'a pas. La leçon explique ce qui les débloque — Python
 installé depuis python.org — et fait écrire un vrai `requirements.txt`, ce qui est la seule
 part de la gestion de paquets qui, elle, fonctionne hors ligne.
+
+#### Le parcours JavaScript en détail
+
+Douze modules, du premier `console.log` à une petite application complète :
+
+> agir sur la page · variables et conditions · **le texte et les gabarits** · boucles et
+> fonctions · **les tableaux au travail** · **les objets et JSON** · **map, filter, forEach** ·
+> **construire la page depuis le code** · **les formulaires** · **quand ça casse** ·
+> événements et animation · **la suite du voyage**
+
+Trois choses très courantes en JavaScript **ne fonctionnent pas dans l'atelier**, et
+l'avant-dernière leçon les mesure au lieu de les taire : `localStorage` (l'aperçu est un bac à
+sable sans accès à l'origine de l'application — c'est ce qui empêche le code de l'élève
+d'abîmer sa progression), `fetch` (le logiciel marche hors ligne, il n'y a pas de réseau) et
+`import` / `export` (le code de l'élève est un fichier unique, chargé comme un script
+classique). L'élève écrit lui-même le test qui le prouve, avec un `try`/`catch`.
+
+Une leçon est consacrée à `textContent` **contre** `innerHTML` : c'est la première question de
+sécurité qu'un débutant rencontre, et elle se pose au bon moment — quand il affiche pour la
+première fois du texte écrit par quelqu'un d'autre.
 
 ### Un atelier où le résultat est immédiat
 
@@ -179,7 +199,7 @@ Rien n'est déclaré fonctionnel sans avoir été exécuté.
 
 | Commande | Ce qu'elle vérifie |
 |---|---|
-| `npm run check:content` | Les 135 leçons, dans les vrais moteurs : structure bilingue complète, solution de référence qui passe, code de départ qui **ne** passe pas, exemple qui s'exécute |
+| `npm run check:content` | Les 165 leçons, dans les vrais moteurs : structure bilingue complète, solution de référence qui passe, code de départ qui **ne** passe pas, exemple qui s'exécute |
 | `npm test` | 229 vérifications : moteurs, atelier, correction, XP, galerie, espace tuteur, projet final, certificat, effets sonores, le script qui contrôle les `.exe` produits, et la version web dans un vrai navigateur |
 | `npm run test:sons` | Les sons sont **rendus hors ligne et mesurés** : signal non silencieux, durée sous 400 ms, crête discrète, réussite qui monte et erreur qui descend, et le réglage réellement respecté |
 | `npm run test:bienvenue` | L'accueil du premier lancement, sur un profil réellement vierge : les quatre étapes, le prénom écrit dans le profil, la bascule FR/EN, la sortie vers la première leçon — et surtout qu'il **ne revienne jamais**, ni au relancement, ni pour un élève qui met à jour avec de la progression derrière lui |
@@ -195,7 +215,7 @@ Rien n'est déclaré fonctionnel sans avoir été exécuté.
 ```
 electron/    processus principal : protocole app://, menus, profil, projets
 app/         interface : modules ES, sans framework — partagee par les deux versions
-  content/   les 135 lecons, en donnees pures — ajouter une lecon = ajouter un objet
+  content/   les 165 lecons, en donnees pures — ajouter une lecon = ajouter un objet
 python/      turtle.py, le module tortue maison injecte dans Pyodide
 vendor/      Pyodide, JSCPP, CodeMirror, polices — embarques, aucun reseau requis
 web/         pont-navigateur.js (window.cwm rendu par un navigateur) et sw.js (hors ligne)

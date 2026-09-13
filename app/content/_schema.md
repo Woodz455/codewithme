@@ -61,7 +61,10 @@ Elles sont **vérifiées automatiquement** par `npm run check:content` :
 
 `dom`, `style` et `canvasDessine` acceptent deux actions préalables, qui agissent sur la page
 **avant** de l'interroger : `clic: '#bouton'` clique, `touche: 'ArrowRight'` (ou un tableau de
-touches) appuie au clavier. C'est ce qui permet de corriger « que se passe-t-il quand on clique »
+touches) appuie au clavier. **`clic` clique TOUS les éléments que le sélecteur trouve**, pas
+seulement le premier : `clic: '.tache'` sur trois tâches en clique trois. C'est souvent ce qu'on
+veut — cela vérifie que l'élève les a toutes branchées, et non la première seulement — mais la
+vérification qui suit doit compter en conséquence. C'est ce qui permet de corriger « que se passe-t-il quand on clique »
 autrement qu'en cherchant `addEventListener` dans le texte du code — un contrôle qui
 laisserait passer un gestionnaire vide.
 
