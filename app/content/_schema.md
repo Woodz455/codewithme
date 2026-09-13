@@ -105,6 +105,36 @@ dessous. C'est fait pour les défis « reproduis ce visuel » : viser une image 
 lire une consigne. La référence n'est jamais interrogée par le correcteur — seul le résultat de
 l'élève est jugé.
 
+## Ce qui fonctionne réellement en JavaScript
+
+L'aperçu est une iframe **sans `allow-same-origin`** (`app/js/runners/web.js`). Ce n'est pas une
+gêne à contourner : c'est ce qui empêche le code écrit par l'élève d'atteindre l'origine de
+l'application. **Il ne faut jamais ajouter ce drapeau.** Mesuré, pas supposé :
+
+**Utilisable** — gabarits `` `${…}` `` · fonctions fléchées · `for…of`, y compris sur une
+`NodeList` · `map` `filter` `find` `reduce` `forEach` · objets et tableaux d'objets ·
+`JSON.stringify` / `parse` · destructuration et *spread* · méthodes de chaîne · `Number()`
+`parseInt` · `try`/`catch`/`throw` · classes · `createElement` `append` `classList` `dataset`
+`textContent` `innerHTML` · `.value` · `submit` avec `preventDefault` · `setTimeout`.
+
+**Impossible ici** — `localStorage` et `sessionStorage` lèvent une `SecurityError` (origine
+opaque) · `fetch` rejette avec « Failed to fetch », l'application étant hors ligne par
+construction · `import` / `export` au niveau supérieur sont une **erreur de syntaxe** : le code
+de l'élève est injecté en `<script>` classique, pas en module.
+
+`alert` n'interrompt pas le rendu ici, mais **bloquerait l'élève** dans l'application : aucune
+leçon ne doit en employer. `prompt` est à proscrire pour la même raison, en pire — il figerait
+le correcteur.
+
+### Deux mesures qui font de bonnes leçons
+
+`document.querySelector("#f").requestSubmit()` **sans** `preventDefault` recharge l'iframe : tout
+`setTimeout` en attente est détruit, et la page repart de zéro. C'est la démonstration exacte de
+ce que `preventDefault` empêche — vérifiable, pas seulement racontable.
+
+`[10, 9, 100, 2].sort()` rend `10,100,2,9`, et `.sort((a, b) => a - b)` rend `2,9,10,100`. Le
+piège lexicographique du tri par défaut se montre donc dans la console de l'élève.
+
 ## Ce qui fonctionne réellement en C++
 
 L'interpréteur embarqué ne couvre pas tout le langage. **Mesuré, pas supposé** :
