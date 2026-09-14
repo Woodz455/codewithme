@@ -44,6 +44,39 @@ function verifier(nom, condition, detail = '') {
   }
 }
 
+/**
+ * Sans isolation d'origine, le moteur Python ne demarre pas : `page.evaluate`
+ * leve alors, et le controle mourrait ici — juste avant de rendre son verdict.
+ * Or c'est precisement le cas qu'on cherche a diagnostiquer. On rattrape donc,
+ * pour que l'echec soit COMPTE et que les controles suivants aient lieu.
+ *
+ * On borne AUSSI l'attente. `page.evaluate` n'a aucun delai par defaut : une
+ * promesse qui ne se resout jamais — `navigator.serviceWorker.ready` sur un
+ * site ou le worker ne s'active pas — bloquerait le controle sans fin. Mesure :
+ * 13 minutes sur un runner GitHub avant annulation a la main. Un controle qui
+ * peut pendre indefiniment ne vaut pas mieux qu'un controle absent.
+ */
+const sansCasser = async (quoi, parDefaut, delaiMs = 120000) => {
+  const expire = Symbol('expire');
+  let minuteur;
+  try {
+    const resultat = await Promise.race([
+      quoi(),
+      new Promise((r) => {
+        minuteur = setTimeout(() => r(expire), delaiMs);
+      }),
+    ]);
+    if (resultat === expire) {
+      return { ...parDefaut, echec: `aucune reponse apres ${Math.round(delaiMs / 1000)} s` };
+    }
+    return resultat;
+  } catch (erreur) {
+    return { ...parDefaut, echec: String(erreur?.message || erreur).split('\n')[0] };
+  } finally {
+    clearTimeout(minuteur);
+  }
+};
+
 process.stdout.write(`\nSite en ligne — ${adresse}\n`);
 
 /* ============================================== 1. LES EN-TETES, BRUTS ==== */
@@ -140,12 +173,12 @@ if (bienvenue) {
 // `infos()` passe par le pont et rend une promesse : la lire sans l'attendre
 // donnerait `undefined` — et un controle qui compare undefined a 'web' echoue
 // pour une raison qui n'a rien a voir avec l'hebergeur.
-const etat = await page.evaluate(async () => ({
+const etat = await sansCasser(() => page.evaluate(async () => ({
   isole: window.crossOriginIsolated,
   memoirePartagee: typeof SharedArrayBuffer === 'function',
   pont: typeof window.cwm === 'object' && window.cwm !== null,
   plateforme: (await window.cwm?.infos?.())?.plateforme,
-}));
+})), {}, 30000);
 
 // La consequence observable des deux en-tetes. C'est elle qui compte : un
 // en-tete present mais mal interprete se verrait ici, pas plus haut.
@@ -158,29 +191,20 @@ verifier(
 verifier('le pont window.cwm est en place', etat.pont);
 verifier('le pont s annonce comme navigateur', etat.plateforme === 'web', String(etat.plateforme));
 
-const nombreLecons = await page.evaluate(async () => {
-  const { nombreLeconsTotal } = await import('/content/parcours.js');
-  return nombreLeconsTotal();
-});
+const nombreLecons = await sansCasser(
+  () =>
+    page.evaluate(async () => {
+      const { nombreLeconsTotal } = await import('/content/parcours.js');
+      return nombreLeconsTotal();
+    }),
+  null,
+  30000
+);
 verifier('les lecons publiees sont bien les 165', nombreLecons === 165, String(nombreLecons));
 
 /* ======================================================= 3. PYTHON ======== */
 
 process.stdout.write('\nPython, et le vrai test de l isolation\n\n');
-
-/**
- * Sans isolation d'origine, le moteur Python ne demarre pas : `page.evaluate`
- * leve alors, et le controle mourrait ici — juste avant de rendre son verdict.
- * Or c'est precisement le cas qu'on cherche a diagnostiquer. On rattrape donc,
- * pour que l'echec soit COMPTE et que les controles suivants aient lieu.
- */
-const sansCasser = async (quoi, parDefaut) => {
-  try {
-    return await quoi();
-  } catch (erreur) {
-    return { ...parDefaut, echec: String(erreur?.message || erreur).split('\n')[0] };
-  }
-};
 
 const resultatPython = await sansCasser(() => page.evaluate(async () => {
   const { MoteurPython } = await import('/js/runners/python.js');
@@ -208,7 +232,7 @@ const resultatPython = await sansCasser(() => page.evaluate(async () => {
   await Promise.race([fini, new Promise((r) => setTimeout(r, 180000))]);
   moteur.detruire();
   return { texte: sortie.join(''), erreurs, demandes };
-}), { texte: '', erreurs: [], demandes: 0 });
+}), { texte: '', erreurs: [], demandes: 0 }, 180000);
 
 verifier(
   'un programme Python s execute',
@@ -265,7 +289,8 @@ const serviceWorkerPret = await sansCasser(
     await navigator.serviceWorker.ready;
     return true;
   }),
-  false
+  false,
+  60000
 );
 verifier('le service worker s installe', serviceWorkerPret === true, serviceWorkerPret?.echec || '');
 await contexte.setOffline(true);

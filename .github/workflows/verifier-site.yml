@@ -25,6 +25,10 @@ jobs:
   verifier:
     name: Le site publie repond-il correctement
     runs-on: ubuntu-latest
+    # Le filet de securite. Les attentes du controle sont toutes bornees
+    # depuis qu'une d'elles a pendu treize minutes sur un runner, mais un
+    # travail sans limite peut consommer des heures de runner pour rien.
+    timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@v4
