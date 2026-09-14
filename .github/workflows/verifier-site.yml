@@ -1,0 +1,46 @@
+name: Verifier le site en ligne
+
+# Ce controle interroge le site REELLEMENT publie, chez son hebergeur.
+#
+# `npm test` sert le site lui-meme, avec des en-tetes fabriques depuis les
+# memes constantes que celles qui ecrivent `_headers`. Bonne garantie sur leur
+# contenu — muette sur l'hebergeur. Si Cloudflare ignorait `_headers`, le site
+# s'ouvrirait normalement, les 165 lecons s'afficheraient, et SEUL l'input() de
+# Python cesserait de bloquer. C'est ce defaut silencieux qu'on attrape ici.
+#
+# Sur demande uniquement : un controle qui s'execute tout seul chaque nuit
+# finit par ne plus etre lu. Le relancer apres chaque mise en ligne suffit.
+#
+# Actions -> Verifier le site en ligne -> Run workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      adresse:
+        description: 'Adresse du site a verifier'
+        required: true
+        default: 'https://codewithme-8tq.pages.dev'
+
+jobs:
+  verifier:
+    name: Le site publie repond-il correctement
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Installer les dependances
+        run: npm ci
+
+      - name: Installer Chromium pour Playwright
+        run: npx playwright install --with-deps chromium
+
+      # Le controle sort en 1 des qu'une verification echoue : le workflow
+      # devient rouge, et le journal nomme precisement ce qui manque.
+      - name: Interroger le site en ligne
+        run: npm run test:enligne -- "${{ inputs.adresse }}"

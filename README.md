@@ -15,6 +15,8 @@ de serveur, pas de compte, pas de suivi.
 
 ## Deux façons de l'utiliser
 
+Le site est en ligne : **[codewithme-8tq.pages.dev](https://codewithme-8tq.pages.dev)**
+
 | | Application Windows | Version web |
 |---|---|---|
 | **Installation** | un `.exe` à télécharger | rien, une adresse suffit |
@@ -287,6 +289,21 @@ n'existe pas — et c'est lui qui permet à `input()` de **vraiment** attendre l
 l'élève. Sans lui, la console poserait la question puis passerait à la suite sans écouter.
 C'est pour cette seule raison que **GitHub Pages ne convient pas** : il ne permet pas de
 configurer les en-têtes.
+
+#### Vérifier le site après chaque mise en ligne
+
+Que l'hébergeur applique vraiment `_headers` est la seule chose qu'aucun contrôle local ne peut
+prouver — et son absence ne se verrait pas : le site s'ouvrirait, les 165 leçons
+s'afficheraient, et seul l'`input()` de Python cesserait de bloquer.
+
+Deux façons de le vérifier, au choix :
+
+```bash
+npm run test:enligne -- https://codewithme-8tq.pages.dev
+```
+
+ou, sans rien installer : onglet **Actions → Vérifier le site en ligne → Run workflow**.
+L'adresse du site y est déjà proposée par défaut.
 
 #### Comment le web réutilise le même code
 
