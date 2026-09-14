@@ -130,33 +130,83 @@ writeFileSync(
 
 /* ------------------------------------------------------------- en-tetes -- */
 
-// Format commun a Netlify et a Cloudflare Pages. La regle generale d'abord,
-// la regle de l'apercu ensuite : c'est la plus specifique qui l'emporte.
-const entetes = `# Isolation d'origine.
+// Format commun a Netlify et a Cloudflare Pages.
+//
+// REGLE ABSOLUE : aucune politique de securite sur `/*`.
+//
+// On a longtemps cru ici que « la regle la plus specifique l'emporte ». C'est
+// faux, et la mesure a coute cher : sur Cloudflare, les regles S'ADDITIONNENT.
+// L'apercu recevait donc DEUX `Content-Security-Policy`, et un navigateur qui
+// en recoit deux applique leur INTERSECTION. La politique generale interdit
+// l'inline ; le script interne de la page d'apercu etait donc refuse :
+//
+//   Refused to execute inline script because it violates the following
+//   Content Security Policy directive: "script-src 'self' 'wasm-unsafe-eval'"
+//
+// Consequence sur le site publie : l'apercu ne demarrait plus du tout, donc
+// aucune lecon HTML, CSS, JavaScript ni le grand projet — 79 des 165. Et rien
+// ne le signalait : la page s'ouvrait, les lecons se chargeaient, Python
+// tournait. Seul l'apercu restait blanc.
+//
+// L'indice qui a mis sur la piste : l'apercu repondait
+// `Cross-Origin-Embedder-Policy: require-corp, require-corp` — deux fois la
+// meme valeur, donc deux regles appliquees.
+//
+// L'INVARIANT, mesure deux fois plutot qu'une : aucun en-tete ne doit etre
+// pose par deux regles qui correspondent au meme chemin. Une premiere version
+// de ce correctif repetait l'isolation dans chaque regle « au cas ou » — la
+// page principale recevait alors `Cross-Origin-Opener-Policy: same-origin,
+// same-origin`, que le navigateur REFUSE : plus d'isolation, plus de
+// SharedArrayBuffer, plus d'input() bloquant. Un defaut echange contre un
+// autre.
+//
+// Le partage tient en une phrase : l'isolation partout, la politique nulle
+// part sauf sur les trois documents.
+//
+// Une version intermediaire de ce correctif reservait COOP et COEP aux
+// documents seuls, en croyant qu'ils ne concernaient qu'eux. Mesure : le
+// moteur Python tombait. Le script d'un Worker doit LUI AUSSI porter COEP pour
+// que le worker soit isole — sans quoi il n'a pas de SharedArrayBuffer, et
+// c'est justement lui qui fait bloquer input(). Les en-tetes d'isolation
+// restent donc sur `/*`, qui couvre tout.
+//
+// Aucune regle ne pose deux fois le meme en-tete : l'isolation vient
+// uniquement de `/*`, la politique uniquement des regles precises.
+// `tests/verifier-web.mjs` le verifie sur le fichier produit, chemin par
+// chemin.
+const entetes = `# Tout le site : l'isolation d'origine.
 #
-# Sans ces deux en-tetes, SharedArrayBuffer n'existe pas, et l'input() de la
-# console Python cesse de bloquer : l'eleve verrait la question sans jamais
-# pouvoir y repondre. Un hebergeur incapable de les poser (GitHub Pages) ne
-# convient pas a ce site.
+# Sans ces en-tetes, SharedArrayBuffer n'existe pas, et l'input() de la console
+# Python cesse de bloquer : l'eleve verrait la question sans jamais pouvoir y
+# repondre. Un hebergeur incapable de les poser (GitHub Pages) ne convient pas.
+#
+# Ils sont ici ET NULLE PART AILLEURS. Une regle plus precise qui les reposerait
+# les enverrait deux fois, et « same-origin, same-origin » est une valeur
+# invalide que le navigateur rejette — donc plus d'isolation du tout.
+#
+# Cross-Origin-Resource-Policy vaut pour les sous-ressources : c'est lui qui
+# autorise une page isolee a charger ses scripts, ses polices et son wasm.
 /*
   Cross-Origin-Opener-Policy: ${ISOLATION['Cross-Origin-Opener-Policy']}
   Cross-Origin-Embedder-Policy: ${ISOLATION['Cross-Origin-Embedder-Policy']}
   Cross-Origin-Resource-Policy: same-origin
-  Content-Security-Policy: ${EN_TETES_STATIQUES.CSP}
   X-Content-Type-Options: nosniff
 
+# La politique de securite, elle, ne concerne que les DOCUMENTS — et ce site
+# n'en a que trois adresses. Elle n'est surtout PAS sur la regle generale :
+# les regles
+# s'additionnent chez l'hebergeur, et deux politiques sur un meme document
+# s'intersectent. C'est ce qui tuait l'apercu.
+/
+  Content-Security-Policy: ${EN_TETES_STATIQUES.CSP}
+
+/index.html
+  Content-Security-Policy: ${EN_TETES_STATIQUES.CSP}
+
 # L'apercu execute le code de l'eleve : il lui faut l'inline. Il est confine
-# dans une iframe bac a sable, sans acces a l'origine de l'application.
-#
-# L'isolation est repetee ici plutot que d'etre heritee de la regle generale :
-# les hebergeurs ne s'accordent pas sur la fusion de deux regles qui
-# correspondent, et une iframe qui perdrait son en-tete d'isolation ferait
-# perdre a la page entiere son SharedArrayBuffer — donc l'input() de Python.
+# dans une iframe bac a sable, sans acces a l'origine de l'application — c'est
+# cette iframe, et non la politique, qui protege la progression de l'eleve.
 /apercu/*
-  Cross-Origin-Opener-Policy: ${ISOLATION['Cross-Origin-Opener-Policy']}
-  Cross-Origin-Embedder-Policy: ${ISOLATION['Cross-Origin-Embedder-Policy']}
-  Cross-Origin-Resource-Policy: same-origin
-  X-Content-Type-Options: nosniff
   Content-Security-Policy: ${EN_TETES_STATIQUES.CSP_APERCU}
 `;
 writeFileSync(join(SORTIE, '_headers'), entetes);

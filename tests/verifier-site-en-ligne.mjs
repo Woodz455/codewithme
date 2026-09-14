@@ -122,10 +122,26 @@ verifier(
 // perdre a la page entiere son SharedArrayBuffer.
 const apercu = await entetesDe('/apercu/apercu.html');
 verifier('la page d apercu repond', apercu.statut === 200, `statut ${apercu.statut}`);
+// Un hebergeur qui ADDITIONNE les regles envoie l'en-tete deux fois, et
+// `fetch` les joint : « require-corp, require-corp ». C'est redondant mais sans
+// effet — mesure faite sur le site publie, ou crossOriginIsolated valait bien
+// true. En revanche « require-corp, unsafe-none » serait un vrai conflit : on
+// exige donc que CHAQUE valeur recue soit la bonne, pas qu'il y en ait une.
+const coepApercu = apercu.entetes['cross-origin-embedder-policy'] || '';
 verifier(
   'l apercu porte lui aussi l isolation',
-  apercu.entetes['cross-origin-embedder-policy'] === 'require-corp',
-  apercu.entetes['cross-origin-embedder-policy'] || 'absent — la regle /apercu/* n est pas appliquee'
+  coepApercu.split(',').map((v) => v.trim()).filter(Boolean).every((v) => v === 'require-corp') &&
+    coepApercu !== '',
+  coepApercu || 'absent — la regle /apercu/* n est pas appliquee'
+);
+
+// Deux politiques sur un meme document s'intersectent : c'est ce qui a tue
+// l'apercu du site publie. Une seule, donc.
+const cspApercu = apercu.entetes['content-security-policy'] || '';
+verifier(
+  'l apercu ne recoit qu UNE politique de securite',
+  cspApercu.split('default-src').length - 1 <= 1,
+  cspApercu.length > 160 ? `${cspApercu.slice(0, 160)}…` : cspApercu
 );
 verifier(
   'l apercu a sa propre politique de securite',
