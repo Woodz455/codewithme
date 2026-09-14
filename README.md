@@ -208,6 +208,7 @@ Rien n'est déclaré fonctionnel sans avoir été exécuté.
 | `npm run check:contrast` | Contrastes WCAG AA mesurés, et palette des graphiques contrôlée en simulant le daltonisme |
 | `npm run check:icones` | Aucun emoji dans l'interface — Windows les dessine lui-même, leur rendu changerait d'une machine à l'autre |
 | `npm run check:empaquetage` | La configuration Windows est valide, **sans rien construire** : les noms de fichiers s'étendent réellement, correspondent à ce que le workflow cherche ensuite, et **l'étiquette publiée concorde avec la version déclarée** |
+| `npm run test:enligne -- <adresse>` | Le site **réellement en ligne**, chez son hébergeur : les en-têtes d'isolation lus dans la vraie réponse HTTP (page **et** aperçu), `crossOriginIsolated`, l'`input()` de Python qui bloque pour de bon, une leçon `js-form` rendue dans l'aperçu, et le rechargement réseau coupé. Hors de la chaîne `npm test` : il lui faut un site publié et un réseau |
 | `npm run test:etiquette` | Le garde-fou ci-dessus, éprouvé : une étiquette en avance sur `package.json` doit **arrêter la construction** plutôt que publier des fichiers mal nommés |
 
 ### Architecture

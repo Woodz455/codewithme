@@ -32,7 +32,8 @@
     "test:web": "node tests/verifier-web.mjs",
     "test:sons": "xvfb-run -a node tests/verifier-sons.mjs",
     "test:etiquette": "node tests/verifier-etiquette-version.mjs",
-    "test:bienvenue": "xvfb-run -a node tests/verifier-bienvenue.mjs"
+    "test:bienvenue": "xvfb-run -a node tests/verifier-bienvenue.mjs",
+    "test:enligne": "node tests/verifier-site-en-ligne.mjs"
   },
   "devDependencies": {
     "@fontsource/inter": "5.3.0",
