@@ -15,6 +15,8 @@ de serveur, pas de compte, pas de suivi.
 
 ## Deux façons de l'utiliser
 
+Le site est en ligne : **[codewithme-8tq.pages.dev](https://codewithme-8tq.pages.dev)**
+
 | | Application Windows | Version web |
 |---|---|---|
 | **Installation** | un `.exe` à télécharger | rien, une adresse suffit |
@@ -208,6 +210,7 @@ Rien n'est déclaré fonctionnel sans avoir été exécuté.
 | `npm run check:contrast` | Contrastes WCAG AA mesurés, et palette des graphiques contrôlée en simulant le daltonisme |
 | `npm run check:icones` | Aucun emoji dans l'interface — Windows les dessine lui-même, leur rendu changerait d'une machine à l'autre |
 | `npm run check:empaquetage` | La configuration Windows est valide, **sans rien construire** : les noms de fichiers s'étendent réellement, correspondent à ce que le workflow cherche ensuite, et **l'étiquette publiée concorde avec la version déclarée** |
+| `npm run test:enligne -- <adresse>` | Le site **réellement en ligne**, chez son hébergeur : les en-têtes d'isolation lus dans la vraie réponse HTTP (page **et** aperçu), `crossOriginIsolated`, l'`input()` de Python qui bloque pour de bon, une leçon `js-form` rendue dans l'aperçu, et le rechargement réseau coupé. Hors de la chaîne `npm test` : il lui faut un site publié et un réseau |
 | `npm run test:etiquette` | Le garde-fou ci-dessus, éprouvé : une étiquette en avance sur `package.json` doit **arrêter la construction** plutôt que publier des fichiers mal nommés |
 
 ### Architecture
@@ -249,8 +252,35 @@ npm run serveur:web -- --dist   # sert exactement ce qui sera publie
 ```
 
 `dist-web/` est un site **entièrement statique** : il suffit de le déposer chez un hébergeur.
-`netlify.toml` configure Netlify ; Cloudflare Pages lit les mêmes réglages (commande
-`npm run vendor && npm run build:web`, dossier `dist-web`).
+
+#### Cloudflare Pages, champ par champ
+
+Cloudflare lit `dist-web/_headers`, mais **pas** `netlify.toml` : ces valeurs se saisissent
+dans son interface, à la création du projet.
+
+| Champ | Valeur |
+|---|---|
+| Production branch | `master` |
+| Framework preset | **None** |
+| Build command | `npm run vendor && npm run build:web` |
+| Build output directory | `dist-web` |
+| Root directory | laisser vide |
+
+Et deux variables d'environnement, à poser pour **Production et Preview** :
+
+| Variable | Valeur | Pourquoi |
+|---|---|---|
+| `NODE_VERSION` | `22` | la construction emploie des API récentes |
+| `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD` | `1` | près d'un gigaoctet de navigateurs de test, inutiles ici |
+
+Le binaire d'Electron (~100 Mo) se téléchargera quand même : son installeur ne lit aucune
+variable d'arrêt. C'est du temps perdu, pas une panne — inutile de chercher à l'éviter.
+
+**Mesuré sur la construction réelle** : 95 fichiers, 16 Mo, plus gros fichier 9,2 Mo
+(`pyodide.asm.wasm`). Cloudflare Pages autorise 20 000 fichiers et 25 Mo par fichier : on tient
+largement. Et en déplaçant les navigateurs Playwright **et** le binaire Electron hors de
+portée, `npm run vendor && npm run build:web` passe toujours — la construction du site ne
+dépend d'aucun des deux.
 
 **Un hébergeur ne convient que s'il sait poser des en-têtes.** La construction écrit
 `dist-web/_headers` avec `Cross-Origin-Opener-Policy: same-origin` et
@@ -259,6 +289,21 @@ n'existe pas — et c'est lui qui permet à `input()` de **vraiment** attendre l
 l'élève. Sans lui, la console poserait la question puis passerait à la suite sans écouter.
 C'est pour cette seule raison que **GitHub Pages ne convient pas** : il ne permet pas de
 configurer les en-têtes.
+
+#### Vérifier le site après chaque mise en ligne
+
+Que l'hébergeur applique vraiment `_headers` est la seule chose qu'aucun contrôle local ne peut
+prouver — et son absence ne se verrait pas : le site s'ouvrirait, les 165 leçons
+s'afficheraient, et seul l'`input()` de Python cesserait de bloquer.
+
+Deux façons de le vérifier, au choix :
+
+```bash
+npm run test:enligne -- https://codewithme-8tq.pages.dev
+```
+
+ou, sans rien installer : onglet **Actions → Vérifier le site en ligne → Run workflow**.
+L'adresse du site y est déjà proposée par défaut.
 
 #### Comment le web réutilise le même code
 
