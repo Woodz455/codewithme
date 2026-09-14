@@ -57,6 +57,70 @@ verifier(
   'sans elle, input() cesserait de bloquer'
 );
 
+/* --- Aucun document ne doit recevoir DEUX politiques de securite --------- */
+
+// Defaut reellement survenu, et invisible en local : sur Cloudflare, les
+// regles de `_headers` s'ADDITIONNENT au lieu de se remplacer. L'apercu
+// recevait donc la politique de `/*` EN PLUS de la sienne, un navigateur
+// applique l'intersection de deux politiques, et son script interne etait
+// refuse — « Refused to execute inline script ». L'apercu restait blanc sur le
+// site publie : 79 lecons sur 165 sans resultat, sans le moindre message.
+//
+// La regle qui l'empeche : la politique ne vit que sur les chemins des
+// documents, jamais sur `/*`.
+const regles = entetes
+  .split('\n')
+  .filter((ligne) => ligne.trim() && !ligne.trim().startsWith('#'))
+  .reduce((liste, ligne) => {
+    if (!ligne.startsWith(' ')) liste.push({ chemin: ligne.trim(), entetes: [] });
+    else liste[liste.length - 1]?.entetes.push(ligne.trim());
+    return liste;
+  }, []);
+
+const nomsDe = (regle) => regle.entetes.map((e) => e.split(':')[0].trim().toLowerCase());
+const correspond = (motif, chemin) =>
+  motif.endsWith('*') ? chemin.startsWith(motif.slice(0, -1)) : motif === chemin;
+
+// L'invariant, verifie sur TOUS les chemins qui comptent. Un en-tete pose par
+// deux regles est envoye deux fois, et un en-tete double est invalide : la
+// premiere correction de ce defaut repetait l'isolation partout, et la page
+// principale recevait « same-origin, same-origin » — donc plus d'isolation du
+// tout, donc plus d'input() bloquant.
+const doublons = [];
+for (const chemin of ['/', '/index.html', '/apercu/apercu.html', '/js/app.js', '/vendor/pyodide/pyodide.mjs']) {
+  const vus = new Map();
+  for (const regle of regles.filter((r) => correspond(r.chemin, chemin))) {
+    for (const nom of nomsDe(regle)) vus.set(nom, (vus.get(nom) || 0) + 1);
+  }
+  for (const [nom, compte] of vus) if (compte > 1) doublons.push(`${chemin} recoit ${nom} ${compte} fois`);
+}
+verifier('aucun en-tete n est pose deux fois', doublons.length === 0, doublons.join(' ; '));
+
+// Les trois documents portent l'isolation ET une politique.
+for (const chemin of ['/', '/index.html', '/apercu/apercu.html']) {
+  const poses = regles.filter((r) => correspond(r.chemin, chemin)).flatMap(nomsDe);
+  verifier(
+    `${chemin} porte l isolation et sa politique`,
+    poses.includes('cross-origin-opener-policy') &&
+      poses.includes('cross-origin-embedder-policy') &&
+      poses.includes('content-security-policy'),
+    poses.join(', ')
+  );
+}
+
+// Les sous-ressources portent l'isolation elles aussi. Une version de ce
+// correctif l'avait reservee aux documents : le moteur Python tombait, parce
+// que le script d'un Worker doit porter COEP pour que le worker soit isole —
+// et c'est ce worker qui fait bloquer input().
+for (const chemin of ['/js/runners/python.js', '/vendor/pyodide/pyodide.mjs']) {
+  const poses = regles.filter((r) => correspond(r.chemin, chemin)).flatMap(nomsDe);
+  verifier(
+    `${chemin} reste isolable`,
+    poses.includes('cross-origin-embedder-policy') && poses.includes('cross-origin-resource-policy'),
+    poses.join(', ')
+  );
+}
+
 const indexHtml = readFileSync(join(DIST, 'index.html'), 'utf8');
 verifier(
   'le pont est charge avant l interface',
